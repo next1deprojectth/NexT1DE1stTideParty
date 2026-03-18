@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let selectedMethod = 'delivery';
     const RECEIVER_NAME_TARGET = "ธัญดา"; // Partial match for "น.ส.ธัญดา" or "น.ส. ธัญดา"
 
-    const API_KEY = "AIzaSyCkyNdXPlZFjb6BiV0D5vNZV-bYDvkhVrU";
+    const API_KEY = "AIzaSyBD8hm0aHJWcY9lErMmfR_0_ua-Iz3rrIU";
     const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${API_KEY}`;
     const BANKS = [
         { code: "SCB", name: "ธนาคารไทยพาณิชย์" },

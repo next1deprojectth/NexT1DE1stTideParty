@@ -93,6 +93,7 @@ body {
 
 .nav-actions {
     display: flex;
+    justify-content: center;
     gap: 15px;
 }
 
@@ -119,6 +120,18 @@ button:active {
     color: white;
 }
 
+.btn-pink2 {
+    background-color: var(--dark-pink);
+    color: var(--white);
+    font-size: large;
+}
+
+.btn-blue2 {
+    background-color: var(--mariner-blue);
+    color: white;
+    font-size: large;
+}
+
 /* Main Container */
 .main-container {
     max-width: 1200px;
@@ -138,7 +151,7 @@ button:active {
 .hero-grid {
     display: grid;
     grid-template-columns: 1fr 1.2fr;
-    grid-template-areas: 
+    grid-template-areas:
         "text slider"
         "button slider";
     column-gap: 40px;
@@ -164,7 +177,7 @@ button:active {
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
-    font-size: 2.1rem;
+    font-size: 1.9rem;
     font-weight: 700;
     margin-bottom: 20px;
     line-height: 1.2;
@@ -334,7 +347,7 @@ button:active {
 
 /* Stats Section */
 .stats-container-row {
-    width: 100%;
+    width: 90%;
     margin-bottom: 20px;
 }
 
@@ -1095,6 +1108,44 @@ button:active {
         margin-top: 10px;
     }
 
+    .main-container {
+        padding: 0 15px !important;
+        /* Force equal side paddings */
+        margin-top: 110px !important;
+        /* Increase space from navbar */
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        /* Center items */
+    }
+
+    .hero-section,
+    .stats-container-row,
+    .content-row,
+    .donate-row {
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    .hero-card,
+    .stats-card,
+    .latest-donations-card,
+    .poster-card,
+    .qr-card,
+    .celebration-card {
+        width: 100% !important;
+        max-width: 100% !important;
+        /* Ensure it never exceeds parent */
+        margin: 0 0 15px 0 !important;
+        padding: 15px 12px !important;
+        /* Even less padding */
+        box-sizing: border-box !important;
+        border-radius: 18px !important;
+    }
+
     .hero-text .event-info-container {
         margin: 10px auto 25px auto;
     }
@@ -1112,11 +1163,21 @@ button:active {
     }
 
     .nav-container {
-        padding: 10px 15px;
+        padding: 10px 20px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
     }
 
     .btn-pink,
     .btn-blue {
+        padding: 8px 15px;
+        font-size: 0.9rem;
+    }
+
+    .btn-pink2,
+    .btn-blue2 {
+        width: 300px;
         padding: 8px 15px;
         font-size: 0.9rem;
     }
@@ -1126,29 +1187,40 @@ button:active {
     }
 
     .current-amount {
-        font-size: 2.2rem;
+        font-size: 1.4rem !important;
+        line-height: 1.2;
     }
 
     .target-amount {
-        font-size: 1.4rem;
+        font-size: 1rem !important;
     }
 
     .countdown-box {
-        padding: 20px 10px;
-        border-radius: 30px;
+        padding: 12px 5px !important;
+        /* Smaller padding */
+        border-radius: 15px !important;
+    }
+
+    .timer-grid {
+        gap: 8px !important;
+        /* Narrower gap */
+    }
+
+    .timer-item {
+        min-width: 45px !important;
     }
 
     .timer-item span {
-        font-size: 1.8rem;
+        font-size: 1.3rem !important;
     }
 
     .timer-item small {
-        font-size: 0.6rem;
-        letter-spacing: 1px;
+        font-size: 0.5rem !important;
+        letter-spacing: 0.5px !important;
     }
 
     .separator {
-        font-size: 1.4rem;
+        font-size: 1rem !important;
     }
 }
 
