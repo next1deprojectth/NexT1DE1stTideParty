@@ -7,6 +7,7 @@
     <title>NexT1DE1stTideParty - Donate for Artist</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
+    <link rel="icon" type="image/png" href="images/nt1-logo 2.png">
     <link rel="stylesheet" href="style.css">
 </head>
 
@@ -21,9 +22,9 @@
                 <img src="images/nt1-logo 2.png" alt="NT1 Logo">
             </div>
             <div class="nav-actions">
-                <button class="btn-pink">บริจาค</button>
+                <button class="btn-pink">โครงการ CSR</button>
                 <button class="btn-blue"
-                    onclick="document.getElementById('report-section').scrollIntoView({behavior: 'smooth'})">แจ้งโอนเงิน</button>
+                    onclick="document.getElementById('report-section').scrollIntoView({behavior: 'smooth'})">แจ้งโดเนท</button>
             </div>
         </div>
     </nav>
@@ -37,9 +38,34 @@
                         <h1 class="gradient-text">NexT1DE1stTideParty</h1>
                         <p>ร่วมเป็นส่วนหนึ่งของการเดินทางและสร้างความทรงจำที่น่าประทับใจไปกับด้วยกัน
                             ทุกยอดสนับสนุนมีความหมายต่อเรา</p>
-                        <p class="event-details">วันที่ 24-25 เมษายน 69<br> ณ จามจุรีแสควร์ชั้น G <a
-                                href="https://maps.app.goo.gl/XSF76s3BC8oQ9FpP9" target="_blank" class="btn-map">
-                                MAP</a></p>
+                        <div class="event-info-container">
+                            <div class="event-row">
+                                <span class="event-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                        <line x1="16" y1="2" x2="16" y2="6"></line>
+                                        <line x1="8" y1="2" x2="8" y2="6"></line>
+                                        <line x1="3" y1="10" x2="21" y2="10"></line>
+                                    </svg>
+                                </span>
+                                <span class="event-text">วันที่ 24-25 เมษายน 69</span>
+                            </div>
+                            <div class="event-row">
+                                <span class="event-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                        <circle cx="12" cy="10" r="3"></circle>
+                                    </svg>
+                                </span>
+                                <span class="event-text">ณ จามจุรีแสควร์ชั้น G</span>
+                                <a href="https://maps.app.goo.gl/XSF76s3BC8oQ9FpP9" target="_blank" class="btn-map">
+                                    MAP</a>
+                            </div>
+                        </div>
                         <a href="#" class="btn-hero">ลงทะเบียน Workshop ที่งาน / ที่บ้าน</a>
                     </div>
                     <div class="hero-slider">
@@ -165,7 +191,7 @@
                     </table>
                 </div>
                 <div class="table-footer">
-                    <span class="total-items">ทั้งหมด 50 รายการ</span>
+                    <span class="total-items">มี 50 รายการ</span>
                     <div class="pagination">
                         <button class="active">1</button>
                         <button>2</button>
@@ -230,11 +256,16 @@
     </main>
 
     <footer class="footer">
-        <div class="footer-links">
-            <a href="https://x.com/NT1_Project_TH">เกี่ยวกับเรา</a>
-            <a href="https://x.com/NT1_Project_TH">ติดต่อเรา</a>
+        <div class="footer-content">
+            <img src="images/nt1-logo 2.png" alt="NT1 Logo" class="footer-logo">
+            <div class="footer-links">
+                <a href="https://x.com/NT1_Project_TH">เกี่ยวกับเรา</a>
+                <a href="https://x.com/NT1_Project_TH">ติดต่อเรา</a>
+                <a href="https://next1deprojectth.github.io/profile-info/">ข้อมูล NexT1DE</a>
+            </div>
+            <div class="footer-divider"></div>
+            <p class="copyright">BY NEXT1DE PROJECT THAILAND</p>
         </div>
-        <p class="copyright">BY NEXT1DE PROJECT THAILAND</p>
     </footer>
 
     <!-- Advanced Lightbox Slider -->
