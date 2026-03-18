@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NexT1DE1stTideParty - Donate for Artist</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <!-- Background Image -->
+    <div class="page-background"></div>
+
+    <!-- Navbar -->
+    <nav class="navbar glass">
+        <div class="nav-container">
+            <div class="logo">
+                <img src="images/nt1-logo 2.png" alt="NT1 Logo">
+            </div>
+            <div class="nav-actions">
+                <button class="btn-pink">บริจาค</button>
+                <button class="btn-blue"
+                    onclick="document.getElementById('report-section').scrollIntoView({behavior: 'smooth'})">แจ้งโอนเงิน</button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-container">
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <div class="hero-card glass">
+                <div class="hero-grid">
+                    <div class="hero-text">
+                        <h1 class="gradient-text">NexT1DE1stTideParty</h1>
+                        <p>ร่วมเป็นส่วนหนึ่งของการเดินทางและสร้างความทรงจำที่น่าประทับใจไปกับด้วยกัน
+                            ทุกยอดสนับสนุนมีความหมายต่อเรา</p>
+                        <p class="event-details">วันที่ 24-25 เมษายน 69<br> ณ จามจุรีแสควร์ชั้น G <a
+                                href="https://maps.app.goo.gl/XSF76s3BC8oQ9FpP9" target="_blank" class="btn-map">
+                                MAP</a></p>
+                        <a href="#" class="btn-hero">ลงทะเบียน Workshop ที่งาน / ที่บ้าน</a>
+                    </div>
+                    <div class="hero-slider">
+                        <div class="slider-wrapper" id="hero-slider-wrapper">
+                            <div class="slider-container" id="hero-slider">
+                                <img src="images/image_project1.jpg" alt="Project 1" class="slide">
+                                <img src="images/image_project2.jpg" alt="Project 2" class="slide">
+                                <img src="images/image_project3.jpg" alt="Project 3" class="slide">
+                                <img src="images/image_project4.jpg" alt="Project 4" class="slide">
+                            </div>
+                        </div>
+                        <!-- Slider Arrows (Desktop only) -->
+                        <div class="slider-nav desktop-only">
+                            <button class="slider-prev">&#10094;</button>
+                            <button class="slider-next">&#10095;</button>
+                        </div>
+                        <div class="slider-dots" id="slider-dots">
+                            <span class="dot active"></span>
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Stats Section -->
+        <section class="stats-container-row">
+            <div class="stats-grid-wrapper">
+                <!-- Donation Progress Card -->
+                <div class="stats-card donation-card glass">
+                    <h3 class="stats-label">ยอดโดเนทปัจจุบัน</h3>
+                    <div class="progress-section">
+                        <div class="progress-bar-container-new">
+                            <div class="progress-bar-bg-custom">
+                                <div class="progress-bar-fill-custom" style="width: 88%;"></div>
+                            </div>
+                        </div>
+                        <div class="amount-display-custom">
+                            <span class="current-amount-custom">฿42,500.00</span>
+                            <span class="amount-separator">/</span>
+                            <span class="target-amount-custom">47,777</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Countdown Timer Card -->
+                <div class="stats-card timer-card glass-dark">
+                    <h3 class="stats-label">เหลือเวลาโดเนท</h3>
+                    <div class="countdown-content">
+                        <div class="timer-box-new">
+                            <div class="timer-grid-custom">
+                                <div class="timer-unit">
+                                    <span id="days">12</span>
+                                    <small>DAYS</small>
+                                </div>
+                                <span class="timer-sep">:</span>
+                                <div class="timer-unit">
+                                    <span id="hours">04</span>
+                                    <small>HRS</small>
+                                </div>
+                                <span class="timer-sep">:</span>
+                                <div class="timer-unit">
+                                    <span id="mins">55</span>
+                                    <small>MINS</small>
+                                </div>
+                                <span class="timer-sep">:</span>
+                                <div class="timer-unit">
+                                    <span id="secs">00</span>
+                                    <small>SECS</small>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="timer-end-text">สิ้นสุด 16 เมษายน 2569 23:59:59 น.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Latest Donations & Poster Section -->
+        <section class="content-row">
+            <div class="latest-donations-card glass">
+                <div class="card-header">
+                    <h3>ยอดโดเนทล่าสุด <span class="live-badge">Live</span></h3>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ชื่อผู้ส่ง</th>
+                                <th>ยอด</th>
+                                <th>วันเวลา</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>คนสนับสนุนศิลปินมาก</td>
+                                <td class="amount">฿1,500.00</td>
+                                <td class="date">24 เม.ย. 69 14:30</td>
+                            </tr>
+                            <tr>
+                                <td>Anonymous Bear</td>
+                                <td class="amount">฿477.00</td>
+                                <td class="date">24 เม.ย. 69 14:22</td>
+                            </tr>
+                            <tr>
+                                <td>ต้าวหมีน้อย</td>
+                                <td class="amount">฿2,000.00</td>
+                                <td class="date">24 เม.ย. 69 14:20</td>
+                            </tr>
+                            <tr>
+                                <td>ขนมอาเรีย</td>
+                                <td class="amount">฿277.00</td>
+                                <td class="date">24 เม.ย. 69 14:12</td>
+                            </tr>
+                            <tr>
+                                <td>Someone Special</td>
+                                <td class="amount">฿1,277.00</td>
+                                <td class="date">24 เม.ย. 69 14:10</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="table-footer">
+                    <span class="total-items">ทั้งหมด 50 รายการ</span>
+                    <div class="pagination">
+                        <button class="active">1</button>
+                        <button>2</button>
+                        <button>3</button>
+                        <span class="pag-dots">...</span>
+                        <button>15</button>
+                    </div>
+                </div>
+            </div>
+            <div class="poster-card glass">
+                <img src="images/donate_giftaway.png" alt="Donation Giftaway" id="giftaway-poster" class="zoomable">
+            </div>
+        </section>
+
+        <!-- QR & Celebration Section -->
+        <section id="report-section" class="donate-row">
+            <div class="qr-card glass">
+                <h3 class="qr-main-title">สแกนเพื่อโดเนท</h3>
+
+                <div class="qr-container-new">
+                    <img src="images/qrcode_promptpay.png" alt="QR PromptPay" class="qr-image-large">
+                </div>
+
+                <!-- Account Info Box -->
+                <div class="account-info-box">
+                    <div class="bank-header">
+                        <div class="bank-icon-k">
+                            <img src="images/logo-kbank.png" alt="KBank Logo">
+                        </div>
+                        <div class="bank-text">
+                            <p class="bank-name">ธนาคารกสิกรไทย</p>
+                            <p class="account-name">น.ส.ธัญดา โชติอนนต์</p>
+                        </div>
+                    </div>
+                    <div class="account-number-wrapper">
+                        <span class="account-number" id="account-number">123-4-56789-0</span>
+                        <button class="btn-copy" onclick="copyAccountNumber()">
+                            <span class="copy-icon"></span> คัดลอก
+                        </button>
+                    </div>
+                </div>
+
+                <button class="btn-report gradient-btn-3">
+                    <span class="icon-report"></span> แจ้งโดเนทที่นี่
+                </button>
+            </div>
+            <div class="celebration-card glass-light">
+                <div class="celebration-content">
+                    <h2>ร่วมเป็นส่วนหนึ่งของการยินดี</h2>
+                    <h2 class="highlight-blue">น้องคลื่นครบ 1 ปี</h2>
+                    <p class="description">สวัสดี Ohna ทุกคน
+                        โปรเจคนี้ถูกสร้างขึ้นมาเพื่อรวบรวมพลังในการสร้างผลงานชิ้นโบแดงที่เราตั้งใจทำมานาน</p>
+                    <div class="quote-box">
+                        <span class="quote-icon">“</span>
+                        <p>ขอบคุณทุกท่านที่สนับสนุนและคอยให้กำลังใจพวกเรามาโดยตลอด
+                            ทุกส่วนเกี่ยวข้องสำคุญที่ทำให้เรามาถึงจุดนี้ได้</p>
+                        <span class="quote-icon">“</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-links">
+            <a href="https://x.com/NT1_Project_TH">เกี่ยวกับเรา</a>
+            <a href="https://x.com/NT1_Project_TH">ติดต่อเรา</a>
+        </div>
+        <p class="copyright">BY NEXT1DE PROJECT THAILAND</p>
+    </footer>
+
+    <!-- Advanced Lightbox Slider -->
+    <div id="lightbox" class="lightbox">
+        <button class="lightbox-close">&times;</button>
+        <button class="lightbox-prev">&#10094;</button>
+        <div class="lightbox-content">
+            <img id="lightbox-img" src="" alt="Zoomed Image" class="zoom-img">
+        </div>
+        <button class="lightbox-next">&#10095;</button>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
