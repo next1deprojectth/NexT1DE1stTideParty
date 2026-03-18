@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>แจ้งโดเนท - NexT1DE1stTideParty</title>
+    <meta name="description" content="แจ้งโดเนทสนับสนุนโปรเจค NexT1DE1stTideParty">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="images/nt1-logo 2.png">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="donate.css">
+</head>
+
+<body class="donate-page-body">
+    <!-- Background Image -->
+    <div class="page-background donate-hide"></div>
+
+    <!-- Donate Page Header -->
+    <header class="donate-header glass">
+        <div class="donate-header-inner">
+            <a href="index.html" class="donate-logo-link" id="btn-back-to-home">
+                <img src="images/nt1-logo 2.png" alt="NT1 Logo - กลับหน้าหลัก">
+            </a>
+            <h1 class="donate-page-title">แจ้งโดเนทสนับสนุนโปรเจค</h1>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="donate-main">
+
+        <!-- Step Indicator -->
+        <div class="step-indicator-wrapper">
+            <div class="step-track">
+                <div class="step-pill active" id="step-pill-1"></div>
+                <div class="step-pill" id="step-pill-2"></div>
+            </div>
+            <p class="step-label" id="step-label-text">ขั้นตอนที่ 1 จาก 2</p>
+        </div>
+
+        <!-- ===== STEP 1 ===== -->
+        <div class="donate-step" id="step-1">
+
+            <!-- Project Info Button -->
+            <button class="btn-project-info" id="btn-project-info">
+                โปรเจค NexT1DE1stTideparty คือ ?
+            </button>
+
+            <!-- Account Info Box (same style as index.html) -->
+            <div class="account-info-box donate-account-box">
+                <div class="bank-header">
+                    <div class="bank-icon-k">
+                        <img src="images/logo-kbank.png" alt="KBank Logo">
+                    </div>
+                    <div class="bank-text">
+                        <p class="bank-name">ธนาคารกสิกรไทย</p>
+                        <p class="account-name">น.ส.ธัญดา โชติอนนต์</p>
+                    </div>
+                </div>
+                <div class="account-number-wrapper">
+                    <span class="account-number" id="donate-account-number">212-8-94502-7</span>
+                    <button class="btn-copy" onclick="copyDonateAccount()" id="btn-copy-account">
+                        <span class="copy-icon"></span> คัดลอก
+                    </button>
+                </div>
+            </div>
+
+            <!-- Upload Section Label -->
+            <p class="upload-section-label">อัพโหลดหลักฐานการโอน</p>
+
+            <!-- Upload Drop Zone -->
+            <div class="upload-zone" id="upload-zone" onclick="triggerFileInput()">
+                <input type="file" id="slip-file-input" accept=".jpg,.jpeg,.png,.heic,.heif" style="display:none" onchange="handleFileSelected(this)">
+                <div class="upload-zone-content" id="upload-zone-content">
+                    <div class="upload-icon-wrapper">
+                        <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#286ACD" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="16 16 12 12 8 16"></polyline>
+                            <line x1="12" y1="12" x2="12" y2="21"></line>
+                            <path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"></path>
+                        </svg>
+                    </div>
+                    <p class="upload-cta">เลือกรูปภาพสลิป</p>
+                    <p class="upload-hint">รองรับ JPG, PNG หรือ HEIC</p>
+                </div>
+                <!-- Preview state (hidden by default) -->
+                <div class="upload-preview-wrapper" id="upload-preview-wrapper" style="display:none">
+                    <img id="slip-preview-img" src="" alt="Slip Preview" class="slip-preview-img">
+                    <div class="preview-overlay">
+                        <p class="preview-change-text">กดเพื่อเปลี่ยนรูป</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Error message -->
+            <p class="upload-error-msg" id="upload-error-msg" style="display:none"></p>
+
+            <!-- Loading State -->
+            <div class="ai-loading-wrapper" id="ai-loading" style="display:none">
+                <div class="ai-loading-spinner"></div>
+                <p class="ai-loading-text">กำลังวิเคราะห์สลิป...</p>
+            </div>
+
+            <!-- Verified Result Card -->
+            <div class="verified-result-card" id="verified-result-card" style="display:none">
+                <div class="verified-result-header">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#38A169" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                    </svg>
+                    <span class="verified-result-title">ตรวจสอบข้อมูลอัตโนมัติ</span>
+                </div>
+                <div class="verified-result-body">
+                    <div class="verified-row">
+                        <span class="verified-label">ผู้โอน</span>
+                        <span class="verified-value" id="vr-sender">-</span>
+                    </div>
+                    <div class="verified-row">
+                        <span class="verified-label">จำนวนเงิน</span>
+                        <span class="verified-value" id="vr-amount">-</span>
+                    </div>
+                    <div class="verified-row">
+                        <span class="verified-label">วัน/เวลา</span>
+                        <span class="verified-value" id="vr-date">-</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Summary Cards (shown after verify) -->
+            <div class="summary-section" id="summary-section" style="display:none">
+                <!-- Cumulative Donation Card -->
+                <div class="cumulative-card" id="cumulative-card">
+                    <p class="cumulative-label">ยอดบริจาคสะสม (รวมรอบนี้)</p>
+                    <p class="cumulative-amount" id="cumulative-amount">฿0</p>
+                    <p class="giftaway-status" id="giftaway-status">คุณยังไม่ได้รับ GIFTAWAY</p>
+                    <p class="giftaway-more" id="giftaway-more"></p>
+                </div>
+
+                <!-- Donation History of This Sender -->
+                <div class="history-section" id="history-section">
+                    <p class="history-title" id="history-title">ประวัติการบริจาคของ '<span id="history-sender-name"></span>'</p>
+                    <div class="history-list" id="history-list"></div>
+                </div>
+
+                <!-- Confirm Button -->
+                <button class="btn-confirm gradient-btn-3" id="btn-confirm-step1">
+                    ยืนยันข้อมูล
+                </button>
+            </div>
+
+        </div>
+        <!-- END STEP 1 -->
+
+        <!-- ===== STEP 2 ===== -->
+        <div class="donate-step" id="step-2" style="display:none">
+
+            <!-- Social Handle Section -->
+            <div class="form-section-card">
+                <p class="form-section-title">บัญชีโซเชียลของคุณ</p>
+                <div class="social-tab-group" id="social-tab-group">
+                    <button class="social-tab active" data-social="twitter" id="tab-twitter">X (Twitter)</button>
+                    <button class="social-tab" data-social="tiktok" id="tab-tiktok">TikTok</button>
+                    <button class="social-tab" data-social="ig" id="tab-ig">IG</button>
+                </div>
+                <input type="text" class="form-input" id="social-username" placeholder="@Username" autocomplete="off">
+            </div>
+
+            <!-- Giftaway Method -->
+            <div class="form-section-card">
+                <p class="form-section-title">เลือกวิธีรับ Giftaway</p>
+                <div class="giftaway-method-grid">
+                    <div class="giftaway-method-card" id="method-pickup" onclick="selectMethod('pickup')">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                        </svg>
+                        <span>รับที่งาน</span>
+                    </div>
+                    <div class="giftaway-method-card selected" id="method-delivery" onclick="selectMethod('delivery')">
+                        <div class="method-check-icon">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                        </div>
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="1" y="3" width="15" height="13"></rect>
+                            <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+                            <circle cx="5.5" cy="18.5" r="2.5"></circle>
+                            <circle cx="18.5" cy="18.5" r="2.5"></circle>
+                        </svg>
+                        <span>จัดส่งตามที่อยู่</span>
+                    </div>
+                </div>
+
+                <!-- Delivery fee notice -->
+                <div class="delivery-notice" id="delivery-notice">
+                    <p>หากเลือก จัดส่งตามที่อยู่ จะมีค่าส่ง <strong>50 บาท</strong> ยอดจะถูกโดเนท</p>
+                    <p>รอบนี้คุณโอนมา <strong id="transfer-amount-notice">500 บาท</strong></p>
+                    <ul>
+                        <li>สนับสนุนโปรเจค <span id="project-support-amount">450</span> บาท</li>
+                        <li>ค่าส่ง Giftaway 50 บาท</li>
+                    </ul>
+                </div>
+
+                <!-- Delivery Form Fields -->
+                <div id="delivery-form-fields">
+                    <input type="tel" class="form-input" id="phone-number" placeholder="08x-xxx-xxxx" maxlength="12">
+                    <textarea class="form-input form-textarea" id="shipping-address" placeholder="บ้านเลขที่, ถนน, ซอย, อำเภอ, จังหวัด, ตำบล" rows="3"></textarea>
+                    <input type="text" class="form-input" id="postal-code" placeholder="XXXXX" maxlength="5">
+                </div>
+            </div>
+
+            <!-- Giftaway Cumulative Summary -->
+            <div class="form-section-card gift-summary-card">
+                <p class="gift-summary-label">ยอดบริจาคสะสมทั้งหมด<br>ของ '<span id="step2-sender-name">-</span>'</p>
+                <p class="gift-summary-amount" id="step2-cumulative">฿0</p>
+                <p class="gift-list-title">GIFTAWAY ที่ได้รับ คือ</p>
+                <ul class="gift-list" id="step2-gift-list">
+                    <li>สติ๊กเกอร์</li>
+                    <li>เพลิน-ใส่กาวร์</li>
+                    <li>กรอบแดงสอาหาร</li>
+                    <li>ม้ายไส้</li>
+                    <li>สิทธิ์ WORKSHOP ในงาน ฟรี หรือ สูทก้า WORKSHOP กลับบ้าน</li>
+                </ul>
+            </div>
+
+            <!-- Submit Button -->
+            <button class="btn-submit gradient-btn-3" id="btn-submit-final">
+                ส่งข้อมูล
+            </button>
+
+        </div>
+        <!-- END STEP 2 -->
+
+    </main>
+
+    <!-- Project Info Modal (Fullscreen Image Carousel) -->
+    <div class="project-modal" id="project-modal" style="display:none">
+        <button class="project-modal-close" id="project-modal-close">&times;</button>
+        <div class="project-modal-slides" id="project-modal-slides">
+            <img src="images/image_project1.jpg" alt="Project Image 1" class="project-modal-img active" data-index="0">
+            <img src="images/image_project2.jpg" alt="Project Image 2" class="project-modal-img" data-index="1">
+            <img src="images/image_project3.jpg" alt="Project Image 3" class="project-modal-img" data-index="2">
+            <img src="images/image_project4.jpg" alt="Project Image 4" class="project-modal-img" data-index="3">
+        </div>
+        <button class="project-modal-prev" id="project-modal-prev">&#10094;</button>
+        <button class="project-modal-next" id="project-modal-next">&#10095;</button>
+        <div class="project-modal-dots" id="project-modal-dots">
+            <span class="project-dot active"></span>
+            <span class="project-dot"></span>
+            <span class="project-dot"></span>
+            <span class="project-dot"></span>
+        </div>
+    </div>
+
+    <script src="donate.js"></script>
+</body>
+
+</html>

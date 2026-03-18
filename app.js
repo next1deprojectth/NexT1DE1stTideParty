@@ -180,7 +180,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- Data Fetching from Google Sheets ---
-    const GOOGLE_SHEET_URL = 'https://script.google.com/macros/s/AKfycbx0MlqXnI4BZaAndImqoeQYRL35rV5VIXez3brUVwKRAeosdbvcdi-q0rWdH6AVUTK7Fg/exec';
+    const GOOGLE_SHEET_URL = 'https://script.google.com/macros/s/AKfycbzefzB778DG9FFOIkZXYlZ4IAYNgHYrPccCB_R2gBL4YYTdt2yfRezKkD0OC3S-hH5CaA/exec?action=getSummary';
 
     let allDonations = [];
     let currentPage = 1;
@@ -291,9 +291,9 @@ document.addEventListener('DOMContentLoaded', () => {
         pageData.forEach(item => {
             const tr = document.createElement('tr');
             tr.innerHTML = `
-                <td>${item.name}</td>
+                <td>${item.username}</td>
                 <td class="amount">฿${formatNumber(item.amount)}</td>
-                <td class="date">${formatThaiDate(item.slip_date)}</td>
+                <td class="date">${formatThaiDate(item.transaction_date)}</td>
             `;
             tbody.appendChild(tr);
         });
@@ -321,7 +321,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     fetchDonationData();
-    setInterval(fetchDonationData, 30000); 
+    setInterval(fetchDonationData, 30000);
 });
 
 // --- Copy Function ---
