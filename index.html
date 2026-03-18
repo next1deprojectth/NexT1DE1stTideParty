@@ -19,7 +19,8 @@
     <nav class="navbar glass">
         <div class="nav-container">
             <div class="logo">
-                <img src="images/nt1-logo 2.png" alt="NT1 Logo">
+                <img src="images/nt1-logo 2.png" alt="Go to Top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" style="cursor: pointer;">
+                <img src="images/logo-project.png" alt="Go to Footer" onclick="document.querySelector('footer').scrollIntoView({behavior: 'smooth'})" style="cursor: pointer;">
             </div>
             <div class="nav-actions">
                 <button class="btn-pink">โครงการ CSR</button>
@@ -66,7 +67,6 @@
                                     MAP</a>
                             </div>
                         </div>
-                        <a href="#" class="btn-hero">ลงทะเบียน Workshop ที่งาน / ที่บ้าน</a>
                     </div>
                     <div class="hero-slider">
                         <div class="slider-wrapper" id="hero-slider-wrapper">
@@ -89,6 +89,8 @@
                             <span class="dot"></span>
                         </div>
                     </div>
+                    <!-- Register Button for Mobile/Desktop Reordering -->
+                    <a href="#" class="btn-hero">ลงทะเบียน Workshop ที่งาน / ที่บ้าน</a>
                 </div>
             </div>
         </section>
@@ -102,13 +104,16 @@
                     <div class="progress-section">
                         <div class="progress-bar-container-new">
                             <div class="progress-bar-bg-custom">
-                                <div class="progress-bar-fill-custom" style="width: 88%;"></div>
+                                <div class="progress-bar-fill-custom" id="progress-fill" style="width: 0%;"></div>
                             </div>
                         </div>
                         <div class="amount-display-custom">
-                            <span class="current-amount-custom">฿42,500.00</span>
+                            <span class="current-amount-custom" id="current-amount">กำลังโหลด...</span>
                             <span class="amount-separator">/</span>
-                            <span class="target-amount-custom">47,777</span>
+                            <span class="target-amount-custom" id="target-amount">47,777</span>
+                        </div>
+                        <div id="donation-status-msg" class="donation-status-msg">
+                            <!-- Message will be updated by JS -->
                         </div>
                     </div>
                 </div>
@@ -150,7 +155,8 @@
         <section class="content-row">
             <div class="latest-donations-card glass">
                 <div class="card-header">
-                    <h3>ยอดโดเนทล่าสุด <span class="live-badge">Live</span></h3>
+                    <h3>ยอดโดเนทล่าสุด</h3>
+                    <span class="live-badge">Live</span>
                 </div>
                 <div class="table-container">
                     <table>
@@ -161,43 +167,15 @@
                                 <th>วันเวลา</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr>
-                                <td>คนสนับสนุนศิลปินมาก</td>
-                                <td class="amount">฿1,500.00</td>
-                                <td class="date">24 เม.ย. 69 14:30</td>
-                            </tr>
-                            <tr>
-                                <td>Anonymous Bear</td>
-                                <td class="amount">฿477.00</td>
-                                <td class="date">24 เม.ย. 69 14:22</td>
-                            </tr>
-                            <tr>
-                                <td>ต้าวหมีน้อย</td>
-                                <td class="amount">฿2,000.00</td>
-                                <td class="date">24 เม.ย. 69 14:20</td>
-                            </tr>
-                            <tr>
-                                <td>ขนมอาเรีย</td>
-                                <td class="amount">฿277.00</td>
-                                <td class="date">24 เม.ย. 69 14:12</td>
-                            </tr>
-                            <tr>
-                                <td>Someone Special</td>
-                                <td class="amount">฿1,277.00</td>
-                                <td class="date">24 เม.ย. 69 14:10</td>
-                            </tr>
+                        <tbody id="donation-table-body">
+                            <!-- Data will be injected here -->
                         </tbody>
                     </table>
                 </div>
                 <div class="table-footer">
-                    <span class="total-items">มี 50 รายการ</span>
-                    <div class="pagination">
-                        <button class="active">1</button>
-                        <button>2</button>
-                        <button>3</button>
-                        <span class="pag-dots">...</span>
-                        <button>15</button>
+                    <span class="total-items" id="total-donations">กำลังโหลด...</span>
+                    <div class="pagination" id="donation-pagination">
+                        <!-- Pagination buttons will be injected here -->
                     </div>
                 </div>
             </div>
@@ -227,7 +205,7 @@
                         </div>
                     </div>
                     <div class="account-number-wrapper">
-                        <span class="account-number" id="account-number">123-4-56789-0</span>
+                        <span class="account-number" id="account-number">212-8-94502-7</span>
                         <button class="btn-copy" onclick="copyAccountNumber()">
                             <span class="copy-icon"></span> คัดลอก
                         </button>
@@ -257,7 +235,7 @@
 
     <footer class="footer">
         <div class="footer-content">
-            <img src="images/nt1-logo 2.png" alt="NT1 Logo" class="footer-logo">
+            <img src="images/logo-project.png" alt="NT1 Logo" class="footer-logo">
             <div class="footer-links">
                 <a href="https://x.com/NT1_Project_TH">เกี่ยวกับเรา</a>
                 <a href="https://x.com/NT1_Project_TH">ติดต่อเรา</a>

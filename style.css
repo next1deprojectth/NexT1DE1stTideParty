@@ -75,13 +75,20 @@ body {
     align-items: center;
 }
 
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
 .logo img {
     height: 38px;
-    transition: transform 0.3s;
+    cursor: pointer;
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .logo img:hover {
-    transform: scale(1.05);
+    transform: scale(1.1);
 }
 
 .nav-actions {
@@ -131,8 +138,25 @@ button:active {
 .hero-grid {
     display: grid;
     grid-template-columns: 1fr 1.2fr;
-    gap: 40px;
+    grid-template-areas: 
+        "text slider"
+        "button slider";
+    column-gap: 40px;
     align-items: center;
+}
+
+.hero-text {
+    grid-area: text;
+}
+
+.hero-slider {
+    grid-area: slider;
+}
+
+.btn-hero {
+    grid-area: button;
+    align-self: start;
+    width: fit-content;
 }
 
 .gradient-text {
@@ -393,6 +417,23 @@ button:active {
     color: #a5cdfe;
 }
 
+.donation-status-msg {
+    margin-top: 15px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #4A5568;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.status-short {
+    color: #2D3748;
+}
+
+.status-over {
+    color: #38A169;
+}
+
 .donation-card {
     text-align: center;
 }
@@ -570,6 +611,8 @@ button:active {
 }
 
 .total-items {
+    grid-column: 3;
+    justify-self: end;
     font-size: 0.8rem;
     color: #718096;
     font-weight: 500;
@@ -1022,20 +1065,38 @@ button:active {
         font-size: 2rem;
     }
 
+    .hero-grid {
+        display: flex;
+        flex-direction: column;
+        grid-template-columns: 1fr;
+        grid-template-areas: none;
+        gap: 30px;
+        text-align: center;
+    }
+
     .hero-text {
+        order: 1;
+        padding: 0;
         text-align: center;
         display: flex;
         flex-direction: column;
         align-items: center;
     }
 
-    .hero-text .event-info-container {
-        margin: 10px auto 25px auto;
+    .hero-slider {
+        order: 2;
+        width: 100%;
     }
 
     .btn-hero {
+        order: 3;
         width: 100%;
         text-align: center;
+        margin-top: 10px;
+    }
+
+    .hero-text .event-info-container {
+        margin: 10px auto 25px auto;
     }
 
     .footer-links {
