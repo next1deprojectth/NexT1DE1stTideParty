@@ -8,7 +8,7 @@
     <meta name="description" content="แจ้งโดเนทสนับสนุนโปรเจกต์ NexT1DE1stTideParty">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
-    <link rel="icon" type="image/png" href="images/nt1-logo 2.png">
+    <link rel="icon" type="image/png" href="images/logo-project.png">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="donate.css">
 </head>
@@ -26,8 +26,8 @@
             </svg>
         </button>
         <span class="nav-title">แจ้งโดเนทสนับสนุนโปรเจกต์</span>
-        <div class="nav-logo">
-            <img src="images/nt1-logo 2.png" alt="NexT1DE Logo">
+        <div class="nav-logo" onclick="window.location.href='index.html'" style="cursor: pointer;">
+            <img src="images/logo-project.png" alt="NexT1DE Logo">
         </div>
     </nav>
 
@@ -52,12 +52,17 @@
 
                 <div id="social-input-form">
                     <div class="social-tab-group" id="social-tab-group">
-                        <button class="social-tab active" data-social="twitter" id="tab-twitter">X (Twitter)</button>
+                        <button class="social-tab active" data-social="twitter" id="tab-twitter">X</button>
                         <button class="social-tab" data-social="tiktok" id="tab-tiktok">TikTok</button>
                         <button class="social-tab" data-social="ig" id="tab-ig">IG</button>
+                        <button class="social-tab" data-social="line" id="tab-line">Line</button>
                     </div>
                     <input type="text" class="form-input" id="social-username" placeholder="Username"
                         autocomplete="off">
+                    <p
+                        style="color: #E53E3E; font-size: 0.82rem; font-weight: 600; margin-top: 12px; text-align: center; margin-bottom: 0;">
+                        *โปรดระบุบัญชีเดิมทุกครั้ง เพื่อสะสมยอดโดเนท
+                    </p>
                 </div>
             </div>
 
@@ -78,9 +83,29 @@
         <div class="donate-step" id="step-2" style="display:none">
 
             <div id="step2-fee-notice" style="text-align:center; margin-top:-15px; margin-bottom:15px;">
-                <p style="font-weight:700; color:#E53E3E; font-size:1.1rem; margin-bottom:0;">จัดส่ง Giveaway เพิ่ม 50
+                <p style="font-weight:700; color:#E53E3E; font-size:1.1rem; margin-bottom:0;">หากจัดส่ง Giveaway
+                    มีค่าส่ง 50
                     บาท</p>
-                <p style="font-size:0.9rem; color:#718096; margin-top:5px;">(รับหน้างานไม่ต้องจ่ายเพิ่ม)</p>
+                <p style="font-size:0.9rem; color:#718096; margin-top:5px;">(หักจากยอดโอนครั้งแรกอัตโนมัติ)</p>
+            </div>
+
+            <!-- Account Info Box (From index.html) -->
+            <div class="account-info-box" id="account-info-box-step2" style="margin-bottom: 25px;">
+                <div class="bank-header">
+                    <div class="bank-icon-k">
+                        <img src="images/logo-kbank.png" alt="KBank Logo">
+                    </div>
+                    <div class="bank-text">
+                        <p class="bank-name">ธนาคารกสิกรไทย</p>
+                        <p class="account-name">น.ส.ธัญดา โชติอนนต์</p>
+                    </div>
+                </div>
+                <div class="account-number-wrapper">
+                    <span class="account-number" id="account-number">212-8-94502-7</span>
+                    <button class="btn-copy" onclick="copyAccountNumber()">
+                        <span class="copy-icon"></span> คัดลอก
+                    </button>
+                </div>
             </div>
 
             <div id="upload-slip-container">
@@ -426,9 +451,9 @@
         <div class="success-bg"></div>
         <div class="success-content">
             <div class="success-logo">
-                <img src="images/nt1-logo 2.png" alt="NexT1DE Logo">
+                <img src="images/logo-project.png" alt="NexT1DE Logo">
             </div>
-            <h1 class="success-project-title">NextT1DE1stTideParty PROJECT</h1>
+            <h1 class="success-project-title">NextT1DE 1st Tide Party</h1>
             <p class="success-thank-you">ขอบคุณที่เป็นส่วนหนึ่ง<br>ของโปรเจกต์ครบรอบ 1 ปี NexT1DE</p>
 
             <div class="success-cumulative-card">
@@ -470,6 +495,14 @@
             <p class="error-msg">พบข้อขัดข้องลองใหม่อีกครั้ง</p>
             <button class="btn-error-close"
                 onclick="document.getElementById('error-modal').style.display='none'">ตกลง</button>
+        </div>
+    </div>
+
+    <!-- Image Lightbox -->
+    <div id="lightbox" class="lightbox">
+        <button class="lightbox-close">&times;</button>
+        <div class="lightbox-content">
+            <img id="lightbox-img" src="" alt="Zoomed Image">
         </div>
     </div>
 </body>

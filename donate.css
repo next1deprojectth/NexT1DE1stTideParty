@@ -527,12 +527,13 @@ body.donate-page-body {
 .history-list::before {
     content: '';
     position: absolute;
-    left: 9px;
-    /* Center of a 20px dot */
-    top: 15px;
-    bottom: 35px;
+    left: 10px;
+    /* Center of a 22px dot */
+    top: 25px;
+    bottom: 25px;
     width: 2px;
-    background: #E2E8F0;
+    background: #EDF2F7;
+    z-index: 1;
 }
 
 .history-item {
@@ -546,26 +547,39 @@ body.donate-page-body {
 .history-dot {
     position: absolute;
     left: -40px;
-    /* Align with history-list padding */
-    top: 5px;
-    width: 20px;
-    height: 20px;
+    top: 2px;
+    width: 22px;
+    height: 22px;
     border-radius: 50%;
     background: white;
-    border: 5px solid #CBD5E1;
+    border: 2px solid #CBD5E1;
     z-index: 2;
     box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.history-dot::after {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: block;
 }
 
 .history-dot.current {
-    background: #FED7D7;
-    border-color: #F56565;
-    box-shadow: 0 0 0 5px rgba(245, 101, 101, 0.1);
+    border-color: #FC8181;
+}
+.history-dot.current::after {
+    background: #FC8181;
 }
 
 .history-dot.past {
-    background: #EBF8FF;
-    border-color: #4299E1;
+    border-color: #3182CE;
+}
+.history-dot.past::after {
+    background: #3182CE;
 }
 
 .history-content {
@@ -994,8 +1008,9 @@ body.donate-page-body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 80px 20px 40px; /* Increased top padding for navbar */
+    padding: 80px 20px 40px;
     overflow-y: auto;
+    background: white; /* Prevent background content bleed-through */
 }
 
 .success-bg {
@@ -1037,11 +1052,16 @@ body.donate-page-body {
 }
 
 .success-project-title {
-    font-size: 1.6rem;
+    font-size: 1.8rem;
     font-weight: 800;
-    color: #1a202c;
     margin-bottom: 10px;
     letter-spacing: -0.02em;
+    background: linear-gradient(to right, #286ACD 0%, #69C7BA 49%, #286ACD 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    -webkit-text-stroke: 1px white;
+    paint-order: stroke fill;
 }
 
 .success-thank-you {
@@ -1139,7 +1159,7 @@ body.donate-page-body {
 .success-footer {
     font-size: 1rem;
     font-weight: 800;
-    color: #000;
+    color: #533B3B;
     margin-top: 20px;
     margin-bottom: 40px;
     text-align: center;

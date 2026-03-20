@@ -150,6 +150,42 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // --- Lightbox / Image Zoom ---
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightbox-img');
+
+    if (lightbox) {
+        lightbox.addEventListener('click', () => {
+            lightbox.style.display = 'none';
+            document.body.style.overflow = 'auto';
+            lightboxImg.classList.remove('zoomed');
+        });
+
+        lightboxImg.addEventListener('click', (e) => {
+            e.stopPropagation();
+            lightboxImg.classList.toggle('zoomed');
+        });
+
+        const closeBtn = document.querySelector('.lightbox-close');
+        if (closeBtn) {
+            closeBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                lightbox.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            });
+        }
+    }
+
+    if (slipPreviewImg) {
+        slipPreviewImg.addEventListener('click', () => {
+            if (slipPreviewImg.src) {
+                lightboxImg.src = slipPreviewImg.src;
+                lightbox.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+            }
+        });
+    }
+
     btnConfirmStep1.addEventListener('click', async () => {
         const val = socialInput.value.trim();
         if (!val) {
@@ -158,8 +194,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         showLoading('กำลังตรวจสอบข้อมูลรับสิทธิ์...');
         try {
-            const res = await fetch(`${GET_API_URL}?action=getDonate&social_type=${selectedSocial}&social_name=${encodeURIComponent(val)}`);
+            console.log('GetDonate API Data Name:', encodeURIComponent(val));
+            const res = await fetch(`${GET_API_URL}?action=getDonate&name=${encodeURIComponent(val)}`);
             let data = await res.json();
+            console.log('GetDonate API Result:', data);
             if (data.status !== 'ok') {
                 // Not found, treat as new
                 mergedDonationData = { status: 'new', total_amount: 0, donations: [], user: null, receive: null };
@@ -168,6 +206,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Pre-fill slipData with user's default bank if available (as fallback)
                 if (data.banks && data.banks.length > 0) {
                     const b = data.banks[0];
+                    if (!slipData) slipData = { amount: 0, sender_name: '', is_slip: false, date: '' };
                     slipData.sender_name = slipData.sender_name || b.name;
                     slipData.sender_account = slipData.sender_account || b.bank_no;
                     slipData.bank_code = slipData.bank_code || b.bank;
@@ -190,6 +229,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const file = input.files ? input.files[0] : (input.target ? input.target.files[0] : null);
         if (!file) return;
 
+        // Reset input value to allow re-uploading the same file
+        input.value = '';
+
         uploadErrorMsg.style.display = 'none';
         document.getElementById('slip-verification-details').style.display = 'none';
         donateGiveawayImg.style.display = 'none';
@@ -211,17 +253,22 @@ document.addEventListener('DOMContentLoaded', () => {
         aiLoading.style.display = 'block';
         document.getElementById('slip-verification-details').style.display = 'none'; // Hide previous details
 
+        // Disable upload interactions during analysis
+        const uploadZone = document.getElementById('upload-zone');
+        const btnReUpload = document.getElementById('btn-re-upload');
+        if (uploadZone) uploadZone.style.pointerEvents = 'none';
+        if (btnReUpload) {
+            btnReUpload.disabled = true;
+            btnReUpload.style.opacity = '0.5';
+        }
+
         try {
             const formData = new FormData();
             formData.append('image', file);
 
-            // Uncomment the real fetch in production:
             const aiResponse = await fetch(WEBHOOK_URL, { method: 'POST', body: formData });
             if (!aiResponse.ok) throw new Error('AI analysis failed');
             const aiData = await aiResponse.json();
-
-            // Mock Data for Testing
-            // const aiData = { "is_slip": true, "date": "04/08/2025 16:08:00", "bank_code": "SCB", "sender_name": "นางสาว ทดสอบ ระบบ", "sender_account": "XXX-X-XX326-7", "receiver_name": "น.ส. ธัญดา โชติอนนต์", "ref_number": "521616374205I000022B9790", "amount": 1000, "currency": "THB" };
 
             aiLoading.style.display = 'none';
             document.getElementById('slip-verification-details').style.display = 'block';
@@ -230,14 +277,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.getElementById('verification-error-text').innerText = 'เกิดข้อผิดพลาด, ไม่สามารถอ่านสลิปได้';
                 document.getElementById('verification-error-text').style.display = 'block';
                 document.getElementById('verification-success-data').style.display = 'none';
-                slipData = { is_slip: false, amount: 0, sender_name: '', date: '' }; // Clear or set minimal data
+                slipData = { is_slip: false, amount: 0, sender_name: '', date: '' };
             } else {
                 let rName = aiData.receiver_name || '';
                 if (!rName.includes(RECEIVER_NAME_TARGET)) {
                     document.getElementById('verification-error-text').innerText = 'เกิดข้อผิดพลาด, บัญชีปลายทางไม่ถูกต้อง';
                     document.getElementById('verification-error-text').style.display = 'block';
                     document.getElementById('verification-success-data').style.display = 'none';
-                    slipData = aiData; // Keep AI data even if receiver is wrong for editing
+                    slipData = aiData;
                 } else {
                     document.getElementById('verification-error-text').style.display = 'none';
                     document.getElementById('verification-success-data').style.display = 'block';
@@ -255,6 +302,13 @@ document.addEventListener('DOMContentLoaded', () => {
             uploadErrorMsg.innerText = 'เกิดข้อผิดพลาดทางเทคนิค, กรุณาลองใหม่อีกครั้ง';
             uploadErrorMsg.style.display = 'block';
             document.getElementById('slip-verification-details').style.display = 'none';
+        } finally {
+            // Re-enable interactions
+            if (uploadZone) uploadZone.style.pointerEvents = 'auto';
+            if (btnReUpload) {
+                btnReUpload.disabled = false;
+                btnReUpload.style.opacity = '1';
+            }
         }
     };
 
@@ -302,25 +356,24 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        const socialUsername = document.getElementById('social-username').value || selectedSocial;
+        const socialUsername = mergedDonationData.socialName || document.getElementById('social-username').value || selectedSocial;
 
         let timelineHtml = `
             <div style="background: white; border-radius: 20px; padding: 25px 20px; border: 1px solid #E2E8F0; margin-top: 25px; text-align: left;">
                 <div style="display:flex; align-items:center; gap:10px; margin-bottom: 25px;">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="#38A169" stroke="none">
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <path d="M9 12l2 2 4-4" stroke="white" stroke-width="2" stroke-linecap="round" fill="none"></path>
-                    </svg>
-                    <h4 style="margin:0; font-size:1.1rem; color:#2D3748; font-weight:800;">ประวัติการโดเนทของ <span style="font-weight:400;">${socialUsername}</span></h4>
+                    <div style="width:24px; height:24px; background:#38A169; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                    </div>
+                    <h4 style="margin:0; font-size:1.16rem; color:#2D3748; font-weight:800; letter-spacing:-0.4px;">ประวัติการโดเนทของ <span style="font-weight:400;">${socialUsername}</span></h4>
                 </div>
                 <div class="history-list">
         `;
 
         timelineHtml += `
             <div class="history-item">
-                <div class="history-dot current" style="border-color: #FC8181; background: white; box-shadow: none;">
-                    <div style="width: 8px; height: 8px; background: #FC8181; border-radius: 50%; top: 50%; left: 50%; transform: translate(-50%, -50%); position: absolute;"></div>
-                </div>
+                <div class="history-dot current"></div>
                 <div class="history-content">
                     <div style="display:flex; justify-content:space-between; align-items:center;">
                         <p class="history-label">สนับสนุนโปรเจกต์ <span style="font-weight:400; color:#718096;">(รอบนี้)</span></p>
@@ -336,9 +389,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const donDate = don.transaction_date || don.date || don['วันเวลาโอน'] || don.timestamp || '-';
                 timelineHtml += `
                     <div class="history-item">
-                        <div class="history-dot past" style="border-color: #3182CE; background: white; box-shadow: none;">
-                            <div style="width: 8px; height: 8px; background: #3182CE; border-radius: 50%; top: 50%; left: 50%; transform: translate(-50%, -50%); position: absolute;"></div>
-                        </div>
+                        <div class="history-dot past"></div>
                         <div class="history-content">
                             <div style="display:flex; justify-content:space-between; align-items:center;">
                                 <p class="history-label">สนับสนุนโปรเจกต์</p>
@@ -685,7 +736,7 @@ document.addEventListener('DOMContentLoaded', () => {
         editSlipModal.style.display = 'flex';
         document.getElementById('edit-sender-name').value = slipData?.sender_name || '';
         document.getElementById('edit-amount').value = slipData?.amount || '';
-        document.getElementById('edit-date').value = slipData?.date || '';
+        document.getElementById('edit-date').value = formatToDatetimeLocal(slipData?.date || '');
     });
 
     document.getElementById('close-edit-slip-modal').addEventListener('click', () => {
@@ -695,7 +746,8 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('btn-save-edit-slip').addEventListener('click', () => {
         slipData.sender_name = document.getElementById('edit-sender-name').value;
         slipData.amount = parseFloat(document.getElementById('edit-amount').value) || 0;
-        slipData.date = document.getElementById('edit-date').value;
+        const editedDate = document.getElementById('edit-date').value;
+        slipData.date = formatFromDatetimeLocal(editedDate);
         slipData.is_slip = true;
 
         editSlipModal.style.display = 'none';
@@ -716,6 +768,9 @@ document.addEventListener('DOMContentLoaded', () => {
         uploadZone.style.display = 'none';
         donateGiveawayImg.style.display = 'none';
         document.getElementById('slip-verification-details').style.display = 'none';
+
+        const accountBox = document.getElementById('account-info-box-step2');
+        if (accountBox) accountBox.style.display = 'none';
 
         const feeNotice = document.getElementById('step2-fee-notice');
         if (feeNotice) feeNotice.style.display = 'none';
@@ -765,6 +820,10 @@ document.addEventListener('DOMContentLoaded', () => {
             nextGoal.style.display = 'none';
         }
         screen.style.display = 'flex';
+
+        // Hide Step content to prevent bleed-through
+        document.querySelector('.donate-main').style.display = 'none';
+        document.querySelector('.step-indicator-container').style.display = 'none';
     };
 
     document.getElementById('nav-back').addEventListener('click', () => {
@@ -777,3 +836,20 @@ document.addEventListener('DOMContentLoaded', () => {
         else alert('คัดลอกลิงก์เพื่อแชร์: ' + window.location.href);
     });
 });
+
+// --- Copy Function ---
+function copyAccountNumber() {
+    const accNumber = document.getElementById('account-number').innerText;
+    navigator.clipboard.writeText(accNumber).then(() => {
+        const copyBtn = document.querySelector('.btn-copy');
+        if (copyBtn) {
+            const originalText = copyBtn.innerHTML;
+            copyBtn.innerHTML = 'คัดลอกแล้ว';
+            setTimeout(() => {
+                copyBtn.innerHTML = originalText;
+            }, 2000);
+        }
+    }).catch(err => {
+        console.error('Failed to copy: ', err);
+    });
+}
