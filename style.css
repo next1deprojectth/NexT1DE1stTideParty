@@ -5,6 +5,7 @@
     --light-pink: #FED1E1;
     --dark-pink: #F871B4;
     --white: #FFFFFF;
+    --red-peach: #ff6477;
 
     --glass-bg: rgba(255, 255, 255, 0.75);
     --glass-border: rgba(255, 255, 255, 0.5);
@@ -19,6 +20,12 @@
     padding: 0;
     box-sizing: border-box;
     font-family: 'Noto Sans Thai', sans-serif;
+}
+
+html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 80px;
+    /* Offset for the fixed navbar */
 }
 
 body {
@@ -115,6 +122,11 @@ button:active {
     color: var(--white);
 }
 
+.btn-red-peach {
+    background-color: var(--red-peach);
+    color: var(--white);
+}
+
 .btn-blue {
     background-color: var(--mariner-blue);
     color: white;
@@ -141,6 +153,13 @@ button:active {
     display: flex;
     flex-direction: column;
     gap: 40px;
+    align-items: center;
+    /* Center children */
+}
+
+.main-container>section {
+    width: 100%;
+    /* Ensure all sections fill the container */
 }
 
 /* Hero Section */
@@ -166,11 +185,16 @@ button:active {
     grid-area: slider;
 }
 
-.btn-hero {
+.hero-action-buttons {
     grid-area: button;
     align-self: start;
-    width: fit-content;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+    margin-top: 20px;
 }
+
 
 .gradient-text {
     background: var(--gradient-3);
@@ -202,16 +226,16 @@ button:active {
     border-radius: 18px;
     display: inline-flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 8px;
     border: 1px solid rgba(255, 255, 255, 0.5);
-    margin: 10px 0 25px 0;
+    margin: 0;
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
 }
 
 .event-row {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 8px;
 }
 
 .event-icon {
@@ -233,16 +257,51 @@ button:active {
 }
 
 .btn-hero {
-    display: inline-block;
-    background-color: var(--mariner-blue);
-    color: white;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
     text-decoration: none;
     padding: 15px 20px;
     border-radius: 50px;
     font-weight: 600;
-    margin-top: 20px;
+    transition: transform 0.3s, filter 0.3s;
+    width: 100%;
+}
+
+.btn-hero-radius20 {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    text-decoration: none;
+    padding: 15px 20px;
+    border-radius: 20px;
+    font-weight: 600;
+    transition: transform 0.3s, filter 0.3s;
+    width: 100%;
+}
+
+.btn-hero-primary {
+    background: var(--gradient-3);
+    color: white;
+    box-shadow: 0 10px 20px rgba(248, 113, 180, 0.25);
+}
+
+.btn-hero-primary:hover {
+    filter: brightness(1.1);
+}
+
+.btn-hero-secondary {
+    background-color: var(--mariner-blue);
+    color: white;
     box-shadow: 0 10px 20px rgba(40, 106, 205, 0.25);
-    transition: transform 0.3s;
+}
+
+.btn-hero-red-peach {
+    background-color: var(--red-peach);
+    color: white;
+    box-shadow: 0 10px 20px rgba(40, 106, 205, 0.25);
 }
 
 .btn-hero:hover {
@@ -347,7 +406,7 @@ button:active {
 
 /* Stats Section */
 .stats-container-row {
-    width: 90%;
+    width: 100%;
     margin-bottom: 20px;
 }
 
@@ -837,6 +896,8 @@ button:active {
     padding: 50px;
     display: flex;
     align-items: center;
+    justify-content: center;
+    text-align: center;
 }
 
 .highlight-blue {
@@ -845,14 +906,15 @@ button:active {
 }
 
 .celebration-content h2 {
-    font-size: 2.2rem;
+    font-size: 2rem;
     font-weight: 700;
 }
 
 .celebration-content .description {
     line-height: 1.8;
     color: #4A5568;
-    margin-bottom: 30px;
+    margin: 0 auto 30px auto;
+    max-width: 500px;
 }
 
 .quote-box {
@@ -860,9 +922,13 @@ button:active {
     padding: 25px;
     border-radius: 20px;
     display: flex;
+    align-items: center;
+    justify-content: center;
     gap: 15px;
     position: relative;
     box-shadow: var(--shadow-premium);
+    margin: 0 auto;
+    text-align: center;
 }
 
 .quote-icon {
@@ -968,6 +1034,10 @@ button:active {
     display: flex;
 }
 
+.mobile-only {
+    display: none !important;
+}
+
 /* Lightbox - Advanced Slider */
 .lightbox {
     position: fixed;
@@ -1066,16 +1136,33 @@ button:active {
         display: none !important;
     }
 
-    .timer-grid {
-        gap: 15px;
+    .mobile-only {
+        display: block !important;
     }
 
-    .timer-item {
-        min-width: 50px;
+    .timer-grid-custom {
+        gap: 8px;
+        /* Reduce gap on mobile */
     }
 
-    .timer-item span {
-        font-size: 2rem;
+    .timer-box-new {
+        padding: 15px 15px;
+        /* Reduce side padding */
+        max-width: 100%;
+    }
+
+    .timer-unit {
+        min-width: 40px;
+        /* Allow shrinking */
+    }
+
+    .timer-unit span {
+        font-size: 1.5rem;
+        /* Smaller clock numbers on mobile */
+    }
+
+    .timer-sep {
+        font-size: 1.2rem;
     }
 
     .hero-grid {
@@ -1101,10 +1188,9 @@ button:active {
         width: 100%;
     }
 
-    .btn-hero {
+    .hero-action-buttons {
         order: 3;
         width: 100%;
-        text-align: center;
         margin-top: 10px;
     }
 
@@ -1147,7 +1233,7 @@ button:active {
     }
 
     .hero-text .event-info-container {
-        margin: 10px auto 25px auto;
+        margin: 0;
     }
 
     .footer-links {
@@ -1158,9 +1244,6 @@ button:active {
 }
 
 @media (max-width: 640px) {
-    .navbar {
-        margin: 10px;
-    }
 
     .nav-container {
         padding: 10px 20px !important;

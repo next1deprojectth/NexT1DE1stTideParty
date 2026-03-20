@@ -230,7 +230,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const result = await response.json();
 
             if (result.status === 'ok') {
-                allDonations = [...result.data].reverse(); // Latest first
+                allDonations = [...result.data];
                 updateStats(result.total, result.count);
                 renderDonationPage(currentPage);
             }

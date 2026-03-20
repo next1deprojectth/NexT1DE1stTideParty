@@ -4,10 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NexT1DE1stTideParty - Donate for Artist</title>
+    <title>NexT1DE1stTideParty</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
-    <link rel="icon" type="image/png" href="images/nt1-logo 2.png">
+    <link rel="icon" type="image/png" href="images/logo-project.png">
     <link rel="stylesheet" href="style.css">
 </head>
 
@@ -26,6 +26,8 @@
                     style="cursor: pointer;">
             </div>
             <div class="nav-actions">
+                <button class="btn-red-peach desktop-only"
+                    onclick="document.querySelector('#stats-section').scrollIntoView({behavior: 'smooth'})">ดูผลโดเนท</button>
                 <button class="btn-pink">โครงการ CSR</button>
                 <button class="btn-blue" onclick="window.location.href='donate.html'">แจ้งโดเนท</button>
             </div>
@@ -33,6 +35,14 @@
     </nav>
 
     <main class="main-container">
+
+        <!-- Action Buttons -->
+        <section class="hero-section mobile-only" id="mobile-donate-btn-section">
+            <div class="hero-action-buttons">
+                <a href="#stats-section" class="btn-hero-radius20 btn-hero-red-peach">ดูผลโดเนท</a>
+            </div>
+        </section>
+
         <!-- Hero Section -->
         <section class="hero-section">
             <div class="hero-card glass">
@@ -41,6 +51,8 @@
                         <h1 class="gradient-text">NexT1DE1stTideParty</h1>
                         <p>ร่วมเป็นส่วนหนึ่งของการเดินทางและสร้างความทรงจำที่น่าประทับใจไปกับด้วยกัน
                             ทุกยอดสนับสนุนมีความหมายต่อเรา</p>
+
+                        <p>Gallery | Drink & Snack | Activitys | Workshop | LED Screen | Flag & Signage | Ohna</p>
                         <div class="event-info-container">
                             <div class="event-row">
                                 <span class="event-icon">
@@ -91,14 +103,16 @@
                             <span class="dot"></span>
                         </div>
                     </div>
-                    <!-- Register Button for Mobile/Desktop Reordering -->
-                    <a href="#" class="btn-hero">ลงทะเบียน Workshop ที่งาน / ที่บ้าน</a>
+                    <!-- Action Buttons -->
+                    <div class="hero-action-buttons">
+                        <a href="#" class="btn-hero btn-hero-secondary">ลงทะเบียน Workshop ที่งาน / ที่บ้าน</a>
+                    </div>
                 </div>
             </div>
         </section>
 
         <!-- Stats Section -->
-        <section class="stats-container-row">
+        <section id="stats-section" class="stats-container-row">
             <div class="stats-grid-wrapper">
                 <!-- Donation Progress Card -->
                 <div class="stats-card donation-card glass">
@@ -220,14 +234,12 @@
             </div>
             <div class="celebration-card glass-light">
                 <div class="celebration-content">
-                    <h2>ร่วมเป็นส่วนหนึ่งของการยินดี</h2>
-                    <h2 class="highlight-blue">น้องคลื่นครบ 1 ปี</h2>
-                    <p class="description">สวัสดี Ohna ทุกคน
-                        โปรเจกต์นี้ถูกสร้างขึ้นมาเพื่อรวบรวมพลังในการสร้างผลงานชิ้นโบแดงที่เราตั้งใจทำมานาน</p>
+                    <h2>ร่วมฉลองครบ 1 ปี NexT1DE</h2>
+                    <p class="description">
+                        1 ปีที่เต็มไปด้วยความทรงจำ ขอบคุณทุกคนที่ทำให้คลื่นลูกนี้ยังคงซัดต่อไป</p>
                     <div class="quote-box">
                         <span class="quote-icon">“</span>
-                        <p>ขอบคุณทุกท่านที่สนับสนุนและคอยให้กำลังใจพวกเรามาโดยตลอด
-                            ทุกส่วนเกี่ยวข้องสำคุญที่ทำให้เรามาถึงจุดนี้ได้</p>
+                        <p>สวัสดี Ohna ทุกคน โปรเจกต์นี้จะยิ่งพิเศษขึ้นอีกเท่าตัว ถ้ามีทุกคนมาร่วมสร้างมันไปด้วยกัน</p>
                         <span class="quote-icon">“</span>
                     </div>
                 </div>
