@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let mergedDonationData = { status: 'new', total_amount: 0, donations: [], user: null, receive: null };
     let nickname = '';
     let currentTotalOriginal = 0;
+    let isChangingReception = false; // Flag to show normal selection instead of past box
 
     let slipImageBase64 = '';
     let slipMimeType = '';
@@ -96,11 +97,26 @@ document.addEventListener('DOMContentLoaded', () => {
     })}`;
 
     const getNetAmount = () => {
-        if (currentState === 2) {
-            let hasPastDelivery = mergedDonationData.receive && mergedDonationData.receive.delivery_type === 'delivery';
-            return hasPastDelivery ? (currentTotalOriginal - 50) : currentTotalOriginal;
+        let base = currentTotalOriginal;
+        let fee = 0;
+
+        const isDelivery = selectedMethod === 'delivery';
+        const isPickup = selectedMethod === 'onsite';
+        const hasPastDelivery = mergedDonationData.receive && mergedDonationData.receive.delivery_type === 'delivery';
+        const isUsingOldData = mergedDonationData.receive && !isChangingReception;
+
+        // If user has past delivery record but chooses pickup now (changing), refund 50
+        if (isPickup && isChangingReception && hasPastDelivery) {
+            base += 50;
         }
-        return selectedMethod === 'delivery' ? (currentTotalOriginal - 50) : currentTotalOriginal;
+
+        // Charge fee if choosing delivery AND not using a 0-fee old record
+        const isFreeDelivery = isUsingOldData && hasPastDelivery;
+        if (isDelivery && !isFreeDelivery) {
+            fee = 50;
+        }
+
+        return Math.max(0, base - fee);
     };
 
     const setStepUI = (step) => {
@@ -203,6 +219,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 mergedDonationData = { status: 'new', total_amount: 0, donations: [], user: null, receive: null };
             } else {
                 mergedDonationData = data;
+                // Calculate total_amount from donations array if not present
+                if (!mergedDonationData.total_amount) {
+                    mergedDonationData.total_amount = data.donations.reduce((sum, d) => sum + (parseFloat(d.amount) || 0), 0);
+                }
                 // Pre-fill slipData with user's default bank if available (as fallback)
                 if (data.banks && data.banks.length > 0) {
                     const b = data.banks[0];
@@ -429,77 +449,87 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Step 3 ---
     const prepareStep3Data = () => {
-        summarySocial.innerText = socialInput.value;
-        summaryNickname.innerText = nickname;
-        summaryCurrentAmount.innerText = formatAmount(slipData.amount);
-
+        // Prepare data state
         const r = mergedDonationData.receive;
-
-        // Setup initial default logic based on history
-        let hasPastDelivery = r && r.delivery_type === 'delivery';
-
-        if (hasPastDelivery) {
-            selectedMethod = 'delivery';
-            document.getElementById('method-pickup').classList.remove('selected');
-            document.getElementById('method-delivery').classList.add('selected');
-
-            document.getElementById('old-ship-name').innerText = r.recipient_name || '-';
-            document.getElementById('old-address').innerText = r.shipping_address || '-';
-            document.getElementById('old-postal').innerText = r.shipping_postal || '-';
-            document.getElementById('old-phone').innerText = r.shipping_phone || '-';
-
-            // Prefill inputs
-            document.getElementById('phone-number').value = r.shipping_phone || '';
-            document.getElementById('ship-name').value = r.recipient_name || '';
-            document.getElementById('shipping-address').value = r.shipping_address || '';
-            document.getElementById('postal-code').value = r.shipping_postal || '';
-
-            document.getElementById('delivery-form-fields').style.display = 'block';
-            document.getElementById('past-delivery-address-box').style.display = 'block';
-            document.getElementById('new-delivery-address-fields').style.display = 'none';
+        
+        // If they have past data and haven't clicked "Change", show the past box
+        if (r && !isChangingReception) {
+            // updateStep3UI handles the pastBox display
         } else {
-            selectedMethod = 'pickup';
-            document.getElementById('method-pickup').classList.add('selected');
-            document.getElementById('method-delivery').classList.remove('selected');
-            document.getElementById('delivery-form-fields').style.display = 'none';
-            document.getElementById('past-delivery-address-box').style.display = 'none';
-            document.getElementById('new-delivery-address-fields').style.display = 'block';
+            // Default to onsite if new or changing
+            if (!selectedMethod) selectedMethod = 'onsite';
+            selectMethod(selectedMethod);
         }
-
+        
         updateStep3UI();
     };
 
     window.selectMethod = (method) => {
         selectedMethod = method;
-        document.getElementById('method-pickup').classList.toggle('selected', method === 'pickup');
-        document.getElementById('method-delivery').classList.toggle('selected', method === 'delivery');
+        document.querySelectorAll('.delivery-method-card').forEach(card => {
+            const isActive = card.dataset.method === method;
+            card.classList.toggle('active', isActive);
+            
+            // Visual feedback - synced with CSS class but keeping inline as backup/override
+            card.style.borderColor = isActive ? '#286ACD' : '#E2E8F0';
+            card.style.background = isActive ? 'linear-gradient(135deg, #E6F0FF 0%, #D1E4FF 100%)' : 'white';
+            
+            const iconCircle = card.querySelector('.method-icon-circle');
+            const svg = card.querySelector('.icon-svg');
+            const label = card.querySelector('.method-label');
+            
+            if (iconCircle) iconCircle.style.background = isActive ? '#286ACD' : '#F7FAFC';
+            if (svg) svg.style.stroke = isActive ? 'white' : '#718096';
+            if (label) label.style.color = isActive ? '#286ACD' : '#718096';
+        });
 
-        document.getElementById('delivery-form-fields').style.display = method === 'delivery' ? 'block' : 'none';
-
-        let hasPastDelivery = mergedDonationData && mergedDonationData.receive && mergedDonationData.receive.delivery_type === 'delivery';
-        if (method === 'delivery' && hasPastDelivery) {
-            document.getElementById('past-delivery-address-box').style.display = 'block';
-            document.getElementById('new-delivery-address-fields').style.display = 'none';
+        const addrFields = document.getElementById('new-delivery-address-fields');
+        if (addrFields) {
+            addrFields.style.display = (method === 'delivery') ? 'block' : 'none';
+        }
+        
+        // Prefill if changing from past data
+        if (method === 'delivery' && mergedDonationData.receive) {
+            const r = mergedDonationData.receive;
+            const phoneEl = document.getElementById('phone-number');
+            const nameEl = document.getElementById('ship-name');
+            const addrEl = document.getElementById('shipping-address');
+            const postEl = document.getElementById('postal-code');
+            
+            if (phoneEl) phoneEl.value = r.shipping_phone || '';
+            if (nameEl) nameEl.value = r.recipient_name || '';
+            if (addrEl) addrEl.value = r.shipping_address || '';
+            if (postEl) postEl.value = r.shipping_postal || '';
         }
 
         updateStep3UI();
     };
 
     document.getElementById('btn-change-reception').addEventListener('click', () => {
-        document.getElementById('past-delivery-address-box').style.display = 'none';
-        document.getElementById('new-delivery-address-fields').style.display = 'block';
-
-        // Clear inputs so they have to type new ones
-        document.getElementById('phone-number').value = '';
-        document.getElementById('ship-name').value = '';
-        document.getElementById('shipping-address').value = '';
-        document.getElementById('postal-code').value = '';
+        isChangingReception = true;
+        // Also ensure the icons/colors are synced for the manual selection box
+        if (!selectedMethod) selectedMethod = 'onsite';
+        selectMethod(selectedMethod);
+        updateStep3UI();
     });
 
     document.getElementById('btn-use-old-reception').addEventListener('click', function () {
-        this.innerText = 'เลือกที่อยู่นี้แล้ว';
+        const rec = mergedDonationData.receive;
+        if (!rec) return;
+
+        selectedMethod = rec.delivery_type;
+        if (rec.delivery_type === 'delivery') {
+            document.getElementById('ship-name').value = rec.recipient_name || '';
+            document.getElementById('phone-number').value = rec.shipping_phone || '';
+            document.getElementById('shipping-address').value = rec.shipping_address || '';
+            document.getElementById('postal-code').value = rec.shipping_postal || '';
+        }
+
+        this.innerText = 'เลือกแล้ว';
         this.style.background = '#38A169';
-        this.style.color = '#fff';
+        
+        // Minor delay to show feedback then show confirmed state in summary or just proceed
+        updateStep3UI();
     });
 
     // --- Date Formatting Functions ---
@@ -581,17 +611,48 @@ document.addEventListener('DOMContentLoaded', () => {
         const deliveryFeeEl = document.getElementById('summary-delivery-fee');
         const isDelivery = selectedMethod === 'delivery';
         const hasPastDelivery = mergedDonationData.receive && mergedDonationData.receive.delivery_type === 'delivery';
+        const isUsingOldData = mergedDonationData.receive && !isChangingReception;
 
-        if (isDelivery && !hasPastDelivery) {
+        const isFreeDelivery = isUsingOldData && hasPastDelivery;
+        
+        if (isDelivery) {
             feeRow.style.display = 'flex';
-            deliveryFeeEl.innerText = '50';
-        } else if (hasPastDelivery) {
-            feeRow.style.display = 'flex';
-            deliveryFeeEl.innerText = '50';
+            deliveryFeeEl.innerText = isFreeDelivery ? '0' : '50';
         } else {
             feeRow.style.display = 'none';
         }
 
+        // Past Data Selection Logic
+        const pastBox = document.getElementById('past-reception-box');
+        const normalSelection = document.getElementById('reception-methods-selection');
+        const addrFields = document.getElementById('new-delivery-address-fields');
+
+        if (mergedDonationData.receive && !isChangingReception) {
+            pastBox.style.display = 'block';
+            normalSelection.style.display = 'none';
+            if (addrFields) addrFields.style.display = 'none';
+
+            const rec = mergedDonationData.receive;
+            document.getElementById('past-type-text').innerText = rec.delivery_type === 'delivery' ? 'จัดส่งตามที่อยู่' : 'รับหน้างาน';
+            
+            if (rec.delivery_type === 'delivery') {
+                document.getElementById('past-details').style.display = 'block';
+                document.getElementById('past-ship-name').innerText = rec.recipient_name || '-';
+                document.getElementById('past-ship-address').innerText = rec.shipping_address || '-';
+                document.getElementById('past-ship-postal').innerText = rec.shipping_postal || '';
+                document.getElementById('past-ship-phone').innerText = rec.shipping_phone || '-';
+                document.getElementById('past-fee-note').style.display = 'block';
+            } else {
+                document.getElementById('past-details').style.display = 'none';
+                document.getElementById('past-fee-note').style.display = 'none';
+            }
+        } else {
+            if (pastBox) pastBox.style.display = 'none';
+            if (normalSelection) normalSelection.style.display = 'block';
+            if (addrFields) addrFields.style.display = selectedMethod === 'delivery' ? 'block' : 'none';
+        }
+
+        // Giveaway Status
         const giftStatusBox = document.getElementById('step3-giveaway-status');
         const giftMoreEl = document.getElementById('step3-giveaway-more');
         const giftImg = document.getElementById('step3-giveaway-img');
@@ -610,38 +671,36 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const deliveryNotice = document.getElementById('delivery-notice');
-        const deliveryNoticeSub = document.getElementById('delivery-notice-sub');
-        const deliveryNoticeMath = document.getElementById('delivery-notice-math');
         const deliveryFields = document.getElementById('delivery-form-fields');
 
         if (isDelivery && !hasPastDelivery) {
-            deliveryNotice.style.display = 'block';
+            if (deliveryNotice) deliveryNotice.style.display = 'block';
             if (!giftInfo.hasAny) {
-                // Scenario 3: No gifts after deduction
-                deliveryNotice.innerHTML = '<p style="color:#E53E3E; font-weight:700; font-size:0.9rem; margin-bottom:5px;">หักค่าส่ง 50 บาท พบว่าคุณไม่ได้รับ Giveaway</p>' +
-                    '<p style="color:#E53E3E; font-weight:700; font-size:0.9rem; margin:0;">สามารถเปลี่ยนเป็นรับหน้างานได้ ไม่เสียค่าใช้จ่ายเพิ่มเติม</p>';
-                deliveryNotice.style.display = 'block';
-                deliveryFields.style.display = 'none';
+                if (deliveryNotice) {
+                    deliveryNotice.innerHTML = '<p style="color:#E53E3E; font-weight:700; font-size:0.9rem; margin-bottom:5px;">หักค่าส่ง 50 บาท พบว่าคุณไม่ได้รับ Giveaway</p>' +
+                        '<p style="color:#E53E3E; font-weight:700; font-size:0.9rem; margin:0;">สามารถเปลี่ยนเป็นรับหน้างานได้ ไม่เสียค่าใช้จ่ายเพิ่มเติม</p>';
+                }
+                if (deliveryFields) deliveryFields.style.display = 'none';
                 document.getElementById('btn-submit-final').style.display = 'none';
             } else {
-                // Scenario 1: Still has gifts after deduction
-                // Reset notice HTML to original structure or update specifically
-                deliveryNotice.innerHTML = '<p style="color:#E53E3E; font-weight:700; font-size:0.9rem; margin-bottom:5px;">หักค่าส่ง 50 บาท จากยอดโดเนทสะสม</p>' +
-                    '<p id="delivery-notice-sub" style="color:#E53E3E; font-weight:700; font-size:0.9rem; margin:0; display:none;"></p>' +
-                    '<p id="delivery-notice-math" style="color:#718096; font-size:0.85rem; margin-top:5px; margin-bottom:0; display:block;"></p>';
-                deliveryNotice.style.display = 'block';
-                const effectiveDonation = slipData.amount - 50;
-                document.getElementById('delivery-notice-math').innerText = `(รอบนี้คุณโดเนท ${effectiveDonation.toLocaleString()} บาท + ค่าส่ง 50 บาท)`;
-                deliveryFields.style.display = 'block';
+                if (deliveryNotice) {
+                    deliveryNotice.innerHTML = '<p style="color:#E53E3E; font-weight:700; font-size:0.9rem; margin-bottom:5px;">หักค่าส่ง 50 บาท จากยอดโดเนทสะสม</p>' +
+                        '<p id="delivery-notice-sub" style="color:#E53E3E; font-weight:700; font-size:0.9rem; margin:0; display:none;"></p>' +
+                        '<p id="delivery-notice-math" style="color:#718096; font-size:0.85rem; margin-top:5px; margin-bottom:0; display:block;"></p>';
+                    const mathEl = document.getElementById('delivery-notice-math');
+                    if (mathEl) {
+                        const effectiveDonation = slipData.amount - 50;
+                        mathEl.innerText = `(รอบนี้คุณโดเนท ${effectiveDonation.toLocaleString()} บาท + ค่าส่ง 50 บาท)`;
+                    }
+                }
+                if (deliveryFields) deliveryFields.style.display = 'block';
                 document.getElementById('btn-submit-final').style.display = 'block';
             }
         } else {
-            // Scenario 2 (hasPastDelivery) or isDelivery is false
-            deliveryNotice.style.display = 'none';
+            if (deliveryNotice) deliveryNotice.style.display = 'none';
             document.getElementById('btn-submit-final').style.display = 'block';
-            // For Scenario 2, if isDelivery is true, we still show the fields (past address box)
             if (isDelivery && hasPastDelivery) {
-                deliveryFields.style.display = 'block';
+                if (deliveryFields) deliveryFields.style.display = 'block';
             }
         }
 

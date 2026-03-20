@@ -291,79 +291,66 @@
 
             <!-- Giveaway Method Section -->
             <div id="reception-section-wrapper" style="display:none">
-                <h3 style="font-size:1.1rem; font-weight:800; color:#2D3748; margin-bottom:20px;">เลือกวิธีรับ Giveaway
-                </h3>
+                <h3 style="font-size:1.1rem; font-weight:800; color:#2D3748; margin-bottom:20px;">เลือกวิธีรับ Giveaway</h3>
 
                 <div id="reception-input-form">
-                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px; margin-bottom:20px;">
-                        <div class="giveaway-method-card selected" id="method-pickup" onclick="selectMethod('pickup')">
-                            <div
-                                style="width:50px; height:50px; background:white; border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 2px 10px rgba(0,0,0,0.02);">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                    stroke-width="2">
-                                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-                                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                    <!-- Past Reception Box (Scenario 2) -->
+                    <div id="past-reception-box" style="display:none; background: #F0F9FF; border-radius: 20px; padding: 25px 20px; border: 1px solid #BAE6FD; margin-bottom: 25px;">
+                        <div style="display:flex; align-items:center; gap:12px; margin-bottom: 15px;">
+                            <div style="width:36px; height:36px; background:#E0F2FE; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#286ACD" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                 </svg>
                             </div>
-                            <span style="font-weight:700;">รับที่งาน</span>
+                            <div>
+                                <p style="margin:0; font-size:0.95rem; color:#4A5568; font-weight:600;">ครั้งที่แล้วคุณเลือก <span id="past-type-text" style="color:#286ACD; font-weight:700;">จัดส่งตามที่อยู่</span></p>
+                                <p style="margin:2px 0 0; font-size:0.9rem; color:#718096;">ใช้แบบเดิมไหม?</p>
+                            </div>
                         </div>
-                        <div class="giveaway-method-card" id="method-delivery" onclick="selectMethod('delivery')">
-                            <div
-                                style="width:50px; height:50px; background:white; border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 2px 10px rgba(0,0,0,0.02);">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                    stroke-width="2">
-                                    <rect x="1" y="3" width="15" height="13"></rect>
-                                    <polygon points="16 8 20 8 23 11 23 16 16 16 8"></polygon>
-                                    <circle cx="5.5" cy="18.5" r="2.5"></circle>
-                                    <circle cx="18.5" cy="18.5" r="2.5"></circle>
-                                </svg>
+
+                        <div id="past-details" style="display:none; background:white; border-radius:15px; padding:20px; margin-bottom:15px; border:1px solid #E0F2FE;">
+                            <div style="font-size:0.9rem; color:#4A5568; line-height:1.6;">
+                                <p style="margin:0 0 4px;">ชื่อผู้รับ : <span id="past-ship-name" style="font-weight:700;">-</span></p>
+                                <p style="margin:0 0 4px;">ที่อยู่ : <span id="past-ship-address">-</span> <span id="past-ship-postal">-</span></p>
+                                <p style="margin:0;">เบอร์โทรศัพท์ : <span id="past-ship-phone">-</span></p>
                             </div>
-                            <span style="font-weight:700;">จัดส่งตามที่อยู่</span>
+                            <p id="past-fee-note" style="margin:12px 0 0; color:#E53E3E; font-size:0.85rem; font-weight:700; display:none;">หมายเหตุ : ไม่ต้องเสียค่าจัดส่งแล้ว</p>
+                        </div>
+
+                        <div style="display:flex; flex-wrap:wrap; gap:12px;">
+                            <button type="button" id="btn-change-reception" style="flex:1; min-width:140px; background:white; color:#286ACD; border:2px solid #286ACD; padding:12px 10px; border-radius:15px; font-weight:700; font-size:0.9rem; cursor:pointer; line-height:1.3;">ไม่ เปลี่ยนวิธี/ข้อมูล</button>
+                            <button type="button" id="btn-use-old-reception" style="flex:1; min-width:140px; background:#286ACD; color:white; border:none; padding:12px 10px; border-radius:15px; font-weight:700; font-size:0.9rem; cursor:pointer; line-height:1.3;">ใช้วิธีรับของแบบเดิม</button>
                         </div>
                     </div>
 
-                    <div id="delivery-notice"
-                        style="background:#FFF5F7; border-radius:15px; padding:15px; margin-bottom:20px; display:none; text-align:center;">
-                        <p style="color:#E53E3E; font-weight:700; font-size:0.9rem; margin-bottom:5px;">หักค่าส่ง 50 บาท
-                            จากยอดโดเนทสะสม</p>
-                        <p id="delivery-notice-sub"
-                            style="color:#E53E3E; font-weight:700; font-size:0.9rem; margin:0; display:none;"></p>
-                        <p id="delivery-notice-math"
-                            style="color:#718096; font-size:0.85rem; margin-top:5px; margin-bottom:0; display:none;">
-                        </p>
-                    </div>
-
-                    <div id="delivery-form-fields" style="display:none; margin-top:10px;">
-                        <p style="font-weight:700; color:#718096; font-size:0.85rem; margin-bottom:8px;">เบอร์โทรศัพท์
-                        </p>
-                        <input type="tel" id="phone-number" class="form-input" placeholder="หมายเลขโทรศัพท์"
-                            style="width:100%; border-radius:15px; border:1px solid #E2E8F0; padding:15px; margin-bottom:15px;"
-                            maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10)">
-
-                        <div id="past-delivery-address-box"
-                            style="display:none; background:#F8FAFC; border-radius:15px; padding:15px; text-align:left; border:1px solid #E2E8F0; margin-bottom:15px;">
-                            <div style="display:flex; align-items:flex-start; margin-bottom:15px;">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2B6CB0"
-                                    stroke-width="2" style="margin-right:10px; margin-top:2px;">
-                                    <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round"
-                                        stroke-linejoin="round" />
-                                    <polyline points="12 8 12 12 14 14" stroke-linecap="round"
-                                        stroke-linejoin="round" />
-                                </svg>
-                                <div style="font-size:0.9rem; color:#4A5568; line-height:1.5;">
-                                    <p style="margin:0;">ชื่อผู้รับ : <span id="old-ship-name">-</span></p>
-                                    <p style="margin:0;">ที่อยู่ : <span id="old-address">-</span> <span
-                                            id="old-postal">-</span></p>
-                                    <p style="margin:0;">เบอร์โทรศัพท์ : <span id="old-phone">-</span></p>
+                    <!-- Normal Selection (Scenario 1 & 3) -->
+                    <div id="reception-methods-selection">
+                        <div class="delivery-methods" style="display:flex; gap:15px; margin-bottom:25px;">
+                            <!-- Onsite Card -->
+                            <div class="delivery-method-card" data-method="onsite" onclick="selectMethod('onsite')" style="flex:1; background:white; border-radius:24px; padding:25px 15px; text-align:center; border:1px solid #E2E8F0; cursor:pointer; transition:all 0.3s ease; display:flex; flex-direction:column; align-items:center;">
+                                <div class="method-icon-circle" style="width:56px; height:56px; background:#F7FAFC; border-radius:50%; display:flex; align-items:center; justify-content:center; margin-bottom:12px; transition:all 0.3s;">
+                                    <svg class="icon-svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#718096" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M3 9h18v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9Z"></path>
+                                        <path d="m3 9 2.45-4.91A2 2 0 0 1 7.24 3h9.52a2 2 0 0 1 1.79 1.09L21 9"></path>
+                                        <path d="M12 3v6"></path>
+                                    </svg>
                                 </div>
+                                <p class="method-label" style="margin:0; font-weight:700; color:#718096; font-size:1rem;">รับที่งาน</p>
                             </div>
-                            <div style="display:flex; gap:10px;">
-                                <button type="button" id="btn-change-reception"
-                                    style="flex:1; background:#FC8181; color:white; border:none; padding:12px; border-radius:10px; font-weight:700; cursor:pointer;">แก้ไขข้อมูล</button>
-                                <button type="button" id="btn-use-old-reception"
-                                    style="flex:1; background:#286ACD; color:white; border:none; padding:12px; border-radius:10px; font-weight:700; cursor:pointer;">เลือกที่อยู่นี้</button>
+                            <!-- Delivery Card -->
+                            <div class="delivery-method-card" data-method="delivery" onclick="selectMethod('delivery')" style="flex:1; background:white; border-radius:24px; padding:25px 15px; text-align:center; border:1px solid #E2E8F0; cursor:pointer; transition:all 0.3s ease; display:flex; flex-direction:column; align-items:center;">
+                                <div class="method-icon-circle" style="width:56px; height:56px; background:#F7FAFC; border-radius:50%; display:flex; align-items:center; justify-content:center; margin-bottom:12px; transition:all 0.3s;">
+                                    <svg class="icon-svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#718096" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <rect x="1" y="3" width="15" height="13"></rect>
+                                        <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+                                        <circle cx="5.5" cy="18.5" r="2.5"></circle>
+                                        <circle cx="18.5" cy="18.5" r="2.5"></circle>
+                                    </svg>
+                                </div>
+                                <p class="method-label" style="margin:0; font-weight:700; color:#718096; font-size:1rem;">จัดส่งตามที่อยู่</p>
                             </div>
                         </div>
+                    </div>
 
                         <div id="new-delivery-address-fields">
                             <p style="font-weight:700; color:#718096; font-size:0.85rem; margin-bottom:8px;">ชื่อผู้รับ
@@ -374,13 +361,16 @@
                             <textarea id="shipping-address" class="form-input"
                                 placeholder="บ้านเลขที่, ถนน, ซอย, อำเภอ, จังหวัด, ตำบล" rows="3"
                                 style="width:100%; border-radius:15px; border:1px solid #E2E8F0; padding:15px; margin-bottom:15px;"></textarea>
+                            <p style="font-weight:700; color:#718096; font-size:0.85rem; margin-bottom:8px;">เบอร์โทรศัพท์</p>
+                            <input type="text" id="phone-number" class="form-input" placeholder="เบอร์โทรศัพท์"
+                                style="width:100%; border-radius:15px; border:1px solid #E2E8F0; padding:15px; margin-bottom:15px;"
+                                oninput="this.value = this.value.replace(/[^0-9]/g, '')">
                             <p style="font-weight:700; color:#718096; font-size:0.85rem; margin-bottom:8px;">
                                 รหัสไปรษณีย์
                             </p>
                             <input type="text" id="postal-code" class="form-input" placeholder="รหัสไปรษณีย์"
                                 style="width:100%; border-radius:15px; border:1px solid #E2E8F0; padding:15px; margin-bottom:15px;"
                                 maxlength="5" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 5)">
-                        </div>
                     </div>
                 </div>
             </div>

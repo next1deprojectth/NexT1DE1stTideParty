@@ -711,17 +711,36 @@ body.donate-page-body {
     color: var(--primary-blue);
 }
 
-.method-check-icon {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    width: 20px;
-    height: 20px;
-    background: var(--primary-blue);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+/* New Step 3 Cards */
+.delivery-method-card.active {
+    border-color: #286ACD !important;
+    background: linear-gradient(135deg, #E6F0FF 0%, #D1E4FF 100%) !important;
+}
+
+.delivery-method-card.active .method-icon-circle {
+    background: #286ACD !important;
+}
+
+.delivery-method-card.active .icon-svg {
+    stroke: white !important;
+}
+
+.delivery-method-card.active .method-label {
+    color: #286ACD !important;
+}
+
+/* Gradient Button */
+.gradient-btn-3 {
+    background: linear-gradient(90deg, #286ACD 0%, #A3E4DB 100%) !important;
+    color: white !important;
+    font-weight: 700;
+    transition: opacity 0.2s;
+    border: none;
+    cursor: pointer;
+}
+
+.gradient-btn-3:hover {
+    opacity: 0.9;
 }
 
 /* Delivery Notice */
