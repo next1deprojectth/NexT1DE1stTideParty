@@ -5,8 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>แจ้งโดเนท - NexT1DE1stTideParty</title>
-    <meta name="description" content="แจ้งโดเนทสนับสนุนโปรเจค NexT1DE1stTideParty">
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <meta name="description" content="แจ้งโดเนทสนับสนุนโปรเจกต์ NexT1DE1stTideParty">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
     <link rel="icon" type="image/png" href="images/nt1-logo 2.png">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="donate.css">
@@ -16,243 +17,461 @@
     <!-- Background Image -->
     <div class="page-background donate-hide"></div>
 
-    <!-- Donate Page Header -->
-    <header class="donate-header glass">
-        <div class="donate-header-inner">
-            <a href="index.html" class="donate-logo-link" id="btn-back-to-home">
-                <img src="images/nt1-logo 2.png" alt="NT1 Logo - กลับหน้าหลัก">
-            </a>
-            <h1 class="donate-page-title">แจ้งโดเนทสนับสนุนโปรเจค</h1>
+    <!-- Fixed Navbar -->
+    <nav class="nav-bar">
+        <button class="nav-back" id="nav-back" aria-label="กลับหน้าแรก">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+        </button>
+        <span class="nav-title">แจ้งโดเนทสนับสนุนโปรเจกต์</span>
+        <div class="nav-logo">
+            <img src="images/nt1-logo 2.png" alt="NexT1DE Logo">
         </div>
-    </header>
+    </nav>
+
+    <!-- Step Indicator Section -->
+    <div class="step-indicator-container">
+        <div class="step-progress-bars">
+            <div class="progress-bar-item step-1-active" id="bar-1"></div>
+            <div class="progress-bar-item" id="bar-2"></div>
+            <div class="progress-bar-item" id="bar-3"></div>
+        </div>
+        <div class="step-text-label" id="step-label-text">ระบุตัวตน (1/3)</div>
+    </div>
 
     <!-- Main Content -->
     <main class="donate-main">
 
-        <!-- Step Indicator -->
-        <div class="step-indicator-wrapper">
-            <div class="step-track">
-                <div class="step-pill active" id="step-pill-1"></div>
-                <div class="step-pill" id="step-pill-2"></div>
-            </div>
-            <p class="step-label" id="step-label-text">ขั้นตอนที่ 1 จาก 2</p>
-        </div>
-
         <!-- ===== STEP 1 ===== -->
         <div class="donate-step" id="step-1">
+            <!-- Social Handle Section -->
+            <div class="form-section-card" id="social-section-wrapper">
+                <p class="form-section-title">บัญชีโซเชียลของคุณ</p>
 
-            <!-- Project Info Button -->
-            <button class="btn-project-info" id="btn-project-info">
-                โปรเจค NexT1DE1stTideparty คือ ?
-            </button>
-
-            <!-- Account Info Box (same style as index.html) -->
-            <div class="account-info-box donate-account-box">
-                <div class="bank-header">
-                    <div class="bank-icon-k">
-                        <img src="images/logo-kbank.png" alt="KBank Logo">
+                <div id="social-input-form">
+                    <div class="social-tab-group" id="social-tab-group">
+                        <button class="social-tab active" data-social="twitter" id="tab-twitter">X (Twitter)</button>
+                        <button class="social-tab" data-social="tiktok" id="tab-tiktok">TikTok</button>
+                        <button class="social-tab" data-social="ig" id="tab-ig">IG</button>
                     </div>
-                    <div class="bank-text">
-                        <p class="bank-name">ธนาคารกสิกรไทย</p>
-                        <p class="account-name">น.ส.ธัญดา โชติอนนต์</p>
-                    </div>
-                </div>
-                <div class="account-number-wrapper">
-                    <span class="account-number" id="donate-account-number">212-8-94502-7</span>
-                    <button class="btn-copy" onclick="copyDonateAccount()" id="btn-copy-account">
-                        <span class="copy-icon"></span> คัดลอก
-                    </button>
+                    <input type="text" class="form-input" id="social-username" placeholder="Username"
+                        autocomplete="off">
                 </div>
             </div>
 
-            <!-- Upload Section Label -->
-            <p class="upload-section-label">อัพโหลดหลักฐานการโอน</p>
-
-            <!-- Upload Drop Zone -->
-            <div class="upload-zone" id="upload-zone" onclick="triggerFileInput()">
-                <input type="file" id="slip-file-input" accept=".jpg,.jpeg,.png,.heic,.heif" style="display:none" onchange="handleFileSelected(this)">
-                <div class="upload-zone-content" id="upload-zone-content">
-                    <div class="upload-icon-wrapper">
-                        <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#286ACD" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                            <polyline points="16 16 12 12 8 16"></polyline>
-                            <line x1="12" y1="12" x2="12" y2="21"></line>
-                            <path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"></path>
-                        </svg>
-                    </div>
-                    <p class="upload-cta">เลือกรูปภาพสลิป</p>
-                    <p class="upload-hint">รองรับ JPG, PNG หรือ HEIC</p>
-                </div>
-                <!-- Preview state (hidden by default) -->
-                <div class="upload-preview-wrapper" id="upload-preview-wrapper" style="display:none">
-                    <img id="slip-preview-img" src="" alt="Slip Preview" class="slip-preview-img">
-                    <div class="preview-overlay">
-                        <p class="preview-change-text">กดเพื่อเปลี่ยนรูป</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Error message -->
-            <p class="upload-error-msg" id="upload-error-msg" style="display:none"></p>
-
-            <!-- Loading State -->
-            <div class="ai-loading-wrapper" id="ai-loading" style="display:none">
+            <div class="api-loading-wrapper" id="api-loading-social"
+                style="display:none; margin-top:20px; text-align:center;">
                 <div class="ai-loading-spinner"></div>
-                <p class="ai-loading-text">กำลังวิเคราะห์สลิป...</p>
+                <p class="ai-loading-text">กำลังโหลดข้อมูล...</p>
             </div>
 
-            <!-- Verified Result Card -->
-            <div class="verified-result-card" id="verified-result-card" style="display:none">
-                <div class="verified-result-header">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#38A169" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                    </svg>
-                    <span class="verified-result-title">ตรวจสอบข้อมูลอัตโนมัติ</span>
-                </div>
-                <div class="verified-result-body">
-                    <div class="verified-row">
-                        <span class="verified-label">ผู้โอน</span>
-                        <span class="verified-value" id="vr-sender">-</span>
-                    </div>
-                    <div class="verified-row">
-                        <span class="verified-label">จำนวนเงิน</span>
-                        <span class="verified-value" id="vr-amount">-</span>
-                    </div>
-                    <div class="verified-row">
-                        <span class="verified-label">วัน/เวลา</span>
-                        <span class="verified-value" id="vr-date">-</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Summary Cards (shown after verify) -->
-            <div class="summary-section" id="summary-section" style="display:none">
-                <!-- Cumulative Donation Card -->
-                <div class="cumulative-card" id="cumulative-card">
-                    <p class="cumulative-label">ยอดบริจาคสะสม (รวมรอบนี้)</p>
-                    <p class="cumulative-amount" id="cumulative-amount">฿0</p>
-                    <p class="giftaway-status" id="giftaway-status">คุณยังไม่ได้รับ GIFTAWAY</p>
-                    <p class="giftaway-more" id="giftaway-more"></p>
-                </div>
-
-                <!-- Donation History of This Sender -->
-                <div class="history-section" id="history-section">
-                    <p class="history-title" id="history-title">ประวัติการบริจาคของ '<span id="history-sender-name"></span>'</p>
-                    <div class="history-list" id="history-list"></div>
-                </div>
-
-                <!-- Confirm Button -->
-                <button class="btn-confirm gradient-btn-3" id="btn-confirm-step1">
-                    ยืนยันข้อมูล
-                </button>
-            </div>
-
+            <!-- Confirm Step 1 to 2 -->
+            <button class="btn-confirm gradient-btn-3" id="btn-confirm-step1" style="margin-top: 20px;">
+                ถัดไป
+            </button>
         </div>
         <!-- END STEP 1 -->
 
         <!-- ===== STEP 2 ===== -->
         <div class="donate-step" id="step-2" style="display:none">
 
-            <!-- Social Handle Section -->
-            <div class="form-section-card">
-                <p class="form-section-title">บัญชีโซเชียลของคุณ</p>
-                <div class="social-tab-group" id="social-tab-group">
-                    <button class="social-tab active" data-social="twitter" id="tab-twitter">X (Twitter)</button>
-                    <button class="social-tab" data-social="tiktok" id="tab-tiktok">TikTok</button>
-                    <button class="social-tab" data-social="ig" id="tab-ig">IG</button>
-                </div>
-                <input type="text" class="form-input" id="social-username" placeholder="@Username" autocomplete="off">
+            <div id="step2-fee-notice" style="text-align:center; margin-top:-15px; margin-bottom:15px;">
+                <p style="font-weight:700; color:#E53E3E; font-size:1.1rem; margin-bottom:0;">จัดส่ง Giveaway เพิ่ม 50
+                    บาท</p>
+                <p style="font-size:0.9rem; color:#718096; margin-top:5px;">(รับหน้างานไม่ต้องจ่ายเพิ่ม)</p>
             </div>
 
-            <!-- Giftaway Method -->
-            <div class="form-section-card">
-                <p class="form-section-title">เลือกวิธีรับ Giftaway</p>
-                <div class="giftaway-method-grid">
-                    <div class="giftaway-method-card" id="method-pickup" onclick="selectMethod('pickup')">
-                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-                            <polyline points="9 22 9 12 15 12 15 22"></polyline>
-                        </svg>
-                        <span>รับที่งาน</span>
-                    </div>
-                    <div class="giftaway-method-card selected" id="method-delivery" onclick="selectMethod('delivery')">
-                        <div class="method-check-icon">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-                                <polyline points="20 6 9 17 4 12"></polyline>
+            <div id="upload-slip-container">
+                <!-- Upload Drop Zone -->
+                <div class="upload-zone" id="upload-zone" onclick="triggerFileInput()">
+                    <input type="file" id="slip-file-input" accept=".jpg,.jpeg,.png,.heic,.heif" style="display:none"
+                        onchange="handleFileSelected(this)">
+                    <div class="upload-zone-content" id="upload-zone-content">
+                        <div class="upload-icon-wrapper">
+                            <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#286ACD"
+                                stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="16 16 12 12 8 16"></polyline>
+                                <line x1="12" y1="12" x2="12" y2="21"></line>
+                                <path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"></path>
                             </svg>
                         </div>
-                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                            <rect x="1" y="3" width="15" height="13"></rect>
-                            <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
-                            <circle cx="5.5" cy="18.5" r="2.5"></circle>
-                            <circle cx="18.5" cy="18.5" r="2.5"></circle>
-                        </svg>
-                        <span>จัดส่งตามที่อยู่</span>
+                        <p class="upload-cta">เลือกรูปภาพสลิป</p>
+                        <p class="upload-hint">รองรับ JPG, PNG หรือ HEIC</p>
+                    </div>
+                    <!-- Preview state (hidden by default) -->
+                    <div class="upload-preview-wrapper" id="upload-preview-wrapper" style="display:none">
+                        <img id="slip-preview-img" src="" alt="Slip Preview" class="slip-preview-img">
+                        <div class="preview-overlay">
+                            <p class="preview-change-text">กดเพื่อเปลี่ยนรูป</p>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Delivery fee notice -->
-                <div class="delivery-notice" id="delivery-notice">
-                    <p>หากเลือก จัดส่งตามที่อยู่ จะมีค่าส่ง <strong>50 บาท</strong> ยอดจะถูกโดเนท</p>
-                    <p>รอบนี้คุณโอนมา <strong id="transfer-amount-notice">500 บาท</strong></p>
-                    <ul>
-                        <li>สนับสนุนโปรเจค <span id="project-support-amount">450</span> บาท</li>
-                        <li>ค่าส่ง Giftaway 50 บาท</li>
-                    </ul>
+                <!-- Donate Giveaway Image -->
+                <div style="text-align:center; margin-top:20px;" id="donate-giveaway-img-wrapper">
+                    <img src="images/donate_giftaway.png" alt="Giveaway Info"
+                        style="max-width:100%; border-radius:12px;">
                 </div>
 
-                <!-- Delivery Form Fields -->
-                <div id="delivery-form-fields">
-                    <input type="tel" class="form-input" id="phone-number" placeholder="08x-xxx-xxxx" maxlength="12">
-                    <textarea class="form-input form-textarea" id="shipping-address" placeholder="บ้านเลขที่, ถนน, ซอย, อำเภอ, จังหวัด, ตำบล" rows="3"></textarea>
-                    <input type="text" class="form-input" id="postal-code" placeholder="XXXXX" maxlength="5">
+                <!-- Loading State -->
+                <div class="ai-loading-wrapper" id="api-loading" style="display:none; margin-top: 15px;">
+                    <div class="ai-loading-spinner" style="margin:0 auto;"></div>
+                    <p class="ai-loading-text" style="text-align: center; margin-top: 8px;">กำลังวิเคราะห์สลิป...</p>
+                </div>
+
+                <!-- Error message -->
+                <p class="upload-error-msg" id="upload-error-msg"
+                    style="display:none; text-align: center; color: #E53E3E; margin-top: 10px;"></p>
+
+                <!-- Slip Verification Details -->
+                <div id="slip-verification-details" style="display:none; margin-top:15px; text-align: center;">
+                    <!-- Error Text -->
+                    <p id="verification-error-text"
+                        style="color: #E53E3E; font-weight: 700; margin-bottom: 20px; display: none;">เกิดข้อผิดพลาด,
+                        ไม่สามารถอ่านสลิปได้</p>
+
+                    <!-- Success Data Grid -->
+                    <div id="verification-success-data"
+                        style="display: none; text-align: left; background: #fff; padding: 15px; border-radius: 10px; margin-bottom: 20px;">
+                        <p
+                            style="color: #38A169; font-weight: 700; margin-bottom: 15px; display: flex; align-items: center; justify-content: center;">
+                            <span style="margin-right: 5px;">✅</span> ตรวจสอบข้อมูลอัตโนมัติ
+                        </p>
+                        <div
+                            style="display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 8px;">
+                            <span style="color: #718096;">ผู้โอน</span>
+                            <span id="verify-sender-name" style="font-weight: 700; color: #2D3748;">-</span>
+                        </div>
+                        <div
+                            style="display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 8px;">
+                            <span style="color: #718096;">จำนวนเงิน</span>
+                            <span id="verify-amount" style="font-weight: 700; color: #2D3748;">-</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; font-size: 0.9rem;">
+                            <span style="color: #718096;">วัน/เวลาโอน</span>
+                            <span id="verify-date" style="font-weight: 700; color: #2D3748;">-</span>
+                        </div>
+                    </div>
+
+                    <!-- Buttons -->
+                    <div style="display: flex; gap: 10px; justify-content: center; margin-bottom: 20px;">
+                        <button type="button" id="btn-edit-slip-data"
+                            style="flex: 1; padding: 12px; background: #FC8181; color: #fff; border: none; border-radius: 20px; font-weight: 700; font-size: 1rem; cursor: pointer;">แก้ไข</button>
+                        <button type="button" id="btn-confirm-slip-data" class="gradient-btn-3"
+                            style="flex: 2; padding: 12px; border: none; border-radius: 20px; font-weight: 700; font-size: 1rem; cursor: pointer;">ข้อมูลถูกต้อง</button>
+                    </div>
                 </div>
             </div>
 
-            <!-- Giftaway Cumulative Summary -->
-            <div class="form-section-card gift-summary-card">
-                <p class="gift-summary-label">ยอดบริจาคสะสมทั้งหมด<br>ของ '<span id="step2-sender-name">-</span>'</p>
-                <p class="gift-summary-amount" id="step2-cumulative">฿0</p>
-                <p class="gift-list-title">GIFTAWAY ที่ได้รับ คือ</p>
-                <ul class="gift-list" id="step2-gift-list">
-                    <li>สติ๊กเกอร์</li>
-                    <li>เพลิน-ใส่กาวร์</li>
-                    <li>กรอบแดงสอาหาร</li>
-                    <li>ม้ายไส้</li>
-                    <li>สิทธิ์ WORKSHOP ในงาน ฟรี หรือ สูทก้า WORKSHOP กลับบ้าน</li>
-                </ul>
-            </div>
+            <!-- Shown AFTER slip is processed successfully, replaces the upload section -->
+            <div id="step2-success-container" style="display:none">
 
-            <!-- Submit Button -->
-            <button class="btn-submit gradient-btn-3" id="btn-submit-final">
-                ส่งข้อมูล
-            </button>
+                <!-- Nickname Section removed from top -->
+
+                <!-- Summary Cards (shown after verify) -->
+                <div class="summary-section" id="summary-section" style="display:block;">
+                    <!-- Cumulative Donation Card -->
+                    <div class="cumulative-card" id="cumulative-card">
+                        <div class="cumulative-header-pill">ยอดบริจาคสะสมของคุณ</div>
+                        <p class="cumulative-amount" id="cumulative-amount" style="margin-bottom:0;">฿0</p>
+                        <p id="cumulative-potential-fee"
+                            style="display:none; color:#2D3748; font-size:0.85rem; font-weight:700; margin-top:5px; margin-bottom:15px; opacity:0.8;">
+                        </p>
+                        <p id="cumulative-delivery-fee"
+                            style="display:none; color:#8E9FF8; font-size:2rem; font-weight:800; margin:0; line-height:1.2;">
+                            + 50 บาทค่าส่ง</p>
+
+                        <!-- Added Giveaway Status here for Step 2 -->
+                        <div class="gift-status-box" id="step2-giveaway-box" style="display:none;"></div>
+
+                        <p class="giveaway-more" id="giveaway-more"></p>
+                    </div>
+
+                    <!-- Donation History of This Sender -->
+                    <div class="history-section" id="history-section">
+                        <div class="history-list" id="history-list"></div>
+                    </div>
+
+                    <!-- Nickname Section MOVED to BOTTOM -->
+                    <div style="margin-top: 25px; margin-bottom: 25px; text-align: left;">
+                        <p style="font-weight:800; font-size:1.1rem; color:#2D3748; margin-bottom:10px;">
+                            นามแฝงสำหรับโดเนทครั้งนี้ <span
+                                style="font-size:0.95rem; color:#718096; font-weight:400;">(แสดงในตารางโดเนท)</span></p>
+                        <input type="text" class="form-input" id="nickname-input" placeholder="นามแฝง"
+                            autocomplete="off"
+                            style="width:100%; border-radius:15px; border:1px solid #E2E8F0; padding:15px; background:white;">
+                    </div>
+
+                    <!-- Confirm Button -->
+                    <button class="btn-confirm gradient-btn-3" id="btn-confirm-step2">
+                        ถัดไป
+                    </button>
+                </div>
+            </div>
 
         </div>
         <!-- END STEP 2 -->
 
+        <!-- ===== STEP 3 ===== -->
+        <div class="donate-step" id="step-3" style="display:none">
+
+            <!-- Donation Info Summary -->
+            <div id="step3-info-box"
+                style="background:#FFFFFF; border:1px solid #E2E8F0; border-radius:20px; padding:20px 20px 10px; margin-bottom:15px; box-shadow: 0 2px 10px rgba(0,0,0,0.02);">
+                <div style="display:flex; align-items:center; gap:8px; margin-bottom:20px;">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="#38A169" stroke="none">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <path d="M9 12l2 2 4-4" stroke="white" stroke-width="2" stroke-linecap="round" fill="none">
+                        </path>
+                    </svg>
+                    <p style="font-weight:800;font-size:1.1rem;color:#2D3748;margin:0;">ข้อมูลโดเนท</p>
+                </div>
+
+                <div style="display:flex; justify-content:space-between; margin-bottom:12px;">
+                    <span style="color:#718096; font-size:0.95rem;">บัญชีโซเชียล</span>
+                    <span id="summary-social" style="font-weight:600; color:#2D3748;">-</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; margin-bottom:12px;">
+                    <span style="color:#718096; font-size:0.95rem;">นามแฝงโดเนทรอบนี้</span>
+                    <span id="summary-nickname" style="font-weight:600; color:#2D3748;">-</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; margin-bottom:12px;">
+                    <span style="color:#718096; font-size:0.95rem;">โอนเงินรอบนี้</span>
+                    <span style="font-weight:800; color:#2D3748;"> <span id="summary-current-amount">0</span></span>
+                </div>
+                <div style="display:flex; justify-content:space-between; margin-bottom:12px;">
+                    <span style="color:#718096; font-size:0.95rem;">โดเนทสะสมทั้งหมด (รวมรอบนี้)</span>
+                    <span style="font-weight:800; color:#2D3748;"> <span id="summary-total-amount">0</span></span>
+                </div>
+                <div id="summary-fee-row" style="display:none; justify-content:space-between; margin-bottom:12px;">
+                    <span style="color:#718096; font-size:0.95rem;">ค่าส่ง giveaway</span>
+                    <span style="font-weight:800; color:#2D3748;">฿ <span id="summary-delivery-fee">50</span></span>
+                </div>
+            </div>
+
+            <!-- Giveaway Status Soft Pink Box -->
+            <div id="step3-giveaway-box"
+                style="background:#FFF5F7; border-radius:20px; padding:25px 20px; text-align:center; margin-bottom:25px;">
+                <p id="step3-giveaway-status"
+                    style="font-weight:700; color:#4A5568; font-size:0.95rem; margin-bottom:8px;">คุณไม่ได้รับ Giveaway
+                </p>
+                <p id="step3-giveaway-more" style="color:#718096; font-weight:600; font-size:0.85rem; margin:0;">
+                    (บริจาคอีก ฿77 เพื่อรับ Giveaway)</p>
+            </div>
+
+            <img src="images/donate_giftaway.png" id="step3-giveaway-img"
+                style="width:100%; border-radius:15px; display:none; margin-bottom:20px;" alt="Giveaway Levels">
+
+            <!-- Giveaway Method Section -->
+            <div id="reception-section-wrapper" style="display:none">
+                <h3 style="font-size:1.1rem; font-weight:800; color:#2D3748; margin-bottom:20px;">เลือกวิธีรับ Giveaway
+                </h3>
+
+                <div id="reception-input-form">
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px; margin-bottom:20px;">
+                        <div class="giveaway-method-card selected" id="method-pickup" onclick="selectMethod('pickup')">
+                            <div
+                                style="width:50px; height:50px; background:white; border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 2px 10px rgba(0,0,0,0.02);">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                                </svg>
+                            </div>
+                            <span style="font-weight:700;">รับที่งาน</span>
+                        </div>
+                        <div class="giveaway-method-card" id="method-delivery" onclick="selectMethod('delivery')">
+                            <div
+                                style="width:50px; height:50px; background:white; border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 2px 10px rgba(0,0,0,0.02);">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <rect x="1" y="3" width="15" height="13"></rect>
+                                    <polygon points="16 8 20 8 23 11 23 16 16 16 8"></polygon>
+                                    <circle cx="5.5" cy="18.5" r="2.5"></circle>
+                                    <circle cx="18.5" cy="18.5" r="2.5"></circle>
+                                </svg>
+                            </div>
+                            <span style="font-weight:700;">จัดส่งตามที่อยู่</span>
+                        </div>
+                    </div>
+
+                    <div id="delivery-notice"
+                        style="background:#FFF5F7; border-radius:15px; padding:15px; margin-bottom:20px; display:none; text-align:center;">
+                        <p style="color:#E53E3E; font-weight:700; font-size:0.9rem; margin-bottom:5px;">หักค่าส่ง 50 บาท
+                            จากยอดโดเนทสะสม</p>
+                        <p id="delivery-notice-sub"
+                            style="color:#E53E3E; font-weight:700; font-size:0.9rem; margin:0; display:none;"></p>
+                        <p id="delivery-notice-math"
+                            style="color:#718096; font-size:0.85rem; margin-top:5px; margin-bottom:0; display:none;">
+                        </p>
+                    </div>
+
+                    <div id="delivery-form-fields" style="display:none; margin-top:10px;">
+                        <p style="font-weight:700; color:#718096; font-size:0.85rem; margin-bottom:8px;">เบอร์โทรศัพท์
+                        </p>
+                        <input type="tel" id="phone-number" class="form-input" placeholder="หมายเลขโทรศัพท์"
+                            style="width:100%; border-radius:15px; border:1px solid #E2E8F0; padding:15px; margin-bottom:15px;"
+                            maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10)">
+
+                        <div id="past-delivery-address-box"
+                            style="display:none; background:#F8FAFC; border-radius:15px; padding:15px; text-align:left; border:1px solid #E2E8F0; margin-bottom:15px;">
+                            <div style="display:flex; align-items:flex-start; margin-bottom:15px;">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2B6CB0"
+                                    stroke-width="2" style="margin-right:10px; margin-top:2px;">
+                                    <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                    <polyline points="12 8 12 12 14 14" stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                </svg>
+                                <div style="font-size:0.9rem; color:#4A5568; line-height:1.5;">
+                                    <p style="margin:0;">ชื่อผู้รับ : <span id="old-ship-name">-</span></p>
+                                    <p style="margin:0;">ที่อยู่ : <span id="old-address">-</span> <span
+                                            id="old-postal">-</span></p>
+                                    <p style="margin:0;">เบอร์โทรศัพท์ : <span id="old-phone">-</span></p>
+                                </div>
+                            </div>
+                            <div style="display:flex; gap:10px;">
+                                <button type="button" id="btn-change-reception"
+                                    style="flex:1; background:#FC8181; color:white; border:none; padding:12px; border-radius:10px; font-weight:700; cursor:pointer;">แก้ไขข้อมูล</button>
+                                <button type="button" id="btn-use-old-reception"
+                                    style="flex:1; background:#286ACD; color:white; border:none; padding:12px; border-radius:10px; font-weight:700; cursor:pointer;">เลือกที่อยู่นี้</button>
+                            </div>
+                        </div>
+
+                        <div id="new-delivery-address-fields">
+                            <p style="font-weight:700; color:#718096; font-size:0.85rem; margin-bottom:8px;">ชื่อผู้รับ
+                            </p>
+                            <input type="text" id="ship-name" class="form-input" placeholder="ชื่อ นามสกุลผู้รับ"
+                                style="width:100%; border-radius:15px; border:1px solid #E2E8F0; padding:15px; margin-bottom:15px;">
+                            <p style="font-weight:700; color:#718096; font-size:0.85rem; margin-bottom:8px;">ที่อยู่</p>
+                            <textarea id="shipping-address" class="form-input"
+                                placeholder="บ้านเลขที่, ถนน, ซอย, อำเภอ, จังหวัด, ตำบล" rows="3"
+                                style="width:100%; border-radius:15px; border:1px solid #E2E8F0; padding:15px; margin-bottom:15px;"></textarea>
+                            <p style="font-weight:700; color:#718096; font-size:0.85rem; margin-bottom:8px;">
+                                รหัสไปรษณีย์
+                            </p>
+                            <input type="text" id="postal-code" class="form-input" placeholder="รหัสไปรษณีย์"
+                                style="width:100%; border-radius:15px; border:1px solid #E2E8F0; padding:15px; margin-bottom:15px;"
+                                maxlength="5" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 5)">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="api-loading-wrapper" id="submit-loading" style="display:none;text-align:center;margin:20px 0;">
+                <div class="ai-loading-spinner"></div>
+                <p class="ai-loading-text">กำลังบันทึกข้อมูล...</p>
+            </div>
+
+            <button class="btn-submit gradient-btn-3" id="btn-submit-final"
+                style="width:100%; padding:15px; border-radius:15px; font-weight:700; font-size:1.1rem; color:white; border:none; margin-top:10px;">ยืนยัน</button>
+        </div>
+        <!-- END STEP 3 -->
+
     </main>
 
-    <!-- Project Info Modal (Fullscreen Image Carousel) -->
-    <div class="project-modal" id="project-modal" style="display:none">
-        <button class="project-modal-close" id="project-modal-close">&times;</button>
-        <div class="project-modal-slides" id="project-modal-slides">
-            <img src="images/image_project1.jpg" alt="Project Image 1" class="project-modal-img active" data-index="0">
-            <img src="images/image_project2.jpg" alt="Project Image 2" class="project-modal-img" data-index="1">
-            <img src="images/image_project3.jpg" alt="Project Image 3" class="project-modal-img" data-index="2">
-            <img src="images/image_project4.jpg" alt="Project Image 4" class="project-modal-img" data-index="3">
-        </div>
-        <button class="project-modal-prev" id="project-modal-prev">&#10094;</button>
-        <button class="project-modal-next" id="project-modal-next">&#10095;</button>
-        <div class="project-modal-dots" id="project-modal-dots">
-            <span class="project-dot active"></span>
-            <span class="project-dot"></span>
-            <span class="project-dot"></span>
-            <span class="project-dot"></span>
+    <!-- Edit Slip Data Modal -->
+    <div id="edit-slip-modal"
+        style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:9999; justify-content:center; align-items:center;">
+        <div style="background:#fff; width:90%; max-width:400px; border-radius:15px; padding:20px; position:relative;">
+            <button id="close-edit-slip-modal"
+                style="position:absolute; top:15px; right:15px; background:transparent; border:none; font-size:1.5rem; cursor:pointer; color:#718096;">&times;</button>
+            <h3 style="text-align:center; font-size:1.1rem; color:#2D3748; margin-bottom:20px;">แก้ไขข้อมูล</h3>
+
+            <div style="margin-bottom:15px;">
+                <label style="display:block; font-size:0.9rem; color:#718096; margin-bottom:5px;">ชื่อผู้โอน</label>
+                <input type="text" id="edit-sender-name" class="form-input"
+                    style="width:100%; padding: 10px; border-radius: 10px; border: 1px solid #E2E8F0;">
+            </div>
+
+            <div style="margin-bottom:15px; display:flex; gap:10px; align-items:center;">
+                <div style="flex: 1;">
+                    <label style="display:block; font-size:0.9rem; color:#718096; margin-bottom:5px;">จำนวนเงิน</label>
+                    <input type="number" id="edit-amount" class="form-input"
+                        style="width:100%; padding: 10px; border-radius: 10px; border: 1px solid #E2E8F0;">
+                </div>
+                <div style="margin-top:20px; color:#A0AEC0; font-size:0.9rem;">บาท</div>
+            </div>
+
+            <div style="margin-bottom:25px;">
+                <label style="display:block; font-size:0.9rem; color:#718096; margin-bottom:5px;">วัน/เวลาโอน</label>
+                <input type="datetime-local" id="edit-date" class="form-input"
+                    style="width:100%; padding: 10px; border-radius: 10px; border: 1px solid #E2E8F0;">
+            </div>
+
+            <button type="button" id="btn-save-edit-slip" class="gradient-btn-3"
+                style="width:100%; padding:15px; border:none; border-radius:20px; font-weight:700; font-size:1.1rem; cursor:pointer;">แก้ไขข้อมูล</button>
         </div>
     </div>
 
+
     <script src="donate.js"></script>
+
+    <!-- Global Loading Overlay -->
+    <div class="global-loading-overlay" id="global-loading"
+        style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; z-index:9000; background:rgba(0,0,0,0.5); align-items:center; justify-content:center;">
+        <div class="ai-loading-wrapper"
+            style="display:block; margin: 0; padding:30px; background:white; border-radius:16px; text-align:center;">
+            <div class="ai-loading-spinner" style="width:40px; height:40px; border-width:4px; margin:0 auto 15px;">
+            </div>
+            <p class="ai-loading-text" id="global-loading-text"
+                style="font-size:1.1rem; font-weight:700; color:#286ACD;">กำลังประมวลผล...</p>
+        </div>
+    </div>
+
+    <!-- Success Screen Overlay -->
+    <div class="success-screen" id="success-screen" style="display:none">
+        <div class="success-bg"></div>
+        <div class="success-content">
+            <div class="success-logo">
+                <img src="images/nt1-logo 2.png" alt="NexT1DE Logo">
+            </div>
+            <h1 class="success-project-title">NextT1DE1stTideParty PROJECT</h1>
+            <p class="success-thank-you">ขอบคุณที่เป็นส่วนหนึ่ง<br>ของโปรเจกต์ครบรอบ 1 ปี NexT1DE</p>
+
+            <div class="success-cumulative-card">
+                <div class="success-card-header">ยอดบริจาคสะสมของคุณ</div>
+                <p class="success-total-amount" id="success-total-amount">฿1,500.00</p>
+                <div class="success-gift-list-wrapper">
+                    <p class="success-gift-title">GIVEAWAY ที่คุณได้รับ คือ</p>
+                    <ul class="success-gift-list" id="success-gift-list">
+                        <li>สติกเกอร์ X 2</li>
+                        <li>เฟรมใส่การ์ด X 1</li>
+                        <li>กรอบส่องอาหาร X 1</li>
+                        <li>ป้ายไฟ X 1</li>
+                        <li>WORKSHOP X 1</li>
+                    </ul>
+                </div>
+                <p class="success-next-goal" id="success-next-goal">บริจาคอีก ฿177 เพื่อรับ Giveaway เพิ่มมากขึ้น</p>
+            </div>
+            <p class="success-footer">by NexT1DEProjectThailand</p>
+
+            <div class="success-actions">
+                <button class="btn-success-home" onclick="window.location.href='index.html'">กลับหน้าหลัก</button>
+                <button class="btn-success-share">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
+                        <polyline points="16 6 12 2 8 6"></polyline>
+                        <line x1="12" y1="2" x2="12" y2="15"></line>
+                    </svg>
+                    แชร์ความภูมิใจของคุณ
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Error Modal -->
+    <div class="error-modal-overlay" id="error-modal" style="display:none">
+        <div class="error-modal-box">
+            <div class="error-icon">!</div>
+            <p class="error-msg">พบข้อขัดข้องลองใหม่อีกครั้ง</p>
+            <button class="btn-error-close"
+                onclick="document.getElementById('error-modal').style.display='none'">ตกลง</button>
+        </div>
+    </div>
 </body>
 
 </html>
