@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const RECEIVER_NAME_TARGET = "ธัญดา";
     const WEBHOOK_URL = "https://next1de.app.n8n.cloud/webhook/6e4a539b-5580-40f9-a85f-47a488a2e842";
-    const API_ENDPOINT = "https://script.google.com/macros/s/AKfycbxTr0Is1gI_gI8lZc7mGt8uIqP2tEfqNpjPgvTJwrHENrufSZg0yv_v5-N36wKRqx0UKQ/exec";
+    const API_ENDPOINT = "https://script.google.com/macros/s/AKfycbyW7EBmF-Epm9ZM77llKh1fZNDpHMod5_Q6RxwPYRWTyXTpgHjXKjQhCkLazze07WtAhQ/exec";
     const GET_API_URL = API_ENDPOINT;
     const SAVE_API_URL = API_ENDPOINT;
     const UPLOAD_API_URL = API_ENDPOINT;
@@ -110,7 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const resetStep2UI = () => {
         const uploadContainer = document.getElementById('upload-slip-container');
-        const summaryContainer = document.getElementById('step2-summary-container');
+        const summaryContainer = document.getElementById('step2-success-container');
         const verificationDetails = document.getElementById('slip-verification-details');
         const previewWrapper = document.getElementById('upload-preview-wrapper');
         const zoneContent = document.getElementById('upload-zone-content');
@@ -118,6 +118,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const fileInput = document.getElementById('slip-file-input');
         const feeNotice = document.getElementById('step2-fee-notice');
         const giveawayImg = document.getElementById('donate-giveaway-img-wrapper');
+        const nicknameInput = document.getElementById('nickname-input');
+        const accountBox = document.getElementById('account-info-box-step2');
+        const uploadZone = document.getElementById('upload-zone');
 
         if (uploadContainer) uploadContainer.style.display = 'block';
         if (summaryContainer) summaryContainer.style.display = 'none';
@@ -128,6 +131,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (fileInput) fileInput.value = '';
         if (feeNotice) feeNotice.style.display = 'block';
         if (giveawayImg) giveawayImg.style.display = 'block';
+        if (nicknameInput) nicknameInput.value = '';
+        if (accountBox) accountBox.style.display = 'block';
+        if (uploadZone) uploadZone.style.display = 'block';
+
+        slipData = { amount: 0, date: '', bankCode: '' };
+        nickname = '';
     };
 
     const setStepUI = (step) => {
@@ -159,9 +168,6 @@ document.addEventListener('DOMContentLoaded', () => {
             bars[1].classList.add('step-2-active');
             stepLabelText.innerText = 'ข้อมูลการโดเนท (2/3)';
             window.scrollTo({ top: 0, behavior: 'smooth' });
-
-            // CRITICAL RESET for Step 2
-            resetStep2UI();
         } else if (step === 3) {
             step3.style.display = 'block';
             bars[0].classList.add('step-1-active');
@@ -258,6 +264,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 // If they have old receive data, figure out their previous default social (just keeping val is fine though)
             }
             hideLoading();
+            resetStep2UI();
             setStepUI(2);
         } catch (e) {
             console.error(e);
@@ -321,6 +328,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.getElementById('verification-error-text').innerText = 'ไม่สามารถอ่านสลิปได้ กรุณาลองใหม่อีกครั้ง';
                 document.getElementById('verification-error-text').style.display = 'block';
                 document.getElementById('verification-success-data').style.display = 'none';
+                document.getElementById('slip-verification-buttons').style.display = 'none';
                 slipData = { is_slip: false, amount: 0, sender_name: '', date: '' };
             } else {
                 let rName = aiData.receiver_name || '';
@@ -328,15 +336,31 @@ document.addEventListener('DOMContentLoaded', () => {
                     document.getElementById('verification-error-text').innerText = 'อ่านบัญชีปลายทางไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง';
                     document.getElementById('verification-error-text').style.display = 'block';
                     document.getElementById('verification-success-data').style.display = 'none';
+                    document.getElementById('slip-verification-buttons').style.display = 'none';
                     slipData = aiData;
                 } else {
-                    document.getElementById('verification-error-text').style.display = 'none';
-                    document.getElementById('verification-success-data').style.display = 'block';
-                    slipData = aiData;
+                    const refNum = aiData.ref_number || aiData.transaction_ref;
+                    let isDuplicate = false;
+                    if (refNum && mergedDonationData && mergedDonationData.donations) {
+                        isDuplicate = mergedDonationData.donations.some(d => d.transaction_ref === refNum || d.ref_number === refNum);
+                    }
 
-                    document.getElementById('verify-sender-name').innerText = slipData.sender_name || '-';
-                    document.getElementById('verify-amount').innerText = slipData.amount ? slipData.amount + ' ฿' : '-';
-                    document.getElementById('verify-date').innerText = slipData.date ? formatFromDatetimeLocal(formatToDatetimeLocal(slipData.date)) : '-';
+                    if (isDuplicate) {
+                        document.getElementById('verification-error-text').innerText = 'สลิปถูกใช้โอนโดเนทไปแล้ว ไม่สามารถใช้งานซ้ำได้';
+                        document.getElementById('verification-error-text').style.display = 'block';
+                        document.getElementById('verification-success-data').style.display = 'none';
+                        document.getElementById('slip-verification-buttons').style.display = 'none';
+                        slipData = { is_slip: false, amount: 0, sender_name: '', date: '' };
+                    } else {
+                        document.getElementById('verification-error-text').style.display = 'none';
+                        document.getElementById('verification-success-data').style.display = 'block';
+                        document.getElementById('slip-verification-buttons').style.display = 'flex';
+                        slipData = aiData;
+
+                        document.getElementById('verify-sender-name').innerText = slipData.sender_name || '-';
+                        document.getElementById('verify-amount').innerText = slipData.amount ? slipData.amount + ' ฿' : '-';
+                        document.getElementById('verify-date').innerText = slipData.date ? formatFromDatetimeLocal(formatToDatetimeLocal(slipData.date)) : '-';
+                    }
                 }
             }
 
@@ -752,6 +776,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 alert('กรุณากรอกข้อมูลการจัดส่งให้ครบถ้วน');
                 return;
             }
+            if (!/^0\d{8,9}$/.test(phone)) {
+                alert('กรุณากรอกเบอร์โทรศัพท์ให้ถูกต้อง');
+                return;
+            }
         }
 
         showLoading('กำลังบันทึกข้อมูล...');
@@ -910,8 +938,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.getElementById('nav-back').addEventListener('click', () => {
         if (currentState === 3) {
+            // Reset Step 3
+            isChangingReception = false;
+            selectedMethod = null;
+            document.querySelectorAll('.method-option').forEach(el => {
+                el.classList.remove('active');
+                el.style.borderColor = '#E2E8F0';
+                el.style.background = 'white';
+            });
+            document.getElementById('btn-use-old-reception').innerText = 'ใช้ที่อยู่รับของแบบเดิม';
+            document.getElementById('btn-use-old-reception').style.background = '#286ACD';
+
             setStepUI(2);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         } else if (currentState === 2) {
+            resetStep2UI(); // Ensure fresh start next time
             setStepUI(1);
         } else {
             window.location.href = 'index.html';
