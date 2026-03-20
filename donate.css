@@ -299,6 +299,16 @@ body.donate-page-body {
     font-size: 0.85rem;
 }
 
+.fee-notice-upload {
+    animation: pulse 2s infinite ease-in-out;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.02); }
+    100% { transform: scale(1); }
+}
+
 /* Preview Image */
 .upload-preview-wrapper {
     width: 100%;
@@ -662,19 +672,26 @@ body.donate-page-body {
     width: 100%;
     padding: 15px 20px;
     border-radius: 15px;
-    border: 1px solid #F1F5F9;
+    border: 1.5px solid #F1F5F9;
     background: #F8FAFC;
     font-family: inherit;
     font-size: 1rem;
-    color: var(--text-dark);
-    margin-top: 10px;
+    color: #2D3748;
+    margin-top: 5px;
     transition: all 0.2s;
+    outline: none;
+    box-sizing: border-box;
+}
+
+.form-input::placeholder {
+    color: #CBD5E0;
+    opacity: 1;
 }
 
 .form-input:focus {
-    outline: none;
-    border-color: var(--primary-blue);
+    border-color: #286ACD;
     background: white;
+    box-shadow: 0 0 0 4px rgba(40, 106, 205, 0.08);
 }
 
 .form-textarea {

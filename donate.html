@@ -82,12 +82,7 @@
         <!-- ===== STEP 2 ===== -->
         <div class="donate-step" id="step-2" style="display:none">
 
-            <div id="step2-fee-notice" style="text-align:center; margin-top:-15px; margin-bottom:15px;">
-                <p style="font-weight:700; color:#E53E3E; font-size:1.1rem; margin-bottom:0;">หากจัดส่ง Giveaway
-                    มีค่าส่ง 50
-                    บาท</p>
-                <p style="font-size:0.9rem; color:#718096; margin-top:5px;">(หักจากยอดโอนครั้งแรกอัตโนมัติ)</p>
-            </div>
+
 
             <!-- Account Info Box (From index.html) -->
             <div class="account-info-box" id="account-info-box-step2" style="margin-bottom: 25px;">
@@ -109,21 +104,39 @@
             </div>
 
             <div id="upload-slip-container">
+                <div class="fee-notice-box" id="step2-fee-notice" style="
+                            background: #FFF5F5;
+                            border: 1.5px solid #FEB2B2;
+                            border-radius: 20px;
+                            padding: 12px 25px;
+                            margin-bottom: 20px;
+                            box-shadow: 0 4px 12px rgba(229, 62, 62, 0.08);
+                            animation: pulse 2s infinite ease-in-out;
+                        ">
+                    <p
+                        style="font-weight:800; color:#E53E3E; font-size:1.1rem; margin:0; line-height: 1.4; letter-spacing: -0.2px;">
+                        หากจัดส่ง Giveaway มีค่าส่ง 50 บาท</p>
+                    <p style="font-size:0.85rem; color:#718096; margin-top:2px; font-weight:600; opacity:0.9;">
+                        (หักจากยอดโอนสะสมอัตโนมัติ หากต้องการ Giveaway ควรโอนเพิ่มอีก 50 บาทในครั้งแรก)</p>
+                </div>
+
                 <!-- Upload Drop Zone -->
                 <div class="upload-zone" id="upload-zone" onclick="triggerFileInput()">
                     <input type="file" id="slip-file-input" accept=".jpg,.jpeg,.png,.heic,.heif" style="display:none"
                         onchange="handleFileSelected(this)">
                     <div class="upload-zone-content" id="upload-zone-content">
-                        <div class="upload-icon-wrapper">
-                            <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#286ACD"
-                                stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <div class="upload-icon-wrapper" style="width: 60px; height: 60px; margin-bottom: 15px;">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#286ACD"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <polyline points="16 16 12 12 8 16"></polyline>
                                 <line x1="12" y1="12" x2="12" y2="21"></line>
                                 <path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"></path>
                             </svg>
                         </div>
-                        <p class="upload-cta">เลือกรูปภาพสลิป</p>
-                        <p class="upload-hint">รองรับ JPG, PNG หรือ HEIC</p>
+                        <div style="display:flex; flex-direction:column; align-items:center;">
+                            <p class="upload-cta" style="margin-bottom:4px;">เลือกรูปภาพสลิป</p>
+                            <p class="upload-hint" style="font-weight:500;">รองรับ JPG, PNG หรือ HEIC</p>
+                        </div>
                     </div>
                     <!-- Preview state (hidden by default) -->
                     <div class="upload-preview-wrapper" id="upload-preview-wrapper" style="display:none">
@@ -202,7 +215,7 @@
                         <div class="cumulative-header-pill">ยอดบริจาคสะสมของคุณ</div>
                         <p class="cumulative-amount" id="cumulative-amount" style="margin-bottom:0;">฿0</p>
                         <p id="cumulative-potential-fee"
-                            style="display:none; color:#2D3748; font-size:0.85rem; font-weight:700; margin-top:5px; margin-bottom:15px; opacity:0.8;">
+                            style="display:none; color:#2D3748; font-size:0.8rem; font-weight:500; margin-top:5px; margin-bottom:15px; opacity:0.8;">
                         </p>
                         <p id="cumulative-delivery-fee"
                             style="display:none; color:#8E9FF8; font-size:2rem; font-weight:800; margin:0; line-height:1.2;">
@@ -225,8 +238,7 @@
                             นามแฝงสำหรับโดเนทครั้งนี้ <span
                                 style="font-size:0.95rem; color:#718096; font-weight:400;">(แสดงในตารางโดเนท)</span></p>
                         <input type="text" class="form-input" id="nickname-input" placeholder="นามแฝง"
-                            autocomplete="off"
-                            style="width:100%; border-radius:15px; border:1px solid #E2E8F0; padding:15px; background:white;">
+                            autocomplete="off">
                     </div>
 
                     <!-- Confirm Button -->
@@ -276,14 +288,14 @@
                 </div>
             </div>
 
-            <!-- Giveaway Status Soft Pink Box -->
+            <!-- Giveaway Status Box -->
             <div id="step3-giveaway-box"
-                style="background:#FFF5F7; border-radius:20px; padding:25px 20px; text-align:center; margin-bottom:25px;">
-                <p id="step3-giveaway-status"
-                    style="font-weight:700; color:#4A5568; font-size:0.95rem; margin-bottom:8px;">คุณไม่ได้รับ Giveaway
-                </p>
-                <p id="step3-giveaway-more" style="color:#718096; font-weight:600; font-size:0.85rem; margin:0;">
-                    (บริจาคอีก ฿77 เพื่อรับ Giveaway)</p>
+                style="background:#F0F9FF; border-radius:32px; padding:45px 20px 25px; border:1px solid #E2E8F0; text-align:center; margin-bottom:25px; position:relative; margin-top:40px;">
+                <div style="position: absolute; top: -18px; left: 50%; transform: translateX(-50%); background: white; border: 1.5px solid #E2E8F0; padding: 8px 30px; border-radius: 50px; white-space: nowrap; box-shadow: 0 4px 12px rgba(0,0,0,0.03);">
+                    <p id="step3-giveaway-pill-text" style="margin:0; font-weight:800; color:#4951F1; font-size:1.05rem;">Giveaway ที่คุณได้รับ</p>
+                </div>
+                <div id="step3-giveaway-status"></div>
+                <p id="step3-giveaway-more" style="color:#718096; font-weight:600; font-size:0.85rem; margin-top:15px; margin-bottom:0;"></p>
             </div>
 
             <img src="images/donate_giftaway.png" id="step3-giveaway-img"
@@ -291,35 +303,49 @@
 
             <!-- Giveaway Method Section -->
             <div id="reception-section-wrapper" style="display:none">
-                <h3 style="font-size:1.1rem; font-weight:800; color:#2D3748; margin-bottom:20px;">เลือกวิธีรับ Giveaway</h3>
+                <h3 style="font-size:1.1rem; font-weight:800; color:#2D3748; margin-bottom:20px;">เลือกวิธีรับ Giveaway
+                </h3>
 
                 <div id="reception-input-form">
                     <!-- Past Reception Box (Scenario 2) -->
-                    <div id="past-reception-box" style="display:none; background: #F0F9FF; border-radius: 20px; padding: 25px 20px; border: 1px solid #BAE6FD; margin-bottom: 25px;">
+                    <div id="past-reception-box"
+                        style="display:none; background: #F0F9FF; border-radius: 20px; padding: 25px 20px; border: 1px solid #BAE6FD; margin-bottom: 25px;">
                         <div style="display:flex; align-items:center; gap:12px; margin-bottom: 15px;">
-                            <div style="width:36px; height:36px; background:#E0F2FE; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#286ACD" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <div
+                                style="width:36px; height:36px; background:#E0F2FE; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#286ACD"
+                                    stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                 </svg>
                             </div>
                             <div>
-                                <p style="margin:0; font-size:0.95rem; color:#4A5568; font-weight:600;">ครั้งที่แล้วคุณเลือก <span id="past-type-text" style="color:#286ACD; font-weight:700;">จัดส่งตามที่อยู่</span></p>
+                                <p style="margin:0; font-size:0.95rem; color:#4A5568; font-weight:600;">
+                                    ครั้งที่แล้วคุณเลือก <span id="past-type-text"
+                                        style="color:#286ACD; font-weight:700;">จัดส่งตามที่อยู่</span></p>
                                 <p style="margin:2px 0 0; font-size:0.9rem; color:#718096;">ใช้แบบเดิมไหม?</p>
                             </div>
                         </div>
 
-                        <div id="past-details" style="display:none; background:white; border-radius:15px; padding:20px; margin-bottom:15px; border:1px solid #E0F2FE;">
+                        <div id="past-details"
+                            style="display:none; background:white; border-radius:15px; padding:20px; margin-bottom:15px; border:1px solid #E0F2FE;">
                             <div style="font-size:0.9rem; color:#4A5568; line-height:1.6;">
-                                <p style="margin:0 0 4px;">ชื่อผู้รับ : <span id="past-ship-name" style="font-weight:700;">-</span></p>
-                                <p style="margin:0 0 4px;">ที่อยู่ : <span id="past-ship-address">-</span> <span id="past-ship-postal">-</span></p>
+                                <p style="margin:0 0 4px;">ชื่อผู้รับ : <span id="past-ship-name"
+                                        style="font-weight:700;">-</span></p>
+                                <p style="margin:0 0 4px;">ที่อยู่ : <span id="past-ship-address">-</span> <span
+                                        id="past-ship-postal">-</span></p>
                                 <p style="margin:0;">เบอร์โทรศัพท์ : <span id="past-ship-phone">-</span></p>
                             </div>
-                            <p id="past-fee-note" style="margin:12px 0 0; color:#E53E3E; font-size:0.85rem; font-weight:700; display:none;">หมายเหตุ : ไม่ต้องเสียค่าจัดส่งแล้ว</p>
+                            <p id="past-fee-note"
+                                style="margin:12px 0 0; color:#E53E3E; font-size:0.85rem; font-weight:700; display:none;">
+                                หมายเหตุ : ไม่ต้องเสียค่าจัดส่งแล้ว</p>
                         </div>
 
                         <div style="display:flex; flex-wrap:wrap; gap:12px;">
-                            <button type="button" id="btn-change-reception" style="flex:1; min-width:140px; background:white; color:#286ACD; border:2px solid #286ACD; padding:12px 10px; border-radius:15px; font-weight:700; font-size:0.9rem; cursor:pointer; line-height:1.3;">ไม่ เปลี่ยนวิธี/ข้อมูล</button>
-                            <button type="button" id="btn-use-old-reception" style="flex:1; min-width:140px; background:#286ACD; color:white; border:none; padding:12px 10px; border-radius:15px; font-weight:700; font-size:0.9rem; cursor:pointer; line-height:1.3;">ใช้วิธีรับของแบบเดิม</button>
+                            <button type="button" id="btn-change-reception"
+                                style="flex:1; min-width:140px; background:white; color:#286ACD; border:2px solid #286ACD; padding:12px 10px; border-radius:15px; font-weight:700; font-size:0.9rem; cursor:pointer; line-height:1.3;">ไม่
+                                เปลี่ยนวิธี/ข้อมูล</button>
+                            <button type="button" id="btn-use-old-reception"
+                                style="flex:1; min-width:140px; background:#286ACD; color:white; border:none; padding:12px 10px; border-radius:15px; font-weight:700; font-size:0.9rem; cursor:pointer; line-height:1.3;">ใช้วิธีรับของแบบเดิม</button>
                         </div>
                     </div>
 
@@ -327,50 +353,60 @@
                     <div id="reception-methods-selection">
                         <div class="delivery-methods" style="display:flex; gap:15px; margin-bottom:25px;">
                             <!-- Onsite Card -->
-                            <div class="delivery-method-card" data-method="onsite" onclick="selectMethod('onsite')" style="flex:1; background:white; border-radius:24px; padding:25px 15px; text-align:center; border:1px solid #E2E8F0; cursor:pointer; transition:all 0.3s ease; display:flex; flex-direction:column; align-items:center;">
-                                <div class="method-icon-circle" style="width:56px; height:56px; background:#F7FAFC; border-radius:50%; display:flex; align-items:center; justify-content:center; margin-bottom:12px; transition:all 0.3s;">
-                                    <svg class="icon-svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#718096" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <div class="delivery-method-card" data-method="onsite" onclick="selectMethod('onsite')"
+                                style="flex:1; background:white; border-radius:24px; padding:25px 15px; text-align:center; border:1px solid #E2E8F0; cursor:pointer; transition:all 0.3s ease; display:flex; flex-direction:column; align-items:center;">
+                                <div class="method-icon-circle"
+                                    style="width:56px; height:56px; background:#F7FAFC; border-radius:50%; display:flex; align-items:center; justify-content:center; margin-bottom:12px; transition:all 0.3s;">
+                                    <svg class="icon-svg" width="28" height="28" viewBox="0 0 24 24" fill="none"
+                                        stroke="#718096" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
                                         <path d="M3 9h18v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9Z"></path>
                                         <path d="m3 9 2.45-4.91A2 2 0 0 1 7.24 3h9.52a2 2 0 0 1 1.79 1.09L21 9"></path>
                                         <path d="M12 3v6"></path>
                                     </svg>
                                 </div>
-                                <p class="method-label" style="margin:0; font-weight:700; color:#718096; font-size:1rem;">รับที่งาน</p>
+                                <p class="method-label"
+                                    style="margin:0; font-weight:700; color:#718096; font-size:1rem;">รับที่งาน</p>
                             </div>
                             <!-- Delivery Card -->
-                            <div class="delivery-method-card" data-method="delivery" onclick="selectMethod('delivery')" style="flex:1; background:white; border-radius:24px; padding:25px 15px; text-align:center; border:1px solid #E2E8F0; cursor:pointer; transition:all 0.3s ease; display:flex; flex-direction:column; align-items:center;">
-                                <div class="method-icon-circle" style="width:56px; height:56px; background:#F7FAFC; border-radius:50%; display:flex; align-items:center; justify-content:center; margin-bottom:12px; transition:all 0.3s;">
-                                    <svg class="icon-svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#718096" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <div class="delivery-method-card" data-method="delivery" onclick="selectMethod('delivery')"
+                                style="flex:1; background:white; border-radius:24px; padding:25px 15px; text-align:center; border:1px solid #E2E8F0; cursor:pointer; transition:all 0.3s ease; display:flex; flex-direction:column; align-items:center;">
+                                <div class="method-icon-circle"
+                                    style="width:56px; height:56px; background:#F7FAFC; border-radius:50%; display:flex; align-items:center; justify-content:center; margin-bottom:12px; transition:all 0.3s;">
+                                    <svg class="icon-svg" width="28" height="28" viewBox="0 0 24 24" fill="none"
+                                        stroke="#718096" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
                                         <rect x="1" y="3" width="15" height="13"></rect>
                                         <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
                                         <circle cx="5.5" cy="18.5" r="2.5"></circle>
                                         <circle cx="18.5" cy="18.5" r="2.5"></circle>
                                     </svg>
                                 </div>
-                                <p class="method-label" style="margin:0; font-weight:700; color:#718096; font-size:1rem;">จัดส่งตามที่อยู่</p>
+                                <p class="method-label"
+                                    style="margin:0; font-weight:700; color:#718096; font-size:1rem;">จัดส่งตามที่อยู่
+                                </p>
                             </div>
                         </div>
                     </div>
 
-                        <div id="new-delivery-address-fields">
-                            <p style="font-weight:700; color:#718096; font-size:0.85rem; margin-bottom:8px;">ชื่อผู้รับ
-                            </p>
-                            <input type="text" id="ship-name" class="form-input" placeholder="ชื่อ นามสกุลผู้รับ"
-                                style="width:100%; border-radius:15px; border:1px solid #E2E8F0; padding:15px; margin-bottom:15px;">
-                            <p style="font-weight:700; color:#718096; font-size:0.85rem; margin-bottom:8px;">ที่อยู่</p>
-                            <textarea id="shipping-address" class="form-input"
-                                placeholder="บ้านเลขที่, ถนน, ซอย, อำเภอ, จังหวัด, ตำบล" rows="3"
-                                style="width:100%; border-radius:15px; border:1px solid #E2E8F0; padding:15px; margin-bottom:15px;"></textarea>
-                            <p style="font-weight:700; color:#718096; font-size:0.85rem; margin-bottom:8px;">เบอร์โทรศัพท์</p>
-                            <input type="text" id="phone-number" class="form-input" placeholder="เบอร์โทรศัพท์"
-                                style="width:100%; border-radius:15px; border:1px solid #E2E8F0; padding:15px; margin-bottom:15px;"
-                                oninput="this.value = this.value.replace(/[^0-9]/g, '')">
-                            <p style="font-weight:700; color:#718096; font-size:0.85rem; margin-bottom:8px;">
-                                รหัสไปรษณีย์
-                            </p>
-                            <input type="text" id="postal-code" class="form-input" placeholder="รหัสไปรษณีย์"
-                                style="width:100%; border-radius:15px; border:1px solid #E2E8F0; padding:15px; margin-bottom:15px;"
-                                maxlength="5" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 5)">
+                    <div id="delivery-notice" class="delivery-notice" style="display:none; margin-bottom: 20px;"></div>
+
+                    <div id="new-delivery-address-fields">
+                        <p style="font-weight:700; color:#718096; font-size:0.85rem; margin-bottom:8px;">ชื่อผู้รับ
+                        </p>
+                        <input type="text" id="ship-name" class="form-input" placeholder="ชื่อ นามสกุลผู้รับ" style="margin-bottom:15px;">
+                        <p style="font-weight:700; color:#718096; font-size:0.85rem; margin-bottom:8px;">ที่อยู่</p>
+                        <textarea id="shipping-address" class="form-input"
+                            placeholder="บ้านเลขที่, ถนน, ซอย, อำเภอ, จังหวัด, ตำบล" rows="3" style="margin-bottom:15px;"></textarea>
+                        <p style="font-weight:700; color:#718096; font-size:0.85rem; margin-bottom:8px;">เบอร์โทรศัพท์
+                        </p>
+                        <input type="text" id="phone-number" class="form-input" placeholder="เบอร์โทรศัพท์" style="margin-bottom:15px;"
+                            oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                        <p style="font-weight:700; color:#718096; font-size:0.85rem; margin-bottom:8px;">
+                            รหัสไปรษณีย์
+                        </p>
+                        <input type="text" id="postal-code" class="form-input" placeholder="รหัสไปรษณีย์" style="margin-bottom:15px;"
+                            maxlength="5" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 5)">
                     </div>
                 </div>
             </div>
@@ -397,23 +433,20 @@
 
             <div style="margin-bottom:15px;">
                 <label style="display:block; font-size:0.9rem; color:#718096; margin-bottom:5px;">ชื่อผู้โอน</label>
-                <input type="text" id="edit-sender-name" class="form-input"
-                    style="width:100%; padding: 10px; border-radius: 10px; border: 1px solid #E2E8F0;">
+                <input type="text" id="edit-sender-name" class="form-input">
             </div>
 
             <div style="margin-bottom:15px; display:flex; gap:10px; align-items:center;">
                 <div style="flex: 1;">
                     <label style="display:block; font-size:0.9rem; color:#718096; margin-bottom:5px;">จำนวนเงิน</label>
-                    <input type="number" id="edit-amount" class="form-input"
-                        style="width:100%; padding: 10px; border-radius: 10px; border: 1px solid #E2E8F0;">
+                    <input type="number" id="edit-amount" class="form-input">
                 </div>
                 <div style="margin-top:20px; color:#A0AEC0; font-size:0.9rem;">บาท</div>
             </div>
 
             <div style="margin-bottom:25px;">
                 <label style="display:block; font-size:0.9rem; color:#718096; margin-bottom:5px;">วัน/เวลาโอน</label>
-                <input type="datetime-local" id="edit-date" class="form-input"
-                    style="width:100%; padding: 10px; border-radius: 10px; border: 1px solid #E2E8F0;">
+                <input type="datetime-local" id="edit-date" class="form-input">
             </div>
 
             <button type="button" id="btn-save-edit-slip" class="gradient-btn-3"

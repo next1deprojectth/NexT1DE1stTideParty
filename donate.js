@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const RECEIVER_NAME_TARGET = "ธัญดา";
     const WEBHOOK_URL = "https://next1de.app.n8n.cloud/webhook/6e4a539b-5580-40f9-a85f-47a488a2e842";
-    const API_ENDPOINT = "https://script.google.com/macros/s/AKfycbyCdxoOxw_jFxZmbKqsA5xesnpip-dfWbERa7clBLcpf0D87ZaItclgHbZMAYJccmW7Kw/exec";
+    const API_ENDPOINT = "https://script.google.com/macros/s/AKfycbxTr0Is1gI_gI8lZc7mGt8uIqP2tEfqNpjPgvTJwrHENrufSZg0yv_v5-N36wKRqx0UKQ/exec";
     const GET_API_URL = API_ENDPOINT;
     const SAVE_API_URL = API_ENDPOINT;
     const UPLOAD_API_URL = API_ENDPOINT;
@@ -210,8 +210,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         showLoading('กำลังตรวจสอบข้อมูลรับสิทธิ์...');
         try {
-            console.log('GetDonate API Data Name:', encodeURIComponent(val));
-            const res = await fetch(`${GET_API_URL}?action=getDonate&name=${encodeURIComponent(val)}`);
+            console.log('GetDonate API Data socialName:', encodeURIComponent(val));
+            console.log('GetDonate API Data socialType:', encodeURIComponent(selectedSocial));
+            const res = await fetch(`${GET_API_URL}?action=getDonate&socialName=${encodeURIComponent(val)}&socialType=${encodeURIComponent(selectedSocial)}`);
             let data = await res.json();
             console.log('GetDonate API Result:', data);
             if (data.status !== 'ok') {
@@ -333,60 +334,43 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const getGiftHtml = (gifts) => {
-        let h = '<ul style="list-style:none; padding:0; margin:5px 0 0 0; text-align:center;">';
-        if (gifts.stickers > 0) h += `<li>• สติกเกอร์ X ${gifts.stickers}</li>`;
-        if (gifts.photoFrame > 0) h += `<li>• เฟรมใส่การ์ด X ${gifts.photoFrame}</li>`;
-        if (gifts.foodFrame > 0) h += `<li>• กรอบส่องอาหาร X ${gifts.foodFrame}</li>`;
-        if (gifts.lightSign > 0) h += `<li>• ป้ายไฟ X ${gifts.lightSign}</li>`;
-        if (gifts.workshop > 0) h += `<li>• WORKSHOP X ${gifts.workshop}</li>`;
-        h += '</ul>';
+        let h = '<div style="display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin-top:10px;">';
+        const badgeStyle = (bgColor, textColor, borderColor) => `style="background:${bgColor}; color:${textColor}; border:1.5px solid ${borderColor}; padding:6px 14px; border-radius:16px; font-size:0.85rem; font-weight:700; white-space:nowrap; box-shadow: 0 2px 4px rgba(0,0,0,0.03);"`;
+
+        if (gifts.stickers > 0) h += `<span ${badgeStyle('#FFF5F5', '#E53E3E', '#FED7E2')}>• สติกเกอร์ X ${gifts.stickers}</span>`;
+        if (gifts.photoFrame > 0) h += `<span ${badgeStyle('#EBF8FF', '#3182CE', '#BEE3F8')}>• เฟรมใส่การ์ด X ${gifts.photoFrame}</span>`;
+        if (gifts.foodFrame > 0) h += `<span ${badgeStyle('#F0FFF4', '#38A169', '#C6F6D5')}>• กรอบส่องอาหาร X ${gifts.foodFrame}</span>`;
+        if (gifts.lightSign > 0) h += `<span ${badgeStyle('#FFFFF0', '#B7791F', '#FEFCBF')}>• ป้ายไฟ X ${gifts.lightSign}</span>`;
+        if (gifts.workshop > 0) h += `<span ${badgeStyle('#F9F5FF', '#805AD5', '#E9D8FD')}>• WORKSHOP X ${gifts.workshop}</span>`;
+
+        h += '</div>';
         return h;
     };
 
     const updateStep2Summary = () => {
-        const netAmt = getNetAmount();
-        document.getElementById('cumulative-amount').innerText = formatAmount(netAmt);
-
         const hasPastDelivery = mergedDonationData.receive && mergedDonationData.receive.delivery_type === 'delivery';
-        const deliveryFeeEl = document.getElementById('cumulative-delivery-fee');
-        if (hasPastDelivery) {
-            deliveryFeeEl.style.display = 'block';
-        } else {
-            deliveryFeeEl.style.display = 'none';
-        }
+        // Only show total donation amount as requested
+        document.getElementById('cumulative-amount').innerText = formatAmount(currentTotalOriginal);
 
-        const giftInfo = calculateGifts(netAmt);
+        // Hide all giveaway-related elements in Step 2 card
+        const deliveryFeeEl = document.getElementById('cumulative-delivery-fee');
+        if (deliveryFeeEl) deliveryFeeEl.style.display = 'none';
+
         const giftBox = document.getElementById('step2-giveaway-box');
-        // Render Giveaway Box
-        if (!giftInfo.hasAny) {
-            giftBox.style.display = 'none';
-            document.getElementById('giveaway-more').innerText = `บริจาคอีก ${formatAmount(giftInfo.diff)} เพื่อรับ Giveaway`;
-        } else {
-            giftBox.innerHTML = `<p style="margin:0; font-weight:700; font-size:0.95rem;">GIVEAWAY ที่คุณได้รับ</p>${getGiftHtml(giftInfo.gifts)}`;
-            document.getElementById('giveaway-more').innerText = `บริจาคอีก ${formatAmount(giftInfo.diff)} เพื่อรับ Giveaway เพิ่มมากขึ้น`;
-        }
+        if (giftBox) giftBox.style.display = 'none';
+
+        const giveawayMore = document.getElementById('giveaway-more');
+        if (giveawayMore) giveawayMore.style.display = 'none';
 
         const potentialFeeEl = document.getElementById('cumulative-potential-fee');
-        if (potentialFeeEl) {
-            if (giftInfo.hasAny && !hasPastDelivery) {
-                potentialFeeEl.style.display = 'block';
-                potentialFeeEl.innerText = `( ยอดเหลือ ${(netAmt - 50).toLocaleString('th-TH')} ถ้าเลือกส่ง Giveaway )`;
-            } else {
-                potentialFeeEl.style.display = 'none';
-            }
-        }
+        if (potentialFeeEl) potentialFeeEl.style.display = 'none';
 
         const socialUsername = mergedDonationData.socialName || document.getElementById('social-username').value || selectedSocial;
 
         let timelineHtml = `
-            <div style="background: white; border-radius: 20px; padding: 25px 20px; border: 1px solid #E2E8F0; margin-top: 25px; text-align: left;">
-                <div style="display:flex; align-items:center; gap:10px; margin-bottom: 25px;">
-                    <div style="width:24px; height:24px; background:#38A169; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-                            <polyline points="20 6 9 17 4 12"></polyline>
-                        </svg>
-                    </div>
-                    <h4 style="margin:0; font-size:1.16rem; color:#2D3748; font-weight:800; letter-spacing:-0.4px;">ประวัติการโดเนทของ <span style="font-weight:400;">${socialUsername}</span></h4>
+            <div style="background: white; border-radius: 32px; padding: 45px 25px 25px; border: 1px solid #E2E8F0; margin-top: 50px; text-align: left; position: relative;">
+                <div style="position: absolute; top: -18px; left: 50%; transform: translateX(-50%); background: white; border: 1.5px solid #E2E8F0; padding: 8px 30px; border-radius: 50px; white-space: nowrap; box-shadow: 0 4px 12px rgba(0,0,0,0.03);">
+                    <h4 style="margin:0; font-size:1rem; color:#000000; font-weight:800; letter-spacing:-0.4px;">ประวัติการโดเนทของ <span style="font-weight:400;">${socialUsername}</span></h4>
                 </div>
                 <div class="history-list">
         `;
@@ -451,7 +435,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const prepareStep3Data = () => {
         // Prepare data state
         const r = mergedDonationData.receive;
-        
+
         // If they have past data and haven't clicked "Change", show the past box
         if (r && !isChangingReception) {
             // updateStep3UI handles the pastBox display
@@ -460,7 +444,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!selectedMethod) selectedMethod = 'onsite';
             selectMethod(selectedMethod);
         }
-        
+
         updateStep3UI();
     };
 
@@ -469,15 +453,15 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelectorAll('.delivery-method-card').forEach(card => {
             const isActive = card.dataset.method === method;
             card.classList.toggle('active', isActive);
-            
+
             // Visual feedback - synced with CSS class but keeping inline as backup/override
             card.style.borderColor = isActive ? '#286ACD' : '#E2E8F0';
             card.style.background = isActive ? 'linear-gradient(135deg, #E6F0FF 0%, #D1E4FF 100%)' : 'white';
-            
+
             const iconCircle = card.querySelector('.method-icon-circle');
             const svg = card.querySelector('.icon-svg');
             const label = card.querySelector('.method-label');
-            
+
             if (iconCircle) iconCircle.style.background = isActive ? '#286ACD' : '#F7FAFC';
             if (svg) svg.style.stroke = isActive ? 'white' : '#718096';
             if (label) label.style.color = isActive ? '#286ACD' : '#718096';
@@ -487,7 +471,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (addrFields) {
             addrFields.style.display = (method === 'delivery') ? 'block' : 'none';
         }
-        
+
         // Prefill if changing from past data
         if (method === 'delivery' && mergedDonationData.receive) {
             const r = mergedDonationData.receive;
@@ -495,7 +479,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const nameEl = document.getElementById('ship-name');
             const addrEl = document.getElementById('shipping-address');
             const postEl = document.getElementById('postal-code');
-            
+
             if (phoneEl) phoneEl.value = r.shipping_phone || '';
             if (nameEl) nameEl.value = r.recipient_name || '';
             if (addrEl) addrEl.value = r.shipping_address || '';
@@ -527,7 +511,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         this.innerText = 'เลือกแล้ว';
         this.style.background = '#38A169';
-        
+
         // Minor delay to show feedback then show confirmed state in summary or just proceed
         updateStep3UI();
     });
@@ -614,7 +598,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const isUsingOldData = mergedDonationData.receive && !isChangingReception;
 
         const isFreeDelivery = isUsingOldData && hasPastDelivery;
-        
+
         if (isDelivery) {
             feeRow.style.display = 'flex';
             deliveryFeeEl.innerText = isFreeDelivery ? '0' : '50';
@@ -634,7 +618,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const rec = mergedDonationData.receive;
             document.getElementById('past-type-text').innerText = rec.delivery_type === 'delivery' ? 'จัดส่งตามที่อยู่' : 'รับหน้างาน';
-            
+
             if (rec.delivery_type === 'delivery') {
                 document.getElementById('past-details').style.display = 'block';
                 document.getElementById('past-ship-name').innerText = rec.recipient_name || '-';
@@ -657,34 +641,44 @@ document.addEventListener('DOMContentLoaded', () => {
         const giftMoreEl = document.getElementById('step3-giveaway-more');
         const giftImg = document.getElementById('step3-giveaway-img');
 
+        const pillText = document.getElementById('step3-giveaway-pill-text');
+
         if (!giftInfo.hasAny) {
-            giftStatusBox.innerText = 'คุณไม่ได้รับ Giveaway';
+            if (pillText) {
+                pillText.innerText = 'Giveaway ที่คุณได้รับ';
+                pillText.style.color = '#3487ff';
+            }
+            giftStatusBox.innerHTML = '<p style="margin:0; font-weight:700; color:#ff67a3; font-size:1rem;">คุณไม่ได้รับ Giveaway</p>';
             giftMoreEl.innerText = `(บริจาคอีก ${formatAmount(giftInfo.diff)} เพื่อรับ Giveaway)`;
             giftImg.style.display = 'block';
         } else {
-            let giftStr = `<p style="margin:0; font-weight:700; color:#4A5568;">Giveaway ที่คุณได้รับจากยอดโดเนทสะสม คือ</p>`;
-            giftStr += getGiftHtml(giftInfo.gifts);
-            giftStr += `<p style="margin:0; font-size:0.85rem; color:#718096; margin-top:15px;">( อาจมีการปรับเปลี่ยน หลังคำนวณค่าจัดส่ง )</p>`;
+            if (pillText) {
+                pillText.innerText = 'Giveaway ที่คุณได้รับ';
+                pillText.style.color = '#3487ff';
+            }
+            let giftStr = getGiftHtml(giftInfo.gifts);
+            giftStr += `<p style="margin:0; font-size:0.85rem; color:#718096; margin-top:15px; font-weight:500;">( อาจมีการเปลี่ยนแปลง หลังคำนวณค่าจัดส่ง )</p>`;
             giftStatusBox.innerHTML = giftStr;
             giftMoreEl.innerText = '';
             giftImg.style.display = 'none';
         }
 
         const deliveryNotice = document.getElementById('delivery-notice');
-        const deliveryFields = document.getElementById('delivery-form-fields');
+        const deliveryFields = document.getElementById('new-delivery-address-fields');
 
         if (isDelivery && !hasPastDelivery) {
             if (deliveryNotice) deliveryNotice.style.display = 'block';
             if (!giftInfo.hasAny) {
                 if (deliveryNotice) {
-                    deliveryNotice.innerHTML = '<p style="color:#E53E3E; font-weight:700; font-size:0.9rem; margin-bottom:5px;">หักค่าส่ง 50 บาท พบว่าคุณไม่ได้รับ Giveaway</p>' +
-                        '<p style="color:#E53E3E; font-weight:700; font-size:0.9rem; margin:0;">สามารถเปลี่ยนเป็นรับหน้างานได้ ไม่เสียค่าใช้จ่ายเพิ่มเติม</p>';
+                    deliveryNotice.innerHTML =
+                        '<p style="color:#FF0000; font-weight:800; font-size:1.05rem; margin-bottom:8px; line-height:1.4;">หักค่าส่ง 50 บาท จากยอดโดเนทสะสม<br>พบว่าคุณไม่ได้รับ Giveaway</p>' +
+                        '<p style="color:#4A5568; font-size:0.95rem; margin:0; font-weight:500;">(เปลี่ยนเป็นรับหน้างาน ไม่เพิ่มค่าใช้จ่าย)</p>';
                 }
                 if (deliveryFields) deliveryFields.style.display = 'none';
                 document.getElementById('btn-submit-final').style.display = 'none';
             } else {
                 if (deliveryNotice) {
-                    deliveryNotice.innerHTML = '<p style="color:#E53E3E; font-weight:700; font-size:0.9rem; margin-bottom:5px;">หักค่าส่ง 50 บาท จากยอดโดเนทสะสม</p>' +
+                    deliveryNotice.innerHTML = '<p style="color:#E53E3E; font-weight:700; font-size:0.95rem; margin-bottom:5px;">หักค่าส่ง 50 บาท จากยอดโดเนทสะสม</p>' +
                         '<p id="delivery-notice-sub" style="color:#E53E3E; font-weight:700; font-size:0.9rem; margin:0; display:none;"></p>' +
                         '<p id="delivery-notice-math" style="color:#718096; font-size:0.85rem; margin-top:5px; margin-bottom:0; display:block;"></p>';
                     const mathEl = document.getElementById('delivery-notice-math');
