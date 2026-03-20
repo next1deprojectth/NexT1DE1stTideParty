@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const RECEIVER_NAME_TARGET = "ธัญดา";
     const WEBHOOK_URL = "https://next1de.app.n8n.cloud/webhook/6e4a539b-5580-40f9-a85f-47a488a2e842";
-    const API_ENDPOINT = "https://script.google.com/macros/s/AKfycbyW7EBmF-Epm9ZM77llKh1fZNDpHMod5_Q6RxwPYRWTyXTpgHjXKjQhCkLazze07WtAhQ/exec";
+    const API_ENDPOINT = "https://script.google.com/macros/s/AKfycbxVTIIijNn_TOaHrAdV-Gc0UB8azbEJmalF-NVzeAoAKD4ZOZP22NPZyGtJCKnNi7rQpA/exec";
     const GET_API_URL = API_ENDPOINT;
     const SAVE_API_URL = API_ENDPOINT;
     const UPLOAD_API_URL = API_ENDPOINT;
@@ -834,10 +834,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify(body)
             });
 
-            setTimeout(() => {
-                hideLoading();
-                showSuccessScreen();
-            }, 1000);
+            hideLoading();
+            showSuccessScreen();
 
         } catch (error) {
             console.error("Save Error:", error);
