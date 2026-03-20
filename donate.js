@@ -97,26 +97,37 @@ document.addEventListener('DOMContentLoaded', () => {
     })}`;
 
     const getNetAmount = () => {
-        let base = currentTotalOriginal;
-        let fee = 0;
-
-        const isDelivery = selectedMethod === 'delivery';
-        const isPickup = selectedMethod === 'onsite';
-        const hasPastDelivery = mergedDonationData.receive && mergedDonationData.receive.delivery_type === 'delivery';
-        const isUsingOldData = mergedDonationData.receive && !isChangingReception;
-
-        // If user has past delivery record but chooses pickup now (changing), refund 50
-        if (isPickup && isChangingReception && hasPastDelivery) {
-            base += 50;
+        let finalMethod = selectedMethod;
+        if (mergedDonationData.receive && !isChangingReception) {
+            finalMethod = mergedDonationData.receive.delivery_type;
         }
 
-        // Charge fee if choosing delivery AND not using a 0-fee old record
-        const isFreeDelivery = isUsingOldData && hasPastDelivery;
-        if (isDelivery && !isFreeDelivery) {
-            fee = 50;
+        if (finalMethod === 'delivery') {
+            return Math.max(0, currentTotalOriginal - 50);
         }
+        return currentTotalOriginal;
+    };
 
-        return Math.max(0, base - fee);
+    const resetStep2UI = () => {
+        const uploadContainer = document.getElementById('upload-slip-container');
+        const summaryContainer = document.getElementById('step2-summary-container');
+        const verificationDetails = document.getElementById('slip-verification-details');
+        const previewWrapper = document.getElementById('upload-preview-wrapper');
+        const zoneContent = document.getElementById('upload-zone-content');
+        const uploadLoading = document.getElementById('api-loading');
+        const fileInput = document.getElementById('slip-file-input');
+        const feeNotice = document.getElementById('step2-fee-notice');
+        const giveawayImg = document.getElementById('donate-giveaway-img-wrapper');
+
+        if (uploadContainer) uploadContainer.style.display = 'block';
+        if (summaryContainer) summaryContainer.style.display = 'none';
+        if (verificationDetails) verificationDetails.style.display = 'none';
+        if (previewWrapper) previewWrapper.style.display = 'none';
+        if (zoneContent) zoneContent.style.display = 'flex';
+        if (uploadLoading) uploadLoading.style.display = 'none';
+        if (fileInput) fileInput.value = '';
+        if (feeNotice) feeNotice.style.display = 'block';
+        if (giveawayImg) giveawayImg.style.display = 'block';
     };
 
     const setStepUI = (step) => {
@@ -133,18 +144,30 @@ document.addEventListener('DOMContentLoaded', () => {
             bars[0].classList.add('step-1-active');
             stepLabelText.innerText = 'ระบุตัวตน (1/3)';
             window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            // RESET Step 1 UI
+            const socialLoading = document.getElementById('api-loading-social');
+            if (socialLoading) socialLoading.style.display = 'none';
+            const socialConfirm = document.getElementById('social-confirm-box');
+            if (socialConfirm) socialConfirm.style.display = 'none';
+
+            // Also clear Step 2 state when going back to Step 1
+            resetStep2UI();
         } else if (step === 2) {
             step2.style.display = 'block';
             bars[0].classList.add('step-1-active');
             bars[1].classList.add('step-2-active');
-            stepLabelText.innerText = 'อัปโหลดสลิป ใส่นามแฝง และยืนยันข้อมูล (2/3)';
+            stepLabelText.innerText = 'ข้อมูลการโดเนท (2/3)';
             window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            // CRITICAL RESET for Step 2
+            resetStep2UI();
         } else if (step === 3) {
             step3.style.display = 'block';
             bars[0].classList.add('step-1-active');
             bars[1].classList.add('step-2-active');
             bars[2].classList.add('step-3-active');
-            stepLabelText.innerText = 'Giveaway (3/3)';
+            stepLabelText.innerText = 'ข้อมูล Giveaway (3/3)';
             window.scrollTo({ top: 0, behavior: 'smooth' });
             prepareStep3Data();
         }
@@ -295,14 +318,14 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('slip-verification-details').style.display = 'block';
 
             if (!aiData || !aiData.is_slip) {
-                document.getElementById('verification-error-text').innerText = 'เกิดข้อผิดพลาด, ไม่สามารถอ่านสลิปได้';
+                document.getElementById('verification-error-text').innerText = 'ไม่สามารถอ่านสลิปได้ กรุณาลองใหม่อีกครั้ง';
                 document.getElementById('verification-error-text').style.display = 'block';
                 document.getElementById('verification-success-data').style.display = 'none';
                 slipData = { is_slip: false, amount: 0, sender_name: '', date: '' };
             } else {
                 let rName = aiData.receiver_name || '';
                 if (!rName.includes(RECEIVER_NAME_TARGET)) {
-                    document.getElementById('verification-error-text').innerText = 'เกิดข้อผิดพลาด, บัญชีปลายทางไม่ถูกต้อง';
+                    document.getElementById('verification-error-text').innerText = 'อ่านบัญชีปลายทางไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง';
                     document.getElementById('verification-error-text').style.display = 'block';
                     document.getElementById('verification-success-data').style.display = 'none';
                     slipData = aiData;
@@ -335,13 +358,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const getGiftHtml = (gifts) => {
         let h = '<div style="display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin-top:10px;">';
-        const badgeStyle = (bgColor, textColor, borderColor) => `style="background:${bgColor}; color:${textColor}; border:1.5px solid ${borderColor}; padding:6px 14px; border-radius:16px; font-size:0.85rem; font-weight:700; white-space:nowrap; box-shadow: 0 2px 4px rgba(0,0,0,0.03);"`;
+        const badgeStyle = `style="background:#404040; color:white; padding:6px 18px; border-radius:50px; font-size:0.85rem; font-weight:700; white-space:nowrap; box-shadow: 0 4px 10px rgba(0,0,0,0.1); border:none;"`;
 
-        if (gifts.stickers > 0) h += `<span ${badgeStyle('#FFF5F5', '#E53E3E', '#FED7E2')}>• สติกเกอร์ X ${gifts.stickers}</span>`;
-        if (gifts.photoFrame > 0) h += `<span ${badgeStyle('#EBF8FF', '#3182CE', '#BEE3F8')}>• เฟรมใส่การ์ด X ${gifts.photoFrame}</span>`;
-        if (gifts.foodFrame > 0) h += `<span ${badgeStyle('#F0FFF4', '#38A169', '#C6F6D5')}>• กรอบส่องอาหาร X ${gifts.foodFrame}</span>`;
-        if (gifts.lightSign > 0) h += `<span ${badgeStyle('#FFFFF0', '#B7791F', '#FEFCBF')}>• ป้ายไฟ X ${gifts.lightSign}</span>`;
-        if (gifts.workshop > 0) h += `<span ${badgeStyle('#F9F5FF', '#805AD5', '#E9D8FD')}>• WORKSHOP X ${gifts.workshop}</span>`;
+        if (gifts.stickers > 0) h += `<span ${badgeStyle}>สติกเกอร์ X ${gifts.stickers}</span>`;
+        if (gifts.photoFrame > 0) h += `<span ${badgeStyle}>เฟรมใส่การ์ด X ${gifts.photoFrame}</span>`;
+        if (gifts.foodFrame > 0) h += `<span ${badgeStyle}>กรอบส่องอาหาร X ${gifts.foodFrame}</span>`;
+        if (gifts.lightSign > 0) h += `<span ${badgeStyle}>ป้ายไฟ X ${gifts.lightSign}</span>`;
+        if (gifts.workshop > 0) h += `<span ${badgeStyle}>WORKSHOP X ${gifts.workshop}</span>`;
 
         h += '</div>';
         return h;
@@ -349,12 +372,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const updateStep2Summary = () => {
         const hasPastDelivery = mergedDonationData.receive && mergedDonationData.receive.delivery_type === 'delivery';
-        // Only show total donation amount as requested
-        document.getElementById('cumulative-amount').innerText = formatAmount(currentTotalOriginal);
+        const netAmt = (hasPastDelivery) ? currentTotalOriginal - 50 : currentTotalOriginal;
 
-        // Hide all giveaway-related elements in Step 2 card
+        // Show net donation amount (total minus fee if applicable)
+        document.getElementById('cumulative-amount').innerText = formatAmount(netAmt);
+
+        // Show/Hide delivery fee label below the amount
         const deliveryFeeEl = document.getElementById('cumulative-delivery-fee');
-        if (deliveryFeeEl) deliveryFeeEl.style.display = 'none';
+        if (deliveryFeeEl) {
+            if (hasPastDelivery) {
+                deliveryFeeEl.style.display = 'block';
+                deliveryFeeEl.style.color = '#91A3FF';
+                deliveryFeeEl.style.fontSize = '1.2rem';
+                deliveryFeeEl.style.fontWeight = '700';
+                deliveryFeeEl.style.marginTop = '-5px';
+                deliveryFeeEl.style.marginBottom = '10px';
+                deliveryFeeEl.innerText = '+ 50 บาทค่าส่ง';
+            } else {
+                deliveryFeeEl.style.display = 'none';
+            }
+        }
 
         const giftBox = document.getElementById('step2-giveaway-box');
         if (giftBox) giftBox.style.display = 'none';
@@ -408,14 +445,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (hasPastDelivery) {
             timelineHtml += `
-                <div style="display:flex; justify-content:center; align-items:center; gap:8px; margin-top:20px;">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#E53E3E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <line x1="12" y1="8" x2="12" y2="12"></line>
-                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
-                    </svg>
-                    <p style="color:#E53E3E; font-size:0.85rem; margin:0; font-weight:700;">คุณมีหักค่าส่ง Giveaway 50 บาท จากยอดโดเนท</p>
-                </div>`;
+            <div style="display:flex; justify-content:center; margin-top:25px; margin-bottom:5px;">
+                <div style="display:inline-flex; align-items:center; gap:8px; background:#FFF5F5; border:1px solid #FEB2B2; padding:8px 20px; border-radius:15px; box-shadow:0 4px 10px rgba(229, 62, 62, 0.05);">
+                    <p style="color:#E53E3E; font-size:0.9rem; margin:0; font-weight:800; letter-spacing:-0.2px;">คุณมีค่าส่ง Giveaway 50 บาท</p>
+                </div>
+            </div>`;
         }
 
         timelineHtml += `</div></div>`;
@@ -593,15 +627,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const feeRow = document.getElementById('summary-fee-row');
         const deliveryFeeEl = document.getElementById('summary-delivery-fee');
-        const isDelivery = selectedMethod === 'delivery';
-        const hasPastDelivery = mergedDonationData.receive && mergedDonationData.receive.delivery_type === 'delivery';
-        const isUsingOldData = mergedDonationData.receive && !isChangingReception;
 
-        const isFreeDelivery = isUsingOldData && hasPastDelivery;
+        let finalMethod = selectedMethod;
+        if (mergedDonationData.receive && !isChangingReception) {
+            finalMethod = mergedDonationData.receive.delivery_type;
+        }
 
-        if (isDelivery) {
+        if (finalMethod === 'delivery') {
             feeRow.style.display = 'flex';
-            deliveryFeeEl.innerText = isFreeDelivery ? '0' : '50';
+            deliveryFeeEl.innerText = '50';
         } else {
             feeRow.style.display = 'none';
         }
@@ -663,16 +697,17 @@ document.addEventListener('DOMContentLoaded', () => {
             giftImg.style.display = 'none';
         }
 
+        const hasPastDelivery = mergedDonationData.receive && mergedDonationData.receive.delivery_type === 'delivery';
         const deliveryNotice = document.getElementById('delivery-notice');
         const deliveryFields = document.getElementById('new-delivery-address-fields');
 
-        if (isDelivery && !hasPastDelivery) {
+        if (finalMethod === 'delivery' && !hasPastDelivery) {
             if (deliveryNotice) deliveryNotice.style.display = 'block';
             if (!giftInfo.hasAny) {
                 if (deliveryNotice) {
                     deliveryNotice.innerHTML =
                         '<p style="color:#FF0000; font-weight:800; font-size:1.05rem; margin-bottom:8px; line-height:1.4;">หักค่าส่ง 50 บาท จากยอดโดเนทสะสม<br>พบว่าคุณไม่ได้รับ Giveaway</p>' +
-                        '<p style="color:#4A5568; font-size:0.95rem; margin:0; font-weight:500;">(เปลี่ยนเป็นรับหน้างาน ไม่เพิ่มค่าใช้จ่าย)</p>';
+                        '<p style="color:#4A5568; font-size:0.95rem; margin:0; font-weight:500;">(เปลี่ยนเป็นรับหน้างาน ไม่เพิ่มค่าใช้จ่ายก่อน แล้วค่อยโอนค่าส่ง 50 บาททีหลัง)</p>';
                 }
                 if (deliveryFields) deliveryFields.style.display = 'none';
                 document.getElementById('btn-submit-final').style.display = 'none';
@@ -693,7 +728,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             if (deliveryNotice) deliveryNotice.style.display = 'none';
             document.getElementById('btn-submit-final').style.display = 'block';
-            if (isDelivery && hasPastDelivery) {
+            if (finalMethod === 'delivery' && hasPastDelivery) {
                 if (deliveryFields) deliveryFields.style.display = 'block';
             }
         }
@@ -839,6 +874,16 @@ document.addEventListener('DOMContentLoaded', () => {
         const netAmt = getNetAmount();
         document.getElementById('success-total-amount').innerText = formatAmount(netAmt);
 
+        // Hide fee on final screen per user request
+        const successFeeEl = document.getElementById('success-delivery-fee');
+        if (successFeeEl) successFeeEl.style.display = 'none';
+
+        // Add Hashtags
+        const hashtagsEl = document.getElementById('success-hashtags');
+        if (hashtagsEl) {
+            hashtagsEl.innerText = '#NextT1DE1stTideParty #NexT1DE';
+        }
+
         const giftInfo = calculateGifts(netAmt);
         const listEl = document.getElementById('success-gift-list');
 
@@ -851,23 +896,7 @@ document.addEventListener('DOMContentLoaded', () => {
             nextGoal.innerText = `บริจาคอีก ${formatAmount(giftInfo.diff)} เพื่อรับ Giveaway เพิ่มมากขึ้น`;
 
             const list = document.getElementById('success-gift-list');
-            list.innerHTML = '';
-
-            const giftNames = {
-                stickers: 'สติกเกอร์',
-                photoFrame: 'เฟรมใส่การ์ด',
-                foodFrame: 'กรอบส่องอาหาร',
-                lightSign: 'ป้ายไฟ',
-                workshop: 'WORKSHOP'
-            };
-
-            Object.entries(giftInfo.gifts).forEach(([key, count]) => {
-                if (count > 0) {
-                    const li = document.createElement('li');
-                    li.innerText = `${giftNames[key]} X ${count}`;
-                    list.appendChild(li);
-                }
-            });
+            list.innerHTML = getGiftHtml(giftInfo.gifts);
         } else {
             giftWrapper.style.display = 'none';
             nextGoal.style.display = 'none';
@@ -880,14 +909,39 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     document.getElementById('nav-back').addEventListener('click', () => {
-        if (currentState === 3) setStepUI(2);
-        else if (currentState === 2) setStepUI(1);
-        else window.location.href = 'index.html';
+        if (currentState === 3) {
+            setStepUI(2);
+        } else if (currentState === 2) {
+            setStepUI(1);
+        } else {
+            window.location.href = 'index.html';
+        }
     });
-    document.querySelector('.btn-success-share').addEventListener('click', () => {
-        if (navigator.share) navigator.share({ title: 'NexT1DE', url: window.location.origin }).catch(e => e);
-        else alert('คัดลอกลิงก์เพื่อแชร์: ' + window.location.href);
-    });
+    const shareBtn = document.querySelector('.btn-success-share');
+    if (shareBtn) {
+        shareBtn.innerHTML = `
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
+                <polyline points="16 6 12 2 8 6"></polyline>
+                <line x1="12" y1="2" x2="12" y2="15"></line>
+            </svg>
+            แชร์
+        `;
+        shareBtn.addEventListener('click', () => {
+            const shareUrl = 'https://next1deprojectth.github.io/NexT1DE1stTideParty';
+            if (navigator.share) {
+                navigator.share({
+                    title: 'NexT1DE1stTideParty',
+                    text: 'ร่วมสนับสนุนโปรเจกต์ครบรอบ 1 ปี NexT1DE!',
+                    url: shareUrl
+                }).catch(e => console.log('Share failed', e));
+            } else {
+                navigator.clipboard.writeText(shareUrl).then(() => {
+                    alert('คัดลอกลิงก์เรียบร้อยแล้ว');
+                });
+            }
+        });
+    }
 });
 
 // --- Copy Function ---
