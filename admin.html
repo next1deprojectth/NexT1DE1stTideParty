@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - NexT1DE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700;800&family=Outfit:wght@700;800&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="images/logo-project.png">
+    <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+
+    <!-- Loading Screen -->
+    <div id="loading" class="loading-overlay">
+        <div class="spinner"></div>
+        <p style="font-weight: 700; color: var(--text-muted);">กำลังโหลดข้อมูลแอดมิน...</p>
+    </div>
+
+    <div class="admin-container">
+        
+        <!-- Header Section -->
+        <header class="admin-header">
+            <div class="admin-logo">
+                <img src="images/logo-project.png" alt="Logo">
+                <div class="admin-title">
+                    <h1>Admin Dashboard</h1>
+                    <p style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">NexT1DE 1st Tide Party Control Panel</p>
+                </div>
+            </div>
+
+            <div class="admin-controls">
+                <select id="filter-activity" class="search-input" style="width: auto; padding-right: 35px;">
+                    <option value="all">กิจกรรมทั้งหมด</option>
+                    <option value="donate">เฉพาะ Donate</option>
+                    <option value="workshop">เฉพาะ Workshop</option>
+                    <option value="both">ทั้งคู่</option>
+                </select>
+                <select id="filter-shipping" class="search-input" style="width: auto; padding-right: 35px;">
+                    <option value="all">วิธีรับทั้งหมด</option>
+                    <option value="delivery">เฉพาะจัดส่ง (ส่งบ้าน)</option>
+                    <option value="onsite">รับหน้างาน (Onsite)</option>
+                </select>
+                <input type="text" id="search-input" class="search-input" placeholder="ค้นหาชื่อ..." style="width: 150px;">
+                <button onclick="fetchData()" class="btn-refresh">
+                    Refresh
+                </button>
+            </div>
+        </header>
+
+        <!-- Summary Statistics Grid -->
+        <div class="summary-grid">
+            <div class="summary-card blue-card">
+                <span class="card-label">ผู้ร่วมกิจกรรมทั้งหมด</span>
+                <span id="stat-total-users" class="card-value">0</span>
+            </div>
+            <div class="summary-card green-card">
+                <span class="card-label">ยอดโดเนทสุทธิ (Net Donate)</span>
+                <span id="stat-total-net" class="card-value">฿0</span>
+            </div>
+            <div class="summary-card purple-card">
+                <span class="card-label">ผู้มีสิทธิ์เวิร์คช็อป (Workshop)</span>
+                <span id="stat-total-workshop" class="card-value">0</span>
+            </div>
+            <div class="summary-card orange-card">
+                <span class="card-label">สัดส่วนจัดส่ง (ส่งบ้าน / รับงาน)</span>
+                <span id="stat-shipping-ratio" class="card-value">0 / 0</span>
+            </div>
+        </div>
+
+        <!-- Main User List Table -->
+        <section class="data-section">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+                <h2 style="font-size: 1.15rem; font-weight: 800; letter-spacing: -0.01em;">รายชื่อผู้ร่วมกิจกรรม</h2>
+                <div style="display: flex; gap: 10px; font-size: 0.75rem; font-weight: 600; color: var(--text-muted);">
+                    <span id="count-filtered">พบ 0 คน</span>
+                </div>
+            </div>
+
+            <div class="table-wrapper">
+                <table id="admin-table">
+                    <thead>
+                        <tr>
+                            <th>ผู้ใช้ / โซเชียล</th>
+                            <th>กิจกรรม</th>
+                            <th>ของรางวัล</th>
+                            <th>ยอดโดเนท (สุทธิ)</th>
+                            <th>สิทธิ์ Workshop</th>
+                            <th>วิธีรับของ</th>
+                            <th>ข้อมูลจัดส่ง & ติดต่อ</th>
+                            <th>สถานะการดำเนินการ</th>
+                        </tr>
+                    </thead>
+                    <tbody id="user-rows">
+                        <!-- User rows injected by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" style="position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px); background: #2D3748; color: white; padding: 12px 25px; border-radius: 50px; font-weight: 700; font-size: 0.9rem; transition: all 0.3s; z-index: 10000; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+        Copied to clipboard!
+    </div>
+
+    <script src="config.js"></script>
+    <script src="admin.js"></script>
+
+</body>
+</html>
