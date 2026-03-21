@@ -1,0 +1,48 @@
+/* profile.css */
+.profile-card {
+    background: white;
+    border-radius: 20px;
+    padding: 25px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+    border: 1px solid #E2E8F0;
+}
+
+.profile-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.profile-avatar {
+    width: 60px;
+    height: 60px;
+    background: #EBF4FF;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #286ACD;
+    font-size: 1.5rem;
+    font-weight: 800;
+}
+
+.profile-info h2 {
+    margin: 0 0 4px;
+    font-size: 1.3rem;
+    color: #2D3748;
+    font-weight: 800;
+}
+
+.profile-info p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #718096;
+}
+
+.section-title {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: #2D3748;
+    margin-bottom: 15px;
+}
