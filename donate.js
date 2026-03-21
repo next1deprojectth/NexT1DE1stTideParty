@@ -234,7 +234,7 @@ document.addEventListener('DOMContentLoaded', () => {
     btnConfirmStep1.addEventListener('click', async () => {
         const val = socialInput.value.trim();
         if (!val) {
-            alert('กรุณากรอก Username บัญชีโซเชียลของคุณ');
+            alert('กรุณากรอกชื่อบัญชีโซเชียลของคุณ');
             return;
         }
         showLoading('กำลังตรวจสอบข้อมูลรับสิทธิ์...');
@@ -707,7 +707,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 pillText.style.color = '#3487ff';
             }
             giftStatusBox.innerHTML = '<p style="margin:0; font-weight:700; color:#ff67a3; font-size:1rem;">คุณไม่ได้รับ Giveaway</p>';
-            giftMoreEl.innerText = `(บริจาคอีก ${formatAmount(giftInfo.diff)} เพื่อรับ Giveaway)`;
+            giftMoreEl.innerText = `(โดเนทเพิ่ม ${formatAmount(giftInfo.diff)} เพื่อรับ Giveaway มากขึ้น)`;
             giftImg.style.display = 'block';
         } else {
             if (pillText) {
@@ -899,7 +899,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Add Hashtags
         const hashtagsEl = document.getElementById('success-hashtags');
         if (hashtagsEl) {
-            hashtagsEl.innerText = '#NextT1DE1stTideParty #NexT1DE';
+            hashtagsEl.innerText = '#NextT1DE1stTideParty #NexT1DEProjectTH #NexT1DE';
         }
 
         const giftInfo = calculateGifts(netAmt);

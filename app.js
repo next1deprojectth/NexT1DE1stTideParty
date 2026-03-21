@@ -260,7 +260,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (statusMsgEl) {
             const diff = total - targetAmount;
             if (diff < 0) {
-                statusMsgEl.innerText = `ขาดอีก ${formatNumber(Math.abs(diff))} บาท`;
+                statusMsgEl.innerText = `เหลืออีกเพียง ${formatNumber(Math.abs(diff))}  บาท ก็จะถึงเป้าหมายแล้ว`;
                 statusMsgEl.className = 'donation-status-msg status-short';
             } else {
                 statusMsgEl.innerText = `ยอดเกินมา ${formatNumber(diff)} บาท`;
