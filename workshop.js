@@ -580,16 +580,6 @@ document.addEventListener('DOMContentLoaded', () => {
         let finalTotalRights = totalRights + itemCount;
         document.getElementById('success-total-rights').innerText = finalTotalRights;
 
-        const qrContainer = document.getElementById('qrcode-container');
-        qrContainer.innerHTML = '';
-        new QRCode(qrContainer, {
-            text: `WK-${selectedSocial}-${socialNameInput}`,
-            width: 150,
-            height: 150,
-            colorDark: "#0A1628",
-            colorLight: "#ffffff",
-            correctLevel: QRCode.CorrectLevel.H
-        });
     }
 
     document.getElementById('btn-back-home').addEventListener('click', () => {
