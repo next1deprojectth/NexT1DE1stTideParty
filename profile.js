@@ -292,16 +292,13 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const calculateGifts = (totalAmount) => {
-        const SET_4_PRICE = 1277;
-        const fullSets = Math.floor(Math.max(0, totalAmount) / SET_4_PRICE);
-        const remainder = Math.max(0, totalAmount) % SET_4_PRICE;
-
         const gifts = {
-            stickers: fullSets + (remainder >= 177 ? 1 : 0),
-            photoFrame: fullSets + (remainder >= 477 ? 1 : 0),
-            foodFrame: fullSets + (remainder >= 777 ? 1 : 0),
-            lightSign: fullSets,
-            workshop: fullSets
+            a6Sticker: (totalAmount >= 177) ? 1 : 0,
+            uvSticker: (totalAmount >= 477) ? 1 : 0,
+            clearPurse: (totalAmount >= 477) ? 1 : 0,
+            acrylicFrame: (totalAmount >= 777) ? 1 : 0,
+            lightSignStrap: (totalAmount >= 1277) ? 1 : 0,
+            workshop: (totalAmount >= 1277) ? 1 : 0
         };
 
         return { gifts };
@@ -311,11 +308,12 @@ document.addEventListener('DOMContentLoaded', () => {
         let h = '<div style="display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin-top:10px;">';
         const badgeStyle = `style="background:#E2E8F0; color:#2D3748; padding:6px 15px; border-radius:50px; font-size:0.8rem; font-weight:700; white-space:nowrap; border:1px solid #CBD5E0;"`;
 
-        if (gifts.stickers > 0) h += `<span ${badgeStyle}>สติกเกอร์ X ${gifts.stickers}</span>`;
-        if (gifts.photoFrame > 0) h += `<span ${badgeStyle}>เฟรมใส่การ์ด X ${gifts.photoFrame}</span>`;
-        if (gifts.foodFrame > 0) h += `<span ${badgeStyle}>กรอบส่องอาหาร X ${gifts.foodFrame}</span>`;
-        if (gifts.lightSign > 0) h += `<span ${badgeStyle}>ป้ายไฟ X ${gifts.lightSign}</span>`;
-        if (gifts.workshop > 0) h += `<span ${badgeStyle}>WORKSHOP X ${gifts.workshop}</span>`;
+        if (gifts.a6Sticker > 0) h += `<span ${badgeStyle}>A6 Sticker</span>`;
+        if (gifts.uvSticker > 0) h += `<span ${badgeStyle}>UV Sticker</span>`;
+        if (gifts.clearPurse > 0) h += `<span ${badgeStyle}>Clear Plastic Purse</span>`;
+        if (gifts.acrylicFrame > 0) h += `<span ${badgeStyle}>Acrylic Frame</span>`;
+        if (gifts.lightSignStrap > 0) h += `<span ${badgeStyle}>Light Sign Strap</span>`;
+        if (gifts.workshop > 0) h += `<span ${badgeStyle}>Work Shop</span>`;
 
         h += '</div>';
         return h;

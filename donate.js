@@ -68,25 +68,21 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const calculateGifts = (totalAmount) => {
-        const SET_4_PRICE = 1277;
-        const fullSets = Math.floor(Math.max(0, totalAmount) / SET_4_PRICE);
-        const remainder = Math.max(0, totalAmount) % SET_4_PRICE;
-
         const gifts = {
-            stickers: fullSets + (remainder >= 177 ? 1 : 0),
-            photoFrame: fullSets + (remainder >= 477 ? 1 : 0),
-            foodFrame: fullSets + (remainder >= 777 ? 1 : 0),
-            lightSign: fullSets,
-            workshop: fullSets
+            a6Sticker: (totalAmount >= 177) ? 1 : 0,
+            uvSticker: (totalAmount >= 477) ? 1 : 0,
+            clearPurse: (totalAmount >= 477) ? 1 : 0,
+            acrylicFrame: (totalAmount >= 777) ? 1 : 0,
+            lightSignStrap: (totalAmount >= 1277) ? 1 : 0,
+            workshop: (totalAmount >= 1277) ? 1 : 0
         };
 
         let nextGoal = 0;
         let diff = 0;
         if (totalAmount < 177) { nextGoal = 177; diff = 177 - totalAmount; }
-        else if (remainder < 177) { nextGoal = 177; diff = 177 - remainder; }
-        else if (remainder < 477) { nextGoal = 477; diff = 477 - remainder; }
-        else if (remainder < 777) { nextGoal = 777; diff = 777 - remainder; }
-        else if (remainder < 1277) { nextGoal = 1277; diff = 1277 - remainder; }
+        else if (totalAmount < 477) { nextGoal = 477; diff = 477 - totalAmount; }
+        else if (totalAmount < 777) { nextGoal = 777; diff = 777 - totalAmount; }
+        else if (totalAmount < 1277) { nextGoal = 1277; diff = 1277 - totalAmount; }
 
         return { gifts, diff, hasAny: totalAmount >= 177 };
     };
@@ -390,15 +386,16 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    const getGiftHtml = (gifts) => {
-        let h = '<div style="display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin-top:10px;">';
+    const getGiftHtml = (gifts, justify = 'center') => {
+        let h = `<div style="display:flex; flex-wrap:wrap; gap:8px; justify-content:${justify}; margin-top:10px; justify-content:center">`;
         const badgeStyle = `style="background:#404040; color:white; padding:6px 18px; border-radius:50px; font-size:0.7rem; font-weight:700; white-space:nowrap; box-shadow: 0 4px 10px rgba(0,0,0,0.1); border:none;"`;
 
-        if (gifts.stickers > 0) h += `<span ${badgeStyle}>สติกเกอร์ X ${gifts.stickers}</span>`;
-        if (gifts.photoFrame > 0) h += `<span ${badgeStyle}>เฟรมใส่การ์ด X ${gifts.photoFrame}</span>`;
-        if (gifts.foodFrame > 0) h += `<span ${badgeStyle}>กรอบส่องอาหาร X ${gifts.foodFrame}</span>`;
-        if (gifts.lightSign > 0) h += `<span ${badgeStyle}>ป้ายไฟ X ${gifts.lightSign}</span>`;
-        if (gifts.workshop > 0) h += `<span ${badgeStyle}>WORKSHOP X ${gifts.workshop}</span>`;
+        if (gifts.a6Sticker > 0) h += `<span ${badgeStyle}>A6 Sticker</span>`;
+        if (gifts.uvSticker > 0) h += `<span ${badgeStyle}>UV Sticker</span>`;
+        if (gifts.clearPurse > 0) h += `<span ${badgeStyle}>Clear Plastic Purse</span>`;
+        if (gifts.acrylicFrame > 0) h += `<span ${badgeStyle}>Acrylic Frame</span>`;
+        if (gifts.lightSignStrap > 0) h += `<span ${badgeStyle}>Light Sign Strap</span>`;
+        if (gifts.workshop > 0) h += `<span ${badgeStyle}>Work Shop</span>`;
 
         h += '</div>';
         return h;
@@ -738,7 +735,7 @@ document.addEventListener('DOMContentLoaded', () => {
             let giftStr = getGiftHtml(giftInfo.gifts);
             giftStr += `<p style="margin:0; font-size:0.85rem; color:#718096; margin-top:15px; font-weight:500;">( อาจมีการเปลี่ยนแปลง หลังคำนวณค่าจัดส่ง )</p>`;
             giftStatusBox.innerHTML = giftStr;
-            giftMoreEl.innerText = '';
+            giftMoreEl.innerText = (giftInfo.diff > 0) ? `(โดเนทเพิ่ม ${formatAmount(giftInfo.diff)} เพื่อรับ Giveaway มากขึ้น)` : '';
             giftImg.style.display = 'none';
         }
 
@@ -899,15 +896,8 @@ document.addEventListener('DOMContentLoaded', () => {
             step2Container.style.minHeight = step2Container.offsetHeight + 'px';
         }
 
-        uploadZone.style.display = 'none';
-        donateGiveawayImg.style.display = 'none';
-        document.getElementById('slip-verification-details').style.display = 'none';
-
-        const accountBox = document.getElementById('account-info-box-step2');
-        if (accountBox) accountBox.style.display = 'none';
-
-        const feeNotice = document.getElementById('step2-fee-notice');
-        if (feeNotice) feeNotice.style.display = 'none';
+        const uploadContainer = document.getElementById('upload-slip-container');
+        if (uploadContainer) uploadContainer.style.display = 'none';
 
         currentTotalOriginal = (mergedDonationData.total_amount || 0) + slipData.amount;
         verifiedSuccessSection.style.display = 'block';
@@ -946,24 +936,34 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (giftInfo.hasAny) {
             giftWrapper.style.display = 'block';
-            nextGoal.style.display = 'block';
-            nextGoal.innerText = `โดเนทอีก ${formatAmount(giftInfo.diff)} เพื่อรับ Giveaway เพิ่มมากขึ้น`;
+            if (giftInfo.diff > 0) {
+                nextGoal.style.display = 'block';
+                nextGoal.innerText = `โดเนทอีก ${formatAmount(giftInfo.diff)} เพื่อรับ Giveaway เพิ่มมากขึ้น`;
+            } else {
+                nextGoal.style.display = 'none';
+            }
 
-            const list = document.getElementById('success-gift-list');
-            list.innerHTML = getGiftHtml(giftInfo.gifts);
+            if (listEl) {
+                listEl.innerHTML = getGiftHtml(giftInfo.gifts, 'flex-start');
+            }
 
             const qrBox = document.getElementById('success-qr-code-box');
             const qrImg = document.getElementById('success-qr-img');
+            const divider = document.getElementById('success-divider');
+
             if (qrBox && qrImg) {
                 const profileUrl = "https://next1deprojectth.github.io/NexT1DE1stTideParty/profile.html?socialName=" + encodeURIComponent(socialInput.value || mergedDonationData.socialName) + "&socialType=" + encodeURIComponent(selectedSocial);
                 qrImg.src = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" + encodeURIComponent(profileUrl);
-                qrBox.style.display = 'block';
+                qrBox.style.display = 'flex';
+                if (divider) divider.style.display = 'block';
             }
         } else {
             giftWrapper.style.display = 'none';
             nextGoal.style.display = 'none';
             const qrBox = document.getElementById('success-qr-code-box');
+            const divider = document.getElementById('success-divider');
             if (qrBox) qrBox.style.display = 'none';
+            if (divider) divider.style.display = 'none';
         }
         screen.style.display = 'flex';
 
@@ -1008,8 +1008,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const shareUrl = 'https://next1deprojectth.github.io/NexT1DE1stTideParty';
             if (navigator.share) {
                 navigator.share({
-                    title: 'NexT1DE1stTideParty',
-                    text: 'ร่วมสนับสนุนโปรเจกต์ครบรอบ 1 ปี NexT1DE!',
                     url: shareUrl
                 }).catch(e => console.log('Share failed', e));
             } else {
@@ -1034,6 +1032,9 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+
+    // Initialize first step
+    setStepUI(1);
 });
 
 // --- Copy Function ---

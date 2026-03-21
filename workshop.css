@@ -417,7 +417,6 @@ body.donate-page-body {
     width: 100%;
     height: 100%;
     object-fit: contain;
-    background: #f0f0f0;
 }
 
 .preview-overlay {
@@ -1452,15 +1451,18 @@ body.donate-page-body {
 
 /* Step 0 Specific Layout */
 .step0-image-wrapper {
-    text-align: center; 
+    text-align: center;
     margin-bottom: 20px;
-    margin-top: 60px; /* Offset for fixed navbar when indicator is hidden */
+    margin-top: 60px;
+    /* Offset for fixed navbar when indicator is hidden */
 }
 
 @media screen and (max-width: 768px) {
     .step0-image-wrapper {
-        margin-bottom: 90px; /* Space for fixed button */
+        margin-bottom: 90px;
+        /* Space for fixed button */
     }
+
     .step0-btn-wrapper {
         position: fixed;
         bottom: 0;
@@ -1468,12 +1470,13 @@ body.donate-page-body {
         width: 100%;
         background: white;
         padding: 15px 20px;
-        box-shadow: 0 -4px 15px rgba(0,0,0,0.05);
+        box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.05);
         z-index: 1000;
         border-top-left-radius: 20px;
         border-top-right-radius: 20px;
         box-sizing: border-box;
     }
+
     .step0-btn-wrapper #btn-next-step0 {
         margin-top: 0 !important;
     }

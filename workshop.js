@@ -602,8 +602,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const shareUrl = 'https://next1deprojectth.github.io/NexT1DE1stTideParty';
             if (navigator.share) {
                 navigator.share({
-                    title: 'NexT1DE Workshop',
-                    text: 'ได้รับสิทธิ์เข้าร่วม Workshop งานครบรอบ 1 ปี NexT1DE!',
                     url: shareUrl
                 }).catch(e => console.log('Share failed', e));
             } else {
