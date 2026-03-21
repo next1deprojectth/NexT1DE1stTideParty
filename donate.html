@@ -122,7 +122,7 @@
                             <p
                                 style="font-weight:800; color:#E53E3E; font-size:1.1rem; margin:0; line-height: 1.4; letter-spacing: -0.2px;">
                                 หากจัดส่ง Giveaway มีค่าส่ง 50 บาท</p>
-                            <p style="font-size:0.85rem; color:#718096; margin-top:2px; font-weight:600; opacity:0.9;">
+                            <p style="font-size:0.65rem; color:#718096; margin-top:2px; font-weight:600; opacity:0.9;">
                                 (หักจากยอดโอนสะสมอัตโนมัติ หากต้องการ Giveaway ควรโอนเพิ่มจากยอดโดเนทที่คุณต้องการอีก 50
                                 บาท)</p>
                         </div>
@@ -204,11 +204,12 @@
 
                     <!-- Buttons -->
                     <div id="slip-verification-buttons"
-                        style="display: flex; gap: 10px; justify-content: center; margin-bottom: 20px;">
-                        <button type="button" id="btn-edit-slip-data"
-                            style="flex: 1; padding: 12px; background: #FC8181; color: #fff; border: none; border-radius: 20px; font-weight: 700; font-size: 1rem; cursor: pointer;">แก้ไข</button>
+                        style="display: flex; flex-direction: column; gap: 10px; justify-content: center; align-items: center; margin-bottom: 20px;">
                         <button type="button" id="btn-confirm-slip-data" class="gradient-btn-3"
-                            style="flex: 2; padding: 12px; border: none; border-radius: 20px; font-weight: 700; font-size: 1rem; cursor: pointer;">ข้อมูลถูกต้อง</button>
+                            style="width: 100%; padding: 12px; border: none; border-radius: 20px; font-weight: 700; font-size: 1rem; cursor: pointer;">ข้อมูลถูกต้อง</button>
+                        <p style="font-size: 0.85rem; color: #718096; margin: 5px 0 0 0;">หากพบข้อผิดพลาด กรุณา<a
+                                href="https://x.com/NT1_Project_TH" target="_blank"
+                                style="color: #286ACD; font-weight: 700; text-decoration: none;">ติดต่อทีมงาน</a></p>
                     </div>
                 </div>
             </div>
@@ -308,7 +309,7 @@
                 </div>
                 <div id="step3-giveaway-status"></div>
                 <p id="step3-giveaway-more"
-                    style="color:#718096; font-weight:600; font-size:0.85rem; margin-top:15px; margin-bottom:0;"></p>
+                    style="color:#718096; font-weight:600; font-size:0.65rem; margin-top:15px; margin-bottom:0;"></p>
             </div>
 
             <img src="images/donate_giftaway.png" id="step3-giveaway-img"
@@ -406,21 +407,21 @@
                     <div id="delivery-notice" class="delivery-notice" style="display:none; margin-bottom: 20px;"></div>
 
                     <div id="new-delivery-address-fields">
-                        <p style="font-weight:700; color:#718096; font-size:0.85rem; margin-bottom:8px;">ชื่อผู้รับ
+                        <p style="font-weight:700; color:#718096; font-size:0.65rem; margin-bottom:8px;">ชื่อผู้รับ
                         </p>
                         <input type="text" id="ship-name" class="form-input" placeholder="ชื่อ นามสกุลผู้รับ"
                             style="margin-bottom:15px;">
-                        <p style="font-weight:700; color:#718096; font-size:0.85rem; margin-bottom:8px;">เบอร์โทรศัพท์
+                        <p style="font-weight:700; color:#718096; font-size:0.65rem; margin-bottom:8px;">เบอร์โทรศัพท์
                         </p>
                         <input type="text" id="phone-number" class="form-input" placeholder="เบอร์โทรศัพท์"
                             style="margin-bottom:15px;" maxlength="10"
                             oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10)">
-                        <p style="font-weight:700; color:#718096; font-size:0.85rem; margin-bottom:8px;">ที่อยู่</p>
+                        <p style="font-weight:700; color:#718096; font-size:0.65rem; margin-bottom:8px;">ที่อยู่</p>
                         <textarea id="shipping-address" class="form-input"
                             placeholder="บ้านเลขที่, ถนน, ซอย, อำเภอ, จังหวัด, ตำบล" rows="3"
                             style="margin-bottom:15px;"></textarea>
 
-                        <p style="font-weight:700; color:#718096; font-size:0.85rem; margin-bottom:8px;">
+                        <p style="font-weight:700; color:#718096; font-size:0.65rem; margin-bottom:8px;">
                             รหัสไปรษณีย์
                         </p>
                         <input type="text" id="postal-code" class="form-input" placeholder="รหัสไปรษณีย์"
@@ -442,36 +443,7 @@
 
     </main>
 
-    <!-- Edit Slip Data Modal -->
-    <div id="edit-slip-modal"
-        style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:9999; justify-content:center; align-items:center;">
-        <div style="background:#fff; width:90%; max-width:400px; border-radius:15px; padding:20px; position:relative;">
-            <button id="close-edit-slip-modal"
-                style="position:absolute; top:15px; right:15px; background:transparent; border:none; font-size:1.5rem; cursor:pointer; color:#718096;">&times;</button>
-            <h3 style="text-align:center; font-size:1.1rem; color:#2D3748; margin-bottom:20px;">แก้ไขข้อมูล</h3>
 
-            <div style="margin-bottom:15px;">
-                <label style="display:block; font-size:0.9rem; color:#718096; margin-bottom:5px;">ชื่อผู้โอน</label>
-                <input type="text" id="edit-sender-name" class="form-input">
-            </div>
-
-            <div style="margin-bottom:15px; display:flex; gap:10px; align-items:center;">
-                <div style="flex: 1;">
-                    <label style="display:block; font-size:0.9rem; color:#718096; margin-bottom:5px;">จำนวนเงิน</label>
-                    <input type="number" id="edit-amount" class="form-input">
-                </div>
-                <div style="margin-top:20px; color:#A0AEC0; font-size:0.9rem;">บาท</div>
-            </div>
-
-            <div style="margin-bottom:25px;">
-                <label style="display:block; font-size:0.9rem; color:#718096; margin-bottom:5px;">วัน/เวลาโอน</label>
-                <input type="datetime-local" id="edit-date" class="form-input">
-            </div>
-
-            <button type="button" id="btn-save-edit-slip" class="gradient-btn-3"
-                style="width:100%; padding:15px; border:none; border-radius:20px; font-weight:700; font-size:1.1rem; cursor:pointer;">แก้ไขข้อมูล</button>
-        </div>
-    </div>
 
 
     <script src="donate.js"></script>
@@ -508,13 +480,23 @@
                     + 50 บาทค่าส่ง</p>
                 <div class="success-gift-list-wrapper">
                     <p class="success-gift-title">GIVEAWAY ที่คุณได้รับ คือ</p>
-                    <ul class="success-gift-list" id="success-gift-list">
-                        <li>สติกเกอร์ X 2</li>
-                        <li>เฟรมใส่การ์ด X 1</li>
-                        <li>กรอบส่องอาหาร X 1</li>
-                        <li>ป้ายไฟ X 1</li>
-                        <li>WORKSHOP X 1</li>
-                    </ul>
+
+                    <div style="display:flex; align-items:center; gap:10px; margin-top:10px;">
+                        <div style="flex:1; display:flex; justify-content:center;">
+                            <ul class="success-gift-list" id="success-gift-list" style="margin-top:0; width:100%;">
+                                <!-- Tags will be injected here -->
+                            </ul>
+                        </div>
+
+                        <div id="success-qr-code-box"
+                            style="display:none; width:95px; flex-shrink:0; text-align:center; padding-left:10px; border-left:1px dashed #CBD5E0;">
+                            <p
+                                style="font-size:0.6rem; font-weight:700; color:#2B6CB0; margin:0 0 5px 0; line-height:1.2;">
+                                QRCode สำหรับ<br>รับของหน้างาน</p>
+                            <img id="success-qr-img" src="" alt="QR Code"
+                                style="width:75px; height:75px; border-radius:8px; border:1px solid #E2E8F0; padding:2px; background:white;">
+                        </div>
+                    </div>
                 </div>
                 <p class="success-next-goal" id="success-next-goal">บริจาคอีก ฿177 เพื่อรับ Giveaway เพิ่มมากขึ้น</p>
             </div>

@@ -382,7 +382,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const getGiftHtml = (gifts) => {
         let h = '<div style="display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin-top:10px;">';
-        const badgeStyle = `style="background:#404040; color:white; padding:6px 18px; border-radius:50px; font-size:0.85rem; font-weight:700; white-space:nowrap; box-shadow: 0 4px 10px rgba(0,0,0,0.1); border:none;"`;
+        const badgeStyle = `style="background:#404040; color:white; padding:6px 18px; border-radius:50px; font-size:0.7rem; font-weight:700; white-space:nowrap; box-shadow: 0 4px 10px rgba(0,0,0,0.1); border:none;"`;
 
         if (gifts.stickers > 0) h += `<span ${badgeStyle}>สติกเกอร์ X ${gifts.stickers}</span>`;
         if (gifts.photoFrame > 0) h += `<span ${badgeStyle}>เฟรมใส่การ์ด X ${gifts.photoFrame}</span>`;
@@ -752,8 +752,14 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             if (deliveryNotice) deliveryNotice.style.display = 'none';
             document.getElementById('btn-submit-final').style.display = 'block';
-            if (finalMethod === 'delivery' && hasPastDelivery) {
-                if (deliveryFields) deliveryFields.style.display = 'block';
+            if (finalMethod === 'delivery') {
+                if (hasPastDelivery && !isChangingReception) {
+                    if (deliveryFields) deliveryFields.style.display = 'none';
+                } else {
+                    if (deliveryFields) deliveryFields.style.display = 'block';
+                }
+            } else {
+                if (deliveryFields) deliveryFields.style.display = 'none';
             }
         }
 
@@ -766,12 +772,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Final Submit ---
     document.getElementById('btn-submit-final').addEventListener('click', async () => {
-        const shipName = document.getElementById('ship-name').value.trim();
-        const phone = document.getElementById('phone-number').value.trim();
-        const address = document.getElementById('shipping-address').value.trim();
-        const postal = document.getElementById('postal-code').value.trim();
+        let finalMethod = selectedMethod;
+        if (mergedDonationData.receive && !isChangingReception) {
+            finalMethod = mergedDonationData.receive.delivery_type;
+        }
 
-        if (currentTotalOriginal >= 177 && selectedMethod === 'delivery') {
+        const rec = mergedDonationData.receive;
+        let shipName = document.getElementById('ship-name').value.trim();
+        let phone = document.getElementById('phone-number').value.trim();
+        let address = document.getElementById('shipping-address').value.trim();
+        let postal = document.getElementById('postal-code').value.trim();
+
+        if (rec && !isChangingReception && finalMethod === 'delivery') {
+            shipName = rec.recipient_name || '';
+            phone = rec.shipping_phone || '';
+            address = rec.shipping_address || '';
+            postal = rec.shipping_postal || '';
+        }
+
+        if (currentTotalOriginal >= 177 && finalMethod === 'delivery') {
             if (!shipName || !phone || !address || !postal) {
                 alert('กรุณากรอกข้อมูลการจัดส่งให้ครบถ้วน');
                 return;
@@ -821,11 +840,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 image: uploadedImageUrl,
                 username: nickname,
                 event_type: isStep3Reached ? "donate" : "",
-                delivery_type: isStep3Reached ? (selectedMethod === 'delivery' ? 'delivery' : 'onsite') : "",
-                recipient_name: isStep3Reached ? (selectedMethod === 'delivery' ? shipName : "") : "",
-                shipping_phone: isStep3Reached ? (selectedMethod === 'delivery' ? phone : "") : "",
-                shipping_address: isStep3Reached ? (selectedMethod === 'delivery' ? address : "") : "",
-                shipping_postal: isStep3Reached ? (selectedMethod === 'delivery' ? postal : "") : ""
+                delivery_type: isStep3Reached ? (finalMethod === 'delivery' ? 'delivery' : 'onsite') : "",
+                recipient_name: isStep3Reached ? (finalMethod === 'delivery' ? shipName : "") : "",
+                shipping_phone: isStep3Reached ? (finalMethod === 'delivery' ? phone : "") : "",
+                shipping_address: isStep3Reached ? (finalMethod === 'delivery' ? address : "") : "",
+                shipping_postal: isStep3Reached ? (finalMethod === 'delivery' ? postal : "") : ""
             };
 
             await fetch(SAVE_API_URL, {
@@ -844,34 +863,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // --- Slip Verification Edit Flow ---
-    const editSlipModal = document.getElementById('edit-slip-modal');
-    document.getElementById('btn-edit-slip-data').addEventListener('click', () => {
-        editSlipModal.style.display = 'flex';
-        document.getElementById('edit-sender-name').value = slipData?.sender_name || '';
-        document.getElementById('edit-amount').value = slipData?.amount || '';
-        document.getElementById('edit-date').value = formatToDatetimeLocal(slipData?.date || '');
-    });
 
-    document.getElementById('close-edit-slip-modal').addEventListener('click', () => {
-        editSlipModal.style.display = 'none';
-    });
-
-    document.getElementById('btn-save-edit-slip').addEventListener('click', () => {
-        slipData.sender_name = document.getElementById('edit-sender-name').value;
-        slipData.amount = parseFloat(document.getElementById('edit-amount').value) || 0;
-        const editedDate = document.getElementById('edit-date').value;
-        slipData.date = formatFromDatetimeLocal(editedDate);
-        slipData.is_slip = true;
-
-        editSlipModal.style.display = 'none';
-
-        document.getElementById('verification-error-text').style.display = 'none';
-        document.getElementById('verification-success-data').style.display = 'block';
-        document.getElementById('verify-sender-name').innerText = slipData.sender_name;
-        document.getElementById('verify-amount').innerText = slipData.amount + ' ฿';
-        document.getElementById('verify-date').innerText = slipData.date;
-    });
 
     document.getElementById('btn-confirm-slip-data').addEventListener('click', () => {
         if (!slipData || !slipData.is_slip || !slipData.amount) {
@@ -923,9 +915,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const list = document.getElementById('success-gift-list');
             list.innerHTML = getGiftHtml(giftInfo.gifts);
+
+            const qrBox = document.getElementById('success-qr-code-box');
+            const qrImg = document.getElementById('success-qr-img');
+            if (qrBox && qrImg) {
+                const profileUrl = "https://next1deprojectth.github.io/NexT1DE1stTideParty/profile.html?socialName=" + encodeURIComponent(socialInput.value || mergedDonationData.socialName) + "&socialType=" + encodeURIComponent(selectedSocial);
+                qrImg.src = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" + encodeURIComponent(profileUrl);
+                qrBox.style.display = 'block';
+            }
         } else {
             giftWrapper.style.display = 'none';
             nextGoal.style.display = 'none';
+            const qrBox = document.getElementById('success-qr-code-box');
+            if (qrBox) qrBox.style.display = 'none';
         }
         screen.style.display = 'flex';
 
