@@ -261,38 +261,38 @@ document.addEventListener('DOMContentLoaded', () => {
                     `).join('');
 
                     // --- Auto-scroll Logic ---
-                    let isUserInteracting = false;
-                    const scrollSpeed = 1; // pixels per step
-                    
-                    const stepScroll = () => {
-                        if (!isUserInteracting) {
-                            marqueeSection.scrollLeft += scrollSpeed;
-                            // Seamless loop back to start when reaching half-way (since we doubled content)
-                            if (marqueeSection.scrollLeft >= marqueeContent.scrollWidth / 2) {
-                                marqueeSection.scrollLeft = 0;
-                            }
-                        }
-                        requestAnimationFrame(stepScroll);
-                    };
-
-                    // Re-target marqueeSection to the wrapper for scrolling
                     const scrollWrapper = document.querySelector('.marquee-wrapper');
-                    if (scrollWrapper) {
-                        scrollWrapper.addEventListener('mousedown', () => isUserInteracting = true);
-                        window.addEventListener('mouseup', () => isUserInteracting = false);
-                        scrollWrapper.addEventListener('touchstart', () => isUserInteracting = true);
-                        scrollWrapper.addEventListener('touchend', () => {
-                            // Delay slightly before resuming auto-scroll after touch
-                            setTimeout(() => { isUserInteracting = false; }, 2000);
-                        });
+                    if (scrollWrapper && marqueeContent) {
+                        let isUserInteracting = false;
+                        let scrollAmount = scrollWrapper.scrollLeft;
+                        let interactionTimer = null;
 
-                        // Start animation
-                        let lastScroll = 0;
+                        const handleInteractionStart = () => {
+                            isUserInteracting = true;
+                            if (interactionTimer) clearTimeout(interactionTimer);
+                        };
+
+                        const handleInteractionEnd = () => {
+                            interactionTimer = setTimeout(() => {
+                                isUserInteracting = false;
+                                scrollAmount = scrollWrapper.scrollLeft; // Sync after interaction
+                            }, 2000);
+                        };
+
+                        scrollWrapper.addEventListener('mousedown', handleInteractionStart);
+                        window.addEventListener('mouseup', handleInteractionEnd);
+                        scrollWrapper.addEventListener('touchstart', handleInteractionStart, { passive: true });
+                        scrollWrapper.addEventListener('touchend', handleInteractionEnd, { passive: true });
+
                         const animate = () => {
                             if (!isUserInteracting) {
-                                scrollWrapper.scrollLeft += 0.5; // Slow movement
+                                scrollAmount += 0.6; // Speed
+                                scrollWrapper.scrollLeft = scrollAmount;
+                                
+                                // Seamless loop
                                 if (scrollWrapper.scrollLeft >= marqueeContent.scrollWidth / 2) {
-                                    scrollWrapper.scrollLeft = 1;
+                                    scrollAmount = 0;
+                                    scrollWrapper.scrollLeft = 0;
                                 }
                             }
                             requestAnimationFrame(animate);
