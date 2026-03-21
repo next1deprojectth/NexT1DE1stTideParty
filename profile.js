@@ -14,6 +14,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const resultContainer = document.getElementById('result-container');
     const shareUrlBox = document.getElementById('share-url-box');
     const shareUrlInput = document.getElementById('share-url-input');
+    const searchSection = document.getElementById('search-section');
+    const navSearchBtn = document.getElementById('nav-search-btn');
 
     // Parse URL Params
     const urlParams = new URLSearchParams(window.location.search);
@@ -21,6 +23,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const urlSocialType = urlParams.get('socialType');
 
     if (urlSocialName) {
+        if (searchSection && navSearchBtn) {
+            searchSection.style.display = 'none';
+            navSearchBtn.style.display = 'block';
+        }
         searchInput.value = urlSocialName;
         selectedSocial = urlSocialType || 'x';
         updateTabs(selectedSocial);
@@ -67,6 +73,15 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => this.innerText = 'คัดลอก', 2000);
     });
 
+    if (navSearchBtn && searchSection) {
+        navSearchBtn.addEventListener('click', () => {
+            searchSection.style.display = 'block';
+            navSearchBtn.style.display = 'none';
+            searchInput.focus();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    }
+
     async function fetchProfile(socialName, socialType) {
         apiLoading.style.display = 'block';
         errorMsg.style.display = 'none';
@@ -81,6 +96,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Not found
                 apiLoading.style.display = 'none';
                 errorMsg.style.display = 'block';
+                if (searchSection && navSearchBtn) {
+                    searchSection.style.display = 'block';
+                    navSearchBtn.style.display = 'none';
+                }
                 return;
             }
 
@@ -93,11 +112,21 @@ document.addEventListener('DOMContentLoaded', () => {
             shareUrlInput.value = window.location.href;
             shareUrlBox.style.display = 'block';
 
+            // Hide search section, show icon
+            if (searchSection && navSearchBtn) {
+                searchSection.style.display = 'none';
+                navSearchBtn.style.display = 'block';
+            }
+
         } catch (error) {
             console.error('Fetch error:', error);
             apiLoading.style.display = 'none';
             errorMsg.style.display = 'block';
             errorMsg.querySelector('p').innerText = 'เกิดข้อผิดพลาดในการเชื่อมต่อ';
+            if (searchSection && navSearchBtn) {
+                searchSection.style.display = 'block';
+                navSearchBtn.style.display = 'none';
+            }
         }
     }
 
@@ -161,29 +190,61 @@ document.addEventListener('DOMContentLoaded', () => {
                 const dispDate = formatThaiDate(dateStr);
                 const dispAmount = d.amount ? parseFloat(d.amount).toLocaleString('th-TH') : '0';
 
+                // Map bank info matching bank_id
+                let dispBank = '-';
+                let dispBankName = '-';
+                let dispBankNo = '-';
+                if (data.banks && data.banks.length > 0) {
+                    const b = data.banks.find(x => x.bank_id === d.bank_id);
+                    if (b) {
+                        dispBank = b.bank || '-';
+                        dispBankName = b.name || '-';
+                        dispBankNo = b.bank_no || '-';
+                    } else if (d.bank) {
+                        dispBank = d.bank;
+                    }
+                } else if (d.bank) {
+                    dispBank = d.bank;
+                }
+
                 let imgHtml = '';
                 if (d.image) {
-                    imgHtml = `<a href="${d.image}" target="_blank" style="color: #4299E1; font-size: 0.8rem; text-decoration: none; display: flex; align-items: center; gap: 4px; border: 1px solid #BEE3F8; padding: 2px 8px; border-radius: 12px; background: #EBF8FF;">
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                    imgHtml = `<a href="${d.image}" target="_blank" style="color: #4299E1; font-size: 0.8rem; text-decoration: none; display: flex; align-items: center; gap: 4px; border: 1px solid #BEE3F8; padding: 4px 10px; border-radius: 20px; background: #EBF8FF; font-weight: 700; transition: all 0.2s;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
                         ดูสลิป
                     </a>`;
                 }
 
                 html += `
-                    <div class="history-item" style="display: flex; gap: 15px; position: relative; padding-bottom: 20px;">
+                    <div class="history-item" style="display: flex; gap: 10px; position: relative; padding-bottom: 20px;">
                         <div style="display: flex; flex-direction: column; align-items: center;">
-                            <div style="width: 14px; height: 14px; background: #CBD5E0; border-radius: 50%; z-index: 2;"></div>
-                            <div style="flex: 1; width: 2px; background: #E2E8F0; margin-top: 5px;"></div>
+                            <div style="width: 14px; height: 14px; background: linear-gradient(135deg, #63B3ED, #3182CE); border-radius: 50%; z-index: 2; box-shadow: 0 0 0 4px #EBF8FF; margin-top: 2px;"></div>
+                            <div style="flex: 1; width: 2px; background: rgba(226, 232, 240, 0.8); margin-top: 4px;"></div>
                         </div>
-                        <div style="flex: 1; background: #F7FAFC; padding: 15px; border-radius: 15px; border: 1px solid #E2E8F0; margin-top: -5px;">
-                            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-                                <div>
-                                    <p style="margin: 0; font-weight: 700; color: #2D3748; font-size: 0.95rem;">ยอดโอน ${dispAmount} บาท</p>
-                                    <p style="margin: 2px 0 0; color: #718096; font-size: 0.8rem;">${dispDate}</p>
-                                    <p style="margin: 4px 0 0; color: #A0AEC0; font-size: 0.75rem;">นามแฝง: ${d.username || '-'}</p>
-                                    <p style="margin: 2px 0 0; color: #718096; font-size: 0.75rem;">ธนาคาร: ${d.bank || '-'}</p>
+                        <div style="flex: 1; min-width: 0; background: rgba(255,255,255,0.95); padding: 16px 14px; border-radius: 16px; border: 1px solid rgba(226, 232, 240, 0.8); margin-top: -5px; box-shadow: 0 4px 15px rgba(0,0,0,0.02);">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; gap: 8px;">
+                                <div style="flex: 1; min-width: 0;">
+                                    <p style="margin: 0; font-weight: 800; color: #2B6CB0; font-size: 1.05rem; letter-spacing: -0.3px; word-break: break-word;">ยอดโอน ${dispAmount} บาท</p>
+                                    <p style="margin: 4px 0 0; color: #718096; font-size: 0.8rem; font-weight: 600; display:flex; align-items:center; gap:4px;">
+                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                                        ${dispDate}
+                                    </p>
                                 </div>
-                                <div>${imgHtml}</div>
+                                <div style="flex-shrink: 0;">${imgHtml}</div>
+                            </div>
+                            
+                            <div style="padding-top: 10px; border-top: 1px dashed #E2E8F0; display: grid; grid-template-columns: 55px 1fr; gap: 4px 8px; font-size: 0.85rem; line-height: 1.3;">
+                                <div style="color:#A0AEC0; font-weight:600;">นามแฝง</div>
+                                <div style="color:#4A5568; font-weight:700; word-break: break-all;">${d.username || '-'}</div>
+                                
+                                <div style="color:#A0AEC0; font-weight:600;">โอนจาก</div>
+                                <div style="color:#4A5568; font-weight:700; word-break: break-word;">${dispBankName}</div>
+                                
+                                <div style="color:#A0AEC0; font-weight:600;">ธนาคาร</div>
+                                <div style="color:#4A5568; font-weight:700;">${dispBank}</div>
+                                
+                                <div style="color:#A0AEC0; font-weight:600;">เลขบัญชี</div>
+                                <div style="color:#718096; font-family:monospace; font-weight:600; font-size:0.9rem; letter-spacing:0.5px;">${dispBankNo}</div>
                             </div>
                         </div>
                     </div>

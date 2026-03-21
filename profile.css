@@ -1,48 +1,72 @@
 /* profile.css */
 .profile-card {
-    background: white;
-    border-radius: 20px;
-    padding: 25px;
-    margin-bottom: 20px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.03);
-    border: 1px solid #E2E8F0;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-radius: 24px;
+    padding: 30px;
+    margin-bottom: 25px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+    border: 1px solid rgba(255,255,255,0.6);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.profile-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.08);
 }
 
 .profile-header {
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 20px;
 }
 
 .profile-avatar {
-    width: 60px;
-    height: 60px;
-    background: #EBF4FF;
+    width: 75px;
+    height: 75px;
+    background: linear-gradient(135deg, #7F9CFF 0%, #4299E1 100%);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #286ACD;
-    font-size: 1.5rem;
+    color: white;
+    font-size: 2rem;
     font-weight: 800;
+    box-shadow: 0 6px 15px rgba(66, 153, 225, 0.4);
 }
 
 .profile-info h2 {
-    margin: 0 0 4px;
-    font-size: 1.3rem;
-    color: #2D3748;
+    margin: 0 0 6px;
+    font-size: 1.5rem;
+    color: #1A365D;
     font-weight: 800;
+    letter-spacing: -0.5px;
 }
 
 .profile-info p {
     margin: 0;
-    font-size: 0.9rem;
-    color: #718096;
+    font-size: 0.85rem;
+    color: #2B6CB0;
+    background: rgba(235, 244, 255, 0.8);
+    padding: 6px 14px;
+    border-radius: 20px;
+    display: inline-block;
+    font-weight: 700;
+    border: 1px solid rgba(190, 227, 248, 0.8);
 }
 
 .section-title {
-    font-size: 1.1rem;
+    font-size: 1.25rem;
     font-weight: 800;
     color: #2D3748;
-    margin-bottom: 15px;
+    margin-bottom: 20px;
+    letter-spacing: -0.3px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.section-title svg {
+    color: #4299E1;
 }
