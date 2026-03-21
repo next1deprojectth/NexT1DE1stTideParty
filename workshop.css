@@ -1194,7 +1194,7 @@ body.donate-page-body {
     font-weight: 900;
     margin-bottom: 6px;
     letter-spacing: -0.03em;
-    background: linear-gradient(to right, #286ACD 0%, #69C7BA 49%, #286ACD 100%);
+    background: linear-gradient(to right, #c2daff 100%, #c4fff7 49%, #c2daff 100%);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
