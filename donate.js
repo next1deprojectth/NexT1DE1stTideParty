@@ -102,7 +102,17 @@ document.addEventListener('DOMContentLoaded', () => {
             finalMethod = mergedDonationData.receive.delivery_type;
         }
 
-        if (finalMethod === 'delivery') {
+        const hasPastDelivery = mergedDonationData.receive && mergedDonationData.receive.delivery_type === 'delivery';
+        const paidShippingInDonation = mergedDonationData.donations && mergedDonationData.donations.some(d => d.include_shipping === true);
+
+        let shouldDeduct = false;
+        if (paidShippingInDonation) {
+            shouldDeduct = true;
+        } else if (finalMethod === 'delivery' && !hasPastDelivery) {
+            shouldDeduct = true;
+        }
+
+        if (shouldDeduct) {
             return Math.max(0, currentTotalOriginal - 50);
         }
         return currentTotalOriginal;
@@ -396,7 +406,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const updateStep2Summary = () => {
         const hasPastDelivery = mergedDonationData.receive && mergedDonationData.receive.delivery_type === 'delivery';
-        const netAmt = (hasPastDelivery) ? currentTotalOriginal - 50 : currentTotalOriginal;
+        const paidShippingInDonation = mergedDonationData.donations && mergedDonationData.donations.some(d => d.include_shipping === true);
+        const netAmt = (paidShippingInDonation) ? currentTotalOriginal - 50 : currentTotalOriginal;
 
         // Show net donation amount (total minus fee if applicable)
         document.getElementById('cumulative-amount').innerText = formatAmount(netAmt);
@@ -404,7 +415,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Show/Hide delivery fee label below the amount
         const deliveryFeeEl = document.getElementById('cumulative-delivery-fee');
         if (deliveryFeeEl) {
-            if (hasPastDelivery) {
+            if (paidShippingInDonation) {
                 deliveryFeeEl.style.display = 'block';
                 deliveryFeeEl.style.color = '#91A3FF';
                 deliveryFeeEl.style.fontSize = '1.2rem';
@@ -467,7 +478,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
 
-        if (hasPastDelivery) {
+        if (paidShippingInDonation) {
             timelineHtml += `
             <div style="display:flex; justify-content:center; margin-top:25px; margin-bottom:5px;">
                 <div style="display:inline-flex; align-items:center; gap:8px; background:#FFF5F5; border:1px solid #FEB2B2; padding:8px 20px; border-radius:15px; box-shadow:0 4px 10px rgba(229, 62, 62, 0.05);">
@@ -657,7 +668,17 @@ document.addEventListener('DOMContentLoaded', () => {
             finalMethod = mergedDonationData.receive.delivery_type;
         }
 
-        if (finalMethod === 'delivery') {
+        const hasPastDelivery = mergedDonationData.receive && mergedDonationData.receive.delivery_type === 'delivery';
+        const paidShippingInDonation = mergedDonationData.donations && mergedDonationData.donations.some(d => d.include_shipping === true);
+        
+        let shouldDeduct = false;
+        if (paidShippingInDonation) {
+            shouldDeduct = true;
+        } else if (finalMethod === 'delivery' && !hasPastDelivery) {
+            shouldDeduct = true;
+        }
+
+        if (shouldDeduct) {
             feeRow.style.display = 'flex';
             deliveryFeeEl.innerText = '50';
         } else {
@@ -721,7 +742,6 @@ document.addEventListener('DOMContentLoaded', () => {
             giftImg.style.display = 'none';
         }
 
-        const hasPastDelivery = mergedDonationData.receive && mergedDonationData.receive.delivery_type === 'delivery';
         const deliveryNotice = document.getElementById('delivery-notice');
         const deliveryFields = document.getElementById('new-delivery-address-fields');
 
@@ -842,7 +862,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 username: nickname,
                 event_type: isStep3Reached ? "donate" : "",
                 delivery_type: isStep3Reached ? (finalMethod === 'delivery' ? 'delivery' : 'onsite') : "",
-                include_shipping: finalMethod === 'delivery' && !hasPastDelivery,
+                include_shipping: isStep3Reached ? (finalMethod === 'delivery' && !hasPastDelivery) : false,
                 recipient_name: isStep3Reached ? (finalMethod === 'delivery' ? shipName : "") : "",
                 shipping_phone: isStep3Reached ? (finalMethod === 'delivery' ? phone : "") : "",
                 shipping_address: isStep3Reached ? (finalMethod === 'delivery' ? address : "") : "",
@@ -874,6 +894,11 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
+        const step2Container = document.getElementById('step-2');
+        if (step2Container) {
+            step2Container.style.minHeight = step2Container.offsetHeight + 'px';
+        }
+
         uploadZone.style.display = 'none';
         donateGiveawayImg.style.display = 'none';
         document.getElementById('slip-verification-details').style.display = 'none';
@@ -883,9 +908,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const feeNotice = document.getElementById('step2-fee-notice');
         if (feeNotice) feeNotice.style.display = 'none';
+        
         currentTotalOriginal = (mergedDonationData.total_amount || 0) + slipData.amount;
         verifiedSuccessSection.style.display = 'block';
         updateStep2Summary();
+
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        setTimeout(() => {
+            if (step2Container) step2Container.style.minHeight = 'auto';
+        }, 500);
     });
 
     // --- End Verification Flow ---
@@ -893,6 +925,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const showSuccessScreen = () => {
         const screen = document.getElementById('success-screen');
         const netAmt = getNetAmount();
+        window.scrollTo(0, 0); // Force scroll to top
         document.getElementById('success-total-amount').innerText = formatAmount(netAmt);
 
         // Hide fee on final screen per user request
@@ -993,8 +1026,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (quoteInput && quoteCount) {
         quoteInput.addEventListener('input', () => {
             const length = quoteInput.value.length;
-            quoteCount.innerText = `${length}/255`;
-            if (length >= 255) {
+            quoteCount.innerText = `${length}/100`;
+            if (length >= 100) {
                 quoteCount.style.color = '#E53E3E';
             } else {
                 quoteCount.style.color = '#718096';

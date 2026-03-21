@@ -480,7 +480,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let shipAddress = document.getElementById('ship-address').value;
         let shipPostal = document.getElementById('ship-postal').value;
 
-        let isIncludeShipping = (finalMethod === 'delivery' && (!hasPastDelivery || isEditingReception));
+        let isIncludeShipping = (finalMethod === 'delivery' && (!hasPastDelivery || pastDeliveryType !== 'delivery'));
 
         try {
             // 1. Upload Image first (Same as donate.js)
@@ -561,7 +561,9 @@ document.addEventListener('DOMContentLoaded', () => {
             mainBg.innerHTML = '<div style="position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:-1;"></div>';
         }
         
-        document.body.style.overflow = 'hidden';
+        // Remove overflow:hidden so it can scroll properly on all devices
+        document.body.style.overflow = '';
+        window.scrollTo(0, 0);
 
         document.querySelectorAll('.donate-step').forEach(s => {
             s.style.display = 'none';
