@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    const API_ENDPOINT = "https://script.google.com/macros/s/AKfycbxVTIIijNn_TOaHrAdV-Gc0UB8azbEJmalF-NVzeAoAKD4ZOZP22NPZyGtJCKnNi7rQpA/exec";
+    const API_ENDPOINT = API_CONFIG.BASE_URL;
 
     const socialTabs = document.querySelectorAll('.social-tab');
     const searchInput = document.getElementById('search-username');

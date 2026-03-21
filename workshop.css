@@ -1438,3 +1438,43 @@ body.donate-page-body {
         font-size: 0.9rem;
     }
 }
+
+/* Fix for sticky summary overlap */
+.donate-main {
+    padding-bottom: 120px !important;
+}
+
+.sticky-summary-box {
+    max-width: 500px;
+    left: 50% !important;
+    transform: translateX(-50%);
+}
+
+/* Step 0 Specific Layout */
+.step0-image-wrapper {
+    text-align: center; 
+    margin-bottom: 20px;
+    margin-top: 60px; /* Offset for fixed navbar when indicator is hidden */
+}
+
+@media screen and (max-width: 768px) {
+    .step0-image-wrapper {
+        margin-bottom: 90px; /* Space for fixed button */
+    }
+    .step0-btn-wrapper {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        background: white;
+        padding: 15px 20px;
+        box-shadow: 0 -4px 15px rgba(0,0,0,0.05);
+        z-index: 1000;
+        border-top-left-radius: 20px;
+        border-top-right-radius: 20px;
+        box-sizing: border-box;
+    }
+    .step0-btn-wrapper #btn-next-step0 {
+        margin-top: 0 !important;
+    }
+}

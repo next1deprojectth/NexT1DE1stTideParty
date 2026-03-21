@@ -180,7 +180,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- Data Fetching from Google Sheets ---
-    const GOOGLE_SHEET_URL = 'https://script.google.com/macros/s/AKfycbztSZQBMw6kcVpLIVqW1WwaJAJF60owOX4i4bTMS6cPlrqjdI5ozYd7Kv20Ty7MZ0sWGQ/exec?action=getSummary';
+    const GOOGLE_SHEET_URL = `${API_CONFIG.BASE_URL}?action=getSummary`;
 
     let allDonations = [];
     let currentPage = 1;
@@ -235,20 +235,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 // but usually they should match the items shown.
                 updateStats(result.total, result.count);
                 renderDonationPage(currentPage);
-                
+
                 // --- Quote Marquee Rendering ---
                 const quotesWithMsg = allDonations.filter(d => d.quote && d.quote.trim().length > 0);
                 const marqueeSection = document.getElementById('quote-section');
                 const marqueeContent = document.getElementById('quote-marquee-content');
-                
+
                 if (quotesWithMsg.length > 0 && marqueeSection && marqueeContent) {
                     marqueeSection.style.display = 'block';
-                    
+
                     // Filter out duplicates if needed, but here we just double for marquee effect
                     // If too few quotes, double them to ensure it fills the screen
                     const baseItems = quotesWithMsg.length < 5 ? [...quotesWithMsg, ...quotesWithMsg] : quotesWithMsg;
                     const itemsToRender = [...baseItems, ...baseItems]; // Double for seamless loop
-                    
+
                     marqueeContent.innerHTML = itemsToRender.map(q => `
                         <div class="quote-card-wrapper">
                             <div class="quote-card">
@@ -288,7 +288,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             if (!isUserInteracting) {
                                 scrollAmount += 0.6; // Speed
                                 scrollWrapper.scrollLeft = scrollAmount;
-                                
+
                                 // Seamless loop
                                 if (scrollWrapper.scrollLeft >= marqueeContent.scrollWidth / 2) {
                                     scrollAmount = 0;

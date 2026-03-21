@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const RECEIVER_NAME_TARGET = "ธัญดา";
     const WEBHOOK_URL = "https://next1de.app.n8n.cloud/webhook/6e4a539b-5580-40f9-a85f-47a488a2e842";
-    const API_ENDPOINT = "https://script.google.com/macros/s/AKfycbztSZQBMw6kcVpLIVqW1WwaJAJF60owOX4i4bTMS6cPlrqjdI5ozYd7Kv20Ty7MZ0sWGQ/exec";
+    const API_ENDPOINT = API_CONFIG.BASE_URL;
     const GET_API_URL = API_ENDPOINT;
     const SAVE_API_URL = API_ENDPOINT;
     const UPLOAD_API_URL = API_ENDPOINT;
