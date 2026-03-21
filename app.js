@@ -230,7 +230,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const result = await response.json();
 
             if (result.status === 'ok') {
-                allDonations = [...result.data];
+                allDonations = result.data.filter(d => (parseFloat(d.amount) || 0) > 0);
+                // Keep original API total/count for overall stats if they are meant to be absolute,
+                // but usually they should match the items shown.
                 updateStats(result.total, result.count);
                 renderDonationPage(currentPage);
                 
