@@ -189,7 +189,7 @@ button:active {
     grid-area: button;
     align-self: start;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     gap: 15px;
     width: 100%;
     margin-top: 20px;
