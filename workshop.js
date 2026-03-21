@@ -770,6 +770,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             // 2. Save Workshop Data
+            const hasPastDelivery = mergedDonationData.receive && mergedDonationData.receive.delivery_type === 'delivery';
             const body = {
                 action: "saveWorkshop",
                 social_name: socialInput.value,
@@ -783,6 +784,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 image: uploadedImageUrl,
                 username: nickname,
                 delivery_type: selectedMethod === 'delivery' ? 'delivery' : 'onsite',
+                include_shipping: selectedMethod === 'delivery' && !hasPastDelivery,
                 recipient_name: selectedMethod === 'delivery' ? shipName : "",
                 shipping_phone: selectedMethod === 'delivery' ? phone : "",
                 shipping_address: selectedMethod === 'delivery' ? address : "",

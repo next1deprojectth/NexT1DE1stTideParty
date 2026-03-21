@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const RECEIVER_NAME_TARGET = "ธัญดา";
     const WEBHOOK_URL = "https://next1de.app.n8n.cloud/webhook/6e4a539b-5580-40f9-a85f-47a488a2e842";
-    const API_ENDPOINT = "https://script.google.com/macros/s/AKfycbxVTIIijNn_TOaHrAdV-Gc0UB8azbEJmalF-NVzeAoAKD4ZOZP22NPZyGtJCKnNi7rQpA/exec";
+    const API_ENDPOINT = "https://script.google.com/macros/s/AKfycbztSZQBMw6kcVpLIVqW1WwaJAJF60owOX4i4bTMS6cPlrqjdI5ozYd7Kv20Ty7MZ0sWGQ/exec";
     const GET_API_URL = API_ENDPOINT;
     const SAVE_API_URL = API_ENDPOINT;
     const UPLOAD_API_URL = API_ENDPOINT;
@@ -826,6 +826,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // 2. Save Donation Data
             const isStep3Reached = currentTotalOriginal >= 177;
+            const hasPastDelivery = mergedDonationData.receive && mergedDonationData.receive.delivery_type === 'delivery';
             const body = {
                 action: "saveDonate",
                 social_name: socialInput.value,
@@ -841,10 +842,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 username: nickname,
                 event_type: isStep3Reached ? "donate" : "",
                 delivery_type: isStep3Reached ? (finalMethod === 'delivery' ? 'delivery' : 'onsite') : "",
+                include_shipping: finalMethod === 'delivery' && !hasPastDelivery,
                 recipient_name: isStep3Reached ? (finalMethod === 'delivery' ? shipName : "") : "",
                 shipping_phone: isStep3Reached ? (finalMethod === 'delivery' ? phone : "") : "",
                 shipping_address: isStep3Reached ? (finalMethod === 'delivery' ? address : "") : "",
-                shipping_postal: isStep3Reached ? (finalMethod === 'delivery' ? postal : "") : ""
+                shipping_postal: isStep3Reached ? (finalMethod === 'delivery' ? postal : "") : "",
+                quote: document.getElementById('donate-quote').value || ""
             };
 
             await fetch(SAVE_API_URL, {
@@ -980,6 +983,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 navigator.clipboard.writeText(shareUrl).then(() => {
                     alert('คัดลอกลิงก์เรียบร้อยแล้ว');
                 });
+            }
+        });
+    }
+
+    // Quote Char Counter
+    const quoteInput = document.getElementById('donate-quote');
+    const quoteCount = document.getElementById('quote-char-count');
+    if (quoteInput && quoteCount) {
+        quoteInput.addEventListener('input', () => {
+            const length = quoteInput.value.length;
+            quoteCount.innerText = `${length}/255`;
+            if (length >= 255) {
+                quoteCount.style.color = '#E53E3E';
+            } else {
+                quoteCount.style.color = '#718096';
             }
         });
     }

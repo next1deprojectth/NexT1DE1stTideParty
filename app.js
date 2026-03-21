@@ -180,7 +180,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- Data Fetching from Google Sheets ---
-    const GOOGLE_SHEET_URL = 'https://script.google.com/macros/s/AKfycbxVTIIijNn_TOaHrAdV-Gc0UB8azbEJmalF-NVzeAoAKD4ZOZP22NPZyGtJCKnNi7rQpA/exec?action=getSummary';
+    const GOOGLE_SHEET_URL = 'https://script.google.com/macros/s/AKfycbztSZQBMw6kcVpLIVqW1WwaJAJF60owOX4i4bTMS6cPlrqjdI5ozYd7Kv20Ty7MZ0sWGQ/exec?action=getSummary';
 
     let allDonations = [];
     let currentPage = 1;
@@ -233,6 +233,73 @@ document.addEventListener('DOMContentLoaded', () => {
                 allDonations = [...result.data];
                 updateStats(result.total, result.count);
                 renderDonationPage(currentPage);
+                
+                // --- Quote Marquee Rendering ---
+                const quotesWithMsg = allDonations.filter(d => d.quote && d.quote.trim().length > 0);
+                const marqueeSection = document.getElementById('quote-section');
+                const marqueeContent = document.getElementById('quote-marquee-content');
+                
+                if (quotesWithMsg.length > 0 && marqueeSection && marqueeContent) {
+                    marqueeSection.style.display = 'block';
+                    
+                    // Filter out duplicates if needed, but here we just double for marquee effect
+                    // If too few quotes, double them to ensure it fills the screen
+                    const baseItems = quotesWithMsg.length < 5 ? [...quotesWithMsg, ...quotesWithMsg] : quotesWithMsg;
+                    const itemsToRender = [...baseItems, ...baseItems]; // Double for seamless loop
+                    
+                    marqueeContent.innerHTML = itemsToRender.map(q => `
+                        <div class="quote-card-wrapper">
+                            <div class="quote-card">
+                                <span class="quote-mark left">“</span>
+                                <p class="quote-text">${q.quote}</p>
+                                <span class="quote-mark right">”</span>
+                                <p class="quote-author">- ${q.name} -</p>
+                            </div>
+                        </div>
+                    `).join('');
+
+                    // --- Auto-scroll Logic ---
+                    let isUserInteracting = false;
+                    const scrollSpeed = 1; // pixels per step
+                    
+                    const stepScroll = () => {
+                        if (!isUserInteracting) {
+                            marqueeSection.scrollLeft += scrollSpeed;
+                            // Seamless loop back to start when reaching half-way (since we doubled content)
+                            if (marqueeSection.scrollLeft >= marqueeContent.scrollWidth / 2) {
+                                marqueeSection.scrollLeft = 0;
+                            }
+                        }
+                        requestAnimationFrame(stepScroll);
+                    };
+
+                    // Re-target marqueeSection to the wrapper for scrolling
+                    const scrollWrapper = document.querySelector('.marquee-wrapper');
+                    if (scrollWrapper) {
+                        scrollWrapper.addEventListener('mousedown', () => isUserInteracting = true);
+                        window.addEventListener('mouseup', () => isUserInteracting = false);
+                        scrollWrapper.addEventListener('touchstart', () => isUserInteracting = true);
+                        scrollWrapper.addEventListener('touchend', () => {
+                            // Delay slightly before resuming auto-scroll after touch
+                            setTimeout(() => { isUserInteracting = false; }, 2000);
+                        });
+
+                        // Start animation
+                        let lastScroll = 0;
+                        const animate = () => {
+                            if (!isUserInteracting) {
+                                scrollWrapper.scrollLeft += 0.5; // Slow movement
+                                if (scrollWrapper.scrollLeft >= marqueeContent.scrollWidth / 2) {
+                                    scrollWrapper.scrollLeft = 1;
+                                }
+                            }
+                            requestAnimationFrame(animate);
+                        };
+                        requestAnimationFrame(animate);
+                    }
+                } else if (marqueeSection) {
+                    marqueeSection.style.display = 'none';
+                }
             }
         } catch (error) {
             console.error('Error fetching donation data:', error);
