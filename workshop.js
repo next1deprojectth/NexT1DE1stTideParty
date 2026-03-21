@@ -145,7 +145,7 @@ document.addEventListener('DOMContentLoaded', () => {
             let rightsTextArray = [];
             if (apiData && apiData.rights) {
                 if (apiData.rights.from_donate > 0) rightsTextArray.push(`${apiData.rights.from_donate} สิทธิ์จากการโดเนท`);
-                if (apiData.rights.from_direct > 0) rightsTextArray.push(`${apiData.rights.from_direct} สิทธิ์จากการลงทะเบียนตรง`);
+                if (apiData.rights.from_direct > 0) rightsTextArray.push(`${apiData.rights.from_direct} สิทธิ์จากการซื้อ workshop`);
             }
             if (rightsTextArray.length > 0) {
                 rightsDetail.innerText = rightsTextArray.join(' และ ');
@@ -163,7 +163,7 @@ document.addEventListener('DOMContentLoaded', () => {
             pastBox.style.display = 'block';
             normalSelector.style.display = 'none';
             pastTypeText.innerText = pastDeliveryType === 'delivery' ? 'จัดส่งตามที่อยู่' : 'รับที่งาน';
-            
+
             const pastDetails = document.getElementById('past-details');
             if (pastDetails) {
                 if (pastDeliveryType === 'delivery' && apiData && apiData.receive) {
@@ -171,12 +171,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     document.getElementById('past-phone').innerText = apiData.receive.shipping_phone || '-';
                     document.getElementById('past-address').innerText = apiData.receive.shipping_address || '-';
                     document.getElementById('past-postal').innerText = apiData.receive.shipping_postal || '-';
+                    document.getElementById('past-fee-note').style.display = 'block';
                     pastDetails.style.display = 'block';
                 } else {
                     pastDetails.style.display = 'none';
+                    document.getElementById('past-fee-note').style.display = 'none';
                 }
             }
-            
+
             deliveryForm.style.display = 'none';
         } else {
             pastBox.style.display = 'none';
@@ -187,10 +189,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const shippingFeeText = document.getElementById('shipping-fee-text');
         if (shippingFeeText) {
             if (hasPastDelivery && pastDeliveryType === 'delivery') {
-                shippingFeeText.innerText = '(จ่ายค่าส่งแล้ว)';
+                shippingFeeText.innerText = 'ชำระค่าส่งแล้ว';
                 shippingFeeText.style.color = '#48BB78';
             } else {
-                shippingFeeText.innerText = '(+50 บาท)';
+                shippingFeeText.innerText = 'ชำระเพิ่ม 50 บาท';
                 shippingFeeText.style.color = '#F871B4';
             }
         }
@@ -235,7 +237,7 @@ document.addEventListener('DOMContentLoaded', () => {
         isEditingReception = true;
         pastBox.style.display = 'none';
         normalSelector.style.display = 'flex';
-        
+
         if (pastDeliveryType === 'delivery' && apiData && apiData.receive) {
             document.getElementById('ship-name').value = apiData.receive.recipient_name || '';
             document.getElementById('ship-phone').value = apiData.receive.shipping_phone || '';
@@ -262,7 +264,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function updatePricing() {
         displayQty.innerText = `${itemCount} สิทธิ์`;
-        
+
         const locationSection = document.getElementById('location-section-wrapper');
         if (locationSection) {
             if (itemCount === 0) {
@@ -271,7 +273,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 locationSection.style.display = 'block';
             }
         }
-        
+
         // Update Button Styles
         let minActionCount = totalRights > 0 ? 0 : 1;
         if (itemCount <= minActionCount) {
@@ -287,17 +289,17 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         let subtotal = itemCount * WORKSHOP_PRICE;
-        
+
         // Calculate shipping logic
         let shipping = 0;
         let finalMethod = isEditingReception ? deliveryMethod : pastDeliveryType;
-        
+
         if (finalMethod === 'delivery') {
             if (!hasPastDelivery || (hasPastDelivery && pastDeliveryType !== 'delivery')) {
                 shipping = SHIPPING_FEE;
             }
         }
-        
+
         expectedShipping = shipping;
         expectedTotal = subtotal + shipping;
 
@@ -306,12 +308,12 @@ document.addEventListener('DOMContentLoaded', () => {
         summaryQty.innerText = itemCount.toString();
         document.getElementById('summary-price-inline').innerText = `${formatMoney(subtotal)} บาท`;
         document.getElementById('summary-shipping-inline').innerText = `${formatMoney(shipping)} บาท`;
-        
+
         if (expectedTotal === 0 && itemCount === 0) {
             btnNextStep2.innerHTML = `ดูสิทธิ์ (QR Code)`;
             btnNextStep2.style.background = "linear-gradient(135deg, #286ACD 0%, #A3E4DB 100%)";
         } else {
-            btnNextStep2.innerHTML = `จ่าย ${formatMoney(expectedTotal)} บาท`;
+            btnNextStep2.innerHTML = `ยอดชำระ ${formatMoney(expectedTotal)} บาท`;
             btnNextStep2.style.background = "#FF6666";
         }
     }
@@ -546,10 +548,10 @@ document.addEventListener('DOMContentLoaded', () => {
     function showSuccessScreen() {
         const indicator = document.querySelector('.step-indicator-container');
         if (indicator) indicator.style.display = 'none';
-        
+
         const navbar = document.querySelector('.nav-bar');
         if (navbar) navbar.style.display = 'none';
-        
+
         const stickyBox = document.querySelector('.sticky-summary-box');
         if (stickyBox) stickyBox.style.display = 'none';
 
@@ -560,7 +562,7 @@ document.addEventListener('DOMContentLoaded', () => {
             mainBg.style.background = 'url("images/background_workshop.png") no-repeat center center / cover';
             mainBg.innerHTML = '<div style="position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:-1;"></div>';
         }
-        
+
         // Remove overflow:hidden so it can scroll properly on all devices
         document.body.style.overflow = '';
         window.scrollTo(0, 0);
@@ -568,7 +570,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelectorAll('.donate-step').forEach(s => {
             s.style.display = 'none';
         });
-        
+
         // Final fallback for step-0 button just in case
         const step0Btn = document.querySelector('.step0-btn-wrapper');
         if (step0Btn) step0Btn.style.display = 'none';
@@ -628,7 +630,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (step === 1) stepLabel.innerText = "ข้อมูลผู้ร่วม workshop (1/3)";
         if (step === 2) stepLabel.innerText = "เลือกสิทธิ์และวิธีรับ (2/3)";
-        if (step === 3) stepLabel.innerText = "โอนเงินและแนบสลิป (3/3)";
+        if (step === 3) stepLabel.innerText = "ชำระเงินและแนบหลักฐานการชำระ (3/3)";
 
         const stepIndicatorWrapper = document.getElementById('step-indicator-wrapper');
         const navTitle = document.querySelector('.nav-title');

@@ -670,7 +670,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const hasPastDelivery = mergedDonationData.receive && mergedDonationData.receive.delivery_type === 'delivery';
         const paidShippingInDonation = mergedDonationData.donations && mergedDonationData.donations.some(d => d.include_shipping === true);
-        
+
         let shouldDeduct = false;
         if (paidShippingInDonation) {
             shouldDeduct = true;
@@ -908,7 +908,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const feeNotice = document.getElementById('step2-fee-notice');
         if (feeNotice) feeNotice.style.display = 'none';
-        
+
         currentTotalOriginal = (mergedDonationData.total_amount || 0) + slipData.amount;
         verifiedSuccessSection.style.display = 'block';
         updateStep2Summary();
@@ -947,7 +947,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (giftInfo.hasAny) {
             giftWrapper.style.display = 'block';
             nextGoal.style.display = 'block';
-            nextGoal.innerText = `บริจาคอีก ${formatAmount(giftInfo.diff)} เพื่อรับ Giveaway เพิ่มมากขึ้น`;
+            nextGoal.innerText = `โดเนทอีก ${formatAmount(giftInfo.diff)} เพื่อรับ Giveaway เพิ่มมากขึ้น`;
 
             const list = document.getElementById('success-gift-list');
             list.innerHTML = getGiftHtml(giftInfo.gifts);
