@@ -555,24 +555,24 @@ document.addEventListener('DOMContentLoaded', () => {
         updateStep3UI();
     });
 
-    document.getElementById('btn-use-old-reception').addEventListener('click', function () {
-        const rec = mergedDonationData.receive;
-        if (!rec) return;
+    // document.getElementById('btn-use-old-reception').addEventListener('click', function () {
+    //     const rec = mergedDonationData.receive;
+    //     if (!rec) return;
 
-        selectedMethod = rec.delivery_type;
-        if (rec.delivery_type === 'delivery') {
-            document.getElementById('ship-name').value = rec.recipient_name || '';
-            document.getElementById('phone-number').value = rec.shipping_phone || '';
-            document.getElementById('shipping-address').value = rec.shipping_address || '';
-            document.getElementById('postal-code').value = rec.shipping_postal || '';
-        }
+    //     selectedMethod = rec.delivery_type;
+    //     if (rec.delivery_type === 'delivery') {
+    //         document.getElementById('ship-name').value = rec.recipient_name || '';
+    //         document.getElementById('phone-number').value = rec.shipping_phone || '';
+    //         document.getElementById('shipping-address').value = rec.shipping_address || '';
+    //         document.getElementById('postal-code').value = rec.shipping_postal || '';
+    //     }
 
-        this.innerText = 'เลือกแล้ว';
-        this.style.background = '#38A169';
+    //     this.innerText = 'เลือกแล้ว';
+    //     this.style.background = '#38A169';
 
-        // Minor delay to show feedback then show confirmed state in summary or just proceed
-        updateStep3UI();
-    });
+    //     // Minor delay to show feedback then show confirmed state in summary or just proceed
+    //     updateStep3UI();
+    // });
 
     // --- Date Formatting Functions ---
     function formatToDatetimeLocal(str) {
@@ -946,8 +946,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 el.style.borderColor = '#E2E8F0';
                 el.style.background = 'white';
             });
-            document.getElementById('btn-use-old-reception').innerText = 'ใช้ที่อยู่รับของแบบเดิม';
-            document.getElementById('btn-use-old-reception').style.background = '#286ACD';
+            // document.getElementById('btn-use-old-reception').innerText = 'ใช้ที่อยู่รับของแบบเดิม';
+            // document.getElementById('btn-use-old-reception').style.background = '#286ACD';
 
             setStepUI(2);
             window.scrollTo({ top: 0, behavior: 'smooth' });

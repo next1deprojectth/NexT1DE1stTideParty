@@ -688,7 +688,7 @@ document.addEventListener('DOMContentLoaded', () => {
             giftMoreEl.innerText = `(ร่วมโดเนทสะสมหรือซื้อ Workshop เพื่อรับสิทธิ์)`;
             giftImg.style.display = 'block';
         } else {
-            giftStatusBox.innerHTML = getWorkshopHtml(workshopInfo.history.concat(slipData.is_slip ? [{type: 'Registered (New)', count: 1, date: 'Now'}] : []));
+            giftStatusBox.innerHTML = getWorkshopHtml(workshopInfo.history.concat(slipData.is_slip ? [{ type: 'Registered (New)', count: 1, date: 'Now' }] : []));
             giftMoreEl.innerText = '';
             giftImg.style.display = 'none';
         }
@@ -883,7 +883,7 @@ document.addEventListener('DOMContentLoaded', () => {
             nextGoal.style.display = 'block';
             nextGoal.innerText = `คุณสามารถเข้าร่วม Workshop เพื่อรับความประทับใจเพิ่มได้อีกนะครับ`;
 
-            listEl.innerHTML = getWorkshopHtml(workshopInfo.history.concat(slipData.is_slip ? [{type: 'Registered (New)', count: 1, date: 'ตอนนี้'}] : []));
+            listEl.innerHTML = getWorkshopHtml(workshopInfo.history.concat(slipData.is_slip ? [{ type: 'Registered (New)', count: 1, date: 'ตอนนี้' }] : []));
         } else {
             giftWrapper.style.display = 'none';
             nextGoal.style.display = 'none';
@@ -905,8 +905,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 el.style.borderColor = '#E2E8F0';
                 el.style.background = 'white';
             });
-            document.getElementById('btn-use-old-reception').innerText = 'ใช้ที่อยู่รับของแบบเดิม';
-            document.getElementById('btn-use-old-reception').style.background = '#286ACD';
+            // document.getElementById('btn-use-old-reception').innerText = 'ใช้ที่อยู่รับของแบบเดิม';
+            // document.getElementById('btn-use-old-reception').style.background = '#286ACD';
 
             setStepUI(2);
             window.scrollTo({ top: 0, behavior: 'smooth' });
