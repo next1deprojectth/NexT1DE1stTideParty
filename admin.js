@@ -120,13 +120,11 @@ function renderUsers(users) {
                 <div class="user-info">
                     <div class="social-badge ${socialClass}">${socialChar}</div>
                     <div>
-                        <div class="user-name" style="display: flex; align-items: center; gap: 6px;">
-                            ${user.social_name}
-                            <a href="profile.html?socialName=${encodeURIComponent(user.social_name)}&socialType=${encodeURIComponent(user.social_type)}" target="_blank" style="text-decoration:none; display: inline-flex; filter: grayscale(1); opacity: 0.6; transition: 0.2s;" onmouseover="this.style.opacity=1; this.style.filter='none'" onmouseout="this.style.opacity=0.6; this.style.filter='grayscale(1)'" title="ดูโปรไฟล์">
-                                🔗
-                            </a>
-                        </div>
-                        <div style="font-size: 0.75rem; color: var(--text-muted);">${user.user_id}</div>
+                        <div class="user-name">${user.social_name}</div>
+                        <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 5px;">${user.user_id}</div>
+                        <a href="profile.html?socialName=${encodeURIComponent(user.social_name)}&socialType=${encodeURIComponent(user.social_type)}" target="_blank" style="text-decoration:none; display: inline-flex; font-size: 0.65rem; color: var(--primary-blue); font-weight: 700; border: 1px solid var(--primary-blue); padding: 1px 8px; border-radius: 50px; background: rgba(79, 70, 229, 0.05); transition: 0.2s;" onmouseover="this.style.background='var(--primary-blue)'; this.style.color='white'" onmouseout="this.style.background='rgba(79, 70, 229, 0.05)'; this.style.color='var(--primary-blue)'" title="ดูโปรไฟล์">
+                            ดูข้อมูล
+                        </a>
                     </div>
                 </div>
             </td>
