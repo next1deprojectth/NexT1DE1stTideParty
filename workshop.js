@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let socialNameInput = '';
     let apiData = null;
     let slipData = null;
+    let isEditMode = false;
 
     let totalRights = 0;
     let fromDirect = 0;
@@ -49,11 +50,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnNextStep0 = document.getElementById('btn-next-step0');
     if (btnNextStep0) {
         btnNextStep0.addEventListener('click', () => {
+            isEditMode = false;
+            updateStep1Labels();
             goToStep(1);
+            stepLabel.innerText = "ข้อมูลผู้ร่วม workshop (1/3)";
         });
     }
 
-    // === Step 1 Logic ===
     const tabs = document.querySelectorAll('.social-tab');
     tabs.forEach(tab => {
         tab.addEventListener('click', () => {
@@ -63,6 +66,48 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // Step 0 Edit Button Logic
+    const btnEditLocation = document.getElementById('btn-edit-location');
+    if (btnEditLocation) {
+        btnEditLocation.addEventListener('click', () => {
+            isEditMode = true;
+            updateStep1Labels();
+            goToStep(1);
+            stepLabel.innerText = "ข้อมูลผู้ร่วมทำ workshop (1/3)";
+        });
+    }
+
+    const btnGoRegister = document.getElementById('btn-go-register');
+    if (btnGoRegister) {
+        btnGoRegister.addEventListener('click', () => {
+            isEditMode = false;
+            updateStep1Labels();
+            document.getElementById('edit-error-modal').style.display = 'none';
+            stepLabel.innerText = "ข้อมูลผู้ร่วม workshop (1/3)";
+            // Registering as a new user
+            itemCount = 1;
+            initStep2();
+            goToStep(2);
+        });
+    }
+
+    function updateStep1Labels() {
+        const navTitle = document.getElementById('nav-title');
+        const socialLabel = document.getElementById('social-login-label');
+        const socialNote = document.getElementById('social-login-note');
+
+        if (isEditMode) {
+            if (navTitle) navTitle.innerText = "แก้ไขข้อมูล workshop";
+            if (socialLabel) socialLabel.innerText = "บัญชีโซเชียลของคุณที่เคยลงทะเบียน Workshop";
+            if (socialNote) socialNote.style.display = "none";
+        } else {
+            if (navTitle) navTitle.innerText = "Workshop NexT1DE";
+            if (socialLabel) socialLabel.innerText = "บัญชีโซเชียลของคุณ";
+            if (socialNote) socialNote.style.display = "block";
+        }
+    }
+
+    // === Step 1 Logic ===
     const btnNextStep1 = document.getElementById('btn-next-step1');
     btnNextStep1.addEventListener('click', async () => {
         const usernameEl = document.getElementById('social-username');
@@ -88,6 +133,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 totalRights = data.rights ? data.rights.total : 0;
                 fromDirect = data.rights ? data.rights.from_direct : 0;
 
+                if (isEditMode && fromDirect === 0) {
+                    document.getElementById('edit-error-modal').style.display = 'flex';
+                    return;
+                }
+
                 // Determine past delivery
                 if (data.receive) {
                     hasPastDelivery = true;
@@ -98,8 +148,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     deliveryMethod = 'onsite';
                 }
 
-                // Allow minimum 0 if they already have rights
-                if (totalRights > 0) {
+                // Allow minimum 0 if they already have rights (or if edit mode)
+                if (totalRights > 0 || isEditMode) {
                     itemCount = 0;
                 } else {
                     itemCount = 1;
@@ -108,7 +158,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 initStep2();
                 goToStep(2);
             } else {
-                alert('ไม่พบข้อมูล หรือเกิดข้อผิดพลาดในการโหลด');
+                if (isEditMode) {
+                    document.getElementById('edit-error-modal').style.display = 'flex';
+                } else {
+                    alert('ไม่พบข้อมูล หรือเกิดข้อผิดพลาดในการโหลด');
+                }
             }
         } catch (error) {
             console.error(error);
@@ -163,7 +217,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (hasPastDelivery) {
             pastBox.style.display = 'block';
             normalSelector.style.display = 'none';
-            pastTypeText.innerText = pastDeliveryType === 'delivery' ? 'จัดส่งตามที่อยู่' : 'รับที่งาน';
+            pastTypeText.innerText = pastDeliveryType === 'delivery' ? 'จัดส่งตามที่อยู่' : 'ร่วมทำ workshop ที่จามจุรีสแควร์ วันที่ 24-25 เม.ย. 69';
 
             const pastDetails = document.getElementById('past-details');
             if (pastDetails) {
@@ -299,6 +353,32 @@ document.addEventListener('DOMContentLoaded', () => {
         updatePricing();
     });
 
+    function checkAddressChanged() {
+        if (!isEditMode || !apiData || !apiData.receive) return false;
+        const finalMethod = isEditingReception ? deliveryMethod : pastDeliveryType;
+        if (finalMethod !== 'delivery') return false;
+
+        const r = apiData.receive;
+        const name = document.getElementById('ship-name').value.trim();
+        const phone = document.getElementById('ship-phone').value.trim();
+        const address = document.getElementById('ship-address').value.trim();
+        const postal = document.getElementById('ship-postal').value.trim();
+
+        return (name !== (String(r.recipient_name || ''))) ||
+            (phone !== (String(r.shipping_phone || ''))) ||
+            (address !== (String(r.shipping_address || ''))) ||
+            (postal !== (String(r.shipping_postal || '')));
+    }
+
+    ['ship-name', 'ship-phone', 'ship-address', 'ship-postal'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+            el.addEventListener('input', () => {
+                if (isEditMode) updatePricing();
+            });
+        }
+    });
+
     function toggleDeliveryForm() {
         if (deliveryMethod === 'delivery') {
             deliveryForm.style.display = 'block';
@@ -308,11 +388,26 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function updatePricing() {
+        const divider = document.getElementById('location-divider');
+        const itemSelector = document.getElementById('item-selector-wrapper');
+        const stickySummary = document.querySelector('.sticky-summary-box');
+
+        if (isEditMode) {
+            itemCount = 0;
+            if (itemSelector) itemSelector.style.display = 'none';
+            if (divider) divider.style.display = 'none';
+        } else {
+            if (itemSelector) itemSelector.style.display = 'block';
+            if (divider) divider.style.display = 'block';
+        }
+
         displayQty.innerText = `${itemCount} สิทธิ์`;
 
         const locationSection = document.getElementById('location-section-wrapper');
         if (locationSection) {
-            if (itemCount === 0) {
+            if (isEditMode) {
+                locationSection.style.display = 'block';
+            } else if (itemCount === 0) {
                 locationSection.style.display = 'none';
             } else {
                 locationSection.style.display = 'block';
@@ -333,7 +428,7 @@ document.addEventListener('DOMContentLoaded', () => {
             btnMinus.style.opacity = "1";
         }
 
-        let subtotal = itemCount * WORKSHOP_PRICE;
+        let subtotal = isEditMode ? 0 : itemCount * WORKSHOP_PRICE;
 
         // Calculate shipping logic
         let shipping = 0;
@@ -354,27 +449,114 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('summary-price-inline').innerText = `${formatMoney(subtotal)} บาท`;
         document.getElementById('summary-shipping-inline').innerText = `${formatMoney(shipping)} บาท`;
 
-        if (expectedTotal === 0 && itemCount === 0) {
-            btnNextStep2.innerHTML = `ดูสิทธิ์ (QR Code)`;
-            btnNextStep2.style.background = "linear-gradient(135deg, #286ACD 0%, #A3E4DB 100%)";
+        if (isEditMode) {
+            const methodChanged = isEditingReception && (finalMethod !== pastDeliveryType);
+            const addressChanged = isEditingReception && checkAddressChanged();
+            const requiresPayment = (expectedTotal > 0);
+
+            if (stickySummary) {
+                if (methodChanged || addressChanged || requiresPayment) {
+                    stickySummary.style.display = 'flex';
+                    btnNextStep2.style.display = 'block';
+                } else {
+                    stickySummary.style.display = 'none';
+                    btnNextStep2.style.display = 'none';
+                }
+            }
+
+            if (requiresPayment) {
+                btnNextStep2.innerHTML = `ชำระค่าส่ง ${formatMoney(expectedTotal)} บาท`;
+                btnNextStep2.style.background = "#FF6666";
+            } else {
+                btnNextStep2.innerHTML = `ยืนยัน`;
+                btnNextStep2.style.background = "linear-gradient(135deg, #286ACD 0%, #A3E4DB 100%)";
+            }
         } else {
-            btnNextStep2.innerHTML = `ยอดชำระ ${formatMoney(expectedTotal)} บาท`;
-            btnNextStep2.style.background = "#FF6666";
+            if (stickySummary) stickySummary.style.display = 'flex';
+            btnNextStep2.style.display = 'block';
+            if (expectedTotal === 0 && itemCount === 0) {
+                btnNextStep2.innerHTML = `ดูสิทธิ์ (QR Code)`;
+                btnNextStep2.style.background = "linear-gradient(135deg, #286ACD 0%, #A3E4DB 100%)";
+            } else {
+                btnNextStep2.innerHTML = `ยอดชำระ ${formatMoney(expectedTotal)} บาท`;
+                btnNextStep2.style.background = "#FF6666";
+            }
         }
     }
 
-    btnNextStep2.addEventListener('click', () => {
-        if (expectedTotal === 0 && itemCount === 0) {
-            // Skip payment step, go straight to success
+    btnNextStep2.addEventListener('click', async () => {
+        const isFreeEdit = isEditMode && (expectedTotal === 0);
+        console.log("btnNextStep2 clicked. isEditMode:", isEditMode, "expectedTotal:", expectedTotal, "isFreeEdit:", isFreeEdit);
+
+        if (isFreeEdit) {
+            const loader = document.getElementById('submit-loading');
+            if (loader) loader.style.display = 'block';
+            btnNextStep2.style.display = 'none';
+
+            try {
+                const finalMethod = isEditingReception ? deliveryMethod : pastDeliveryType;
+                const isSwitchToOnsite = (hasPastDelivery && pastDeliveryType === 'delivery' && finalMethod === 'onsite');
+                const isUpdateAddress = (finalMethod === 'delivery' && checkAddressChanged());
+
+                console.log("Entering Free Edit Logic. isSwitchToOnsite:", isSwitchToOnsite, "isUpdateAddress:", isUpdateAddress, "finalMethod:", finalMethod);
+
+                if (isSwitchToOnsite) {
+                    const userId = (apiData.user && apiData.user.user_id) ? apiData.user.user_id : (apiData.userId || apiData.user_id);
+                    const payload = {
+                        action: "workshopChangeToOnsite",
+                        user_id: userId
+                    };
+                    console.log("Payload (workshopChangeToOnsite):", payload);
+                    await fetch(SAVE_API_URL, {
+                        method: 'POST',
+                        body: JSON.stringify(payload)
+                    });
+                    alert("เปลี่ยนวิธีการทำ workshop เสร็จแล้ว");
+                    showSuccessScreen();
+                } else if (isUpdateAddress) {
+                    const userId = (apiData.user && apiData.user.user_id) ? apiData.user.user_id : (apiData.userId || apiData.user_id);
+                    const payload = {
+                        action: "updateShipping",
+                        user_id: userId,
+                        recipient_name: document.getElementById('ship-name').value.trim(),
+                        shipping_phone: document.getElementById('ship-phone').value.trim(),
+                        shipping_address: document.getElementById('ship-address').value.trim(),
+                        shipping_postal: document.getElementById('ship-postal').value.trim()
+                    };
+                    console.log("Payload (updateShipping):", payload);
+                    await fetch(SAVE_API_URL, {
+                        method: 'POST',
+                        body: JSON.stringify(payload)
+                    });
+                    alert("แก้ไขที่อยู่จัดส่งเรียบร้อยแล้ว");
+                    showSuccessScreen();
+                } else {
+                    console.warn("Free Edit block entered but no conditions met. Fallback to success.");
+                    showSuccessScreen();
+                }
+            } catch (err) {
+                console.error("Critical Error in Free Edit Flow:", err);
+                alert("เกิดข้อผิดพลาดในการบันทึกข้อมูล: " + err.message);
+            } finally {
+                if (loader) loader.style.display = 'none';
+                btnNextStep2.style.display = 'block';
+            }
+            return;
+        }
+
+        if (expectedTotal === 0 && itemCount === 0 && !isEditMode) {
+            console.log("Standard 0-total 0-item checkout, showing success.");
             showSuccessScreen();
         } else {
-            // Validate form if delivery is selected and they don't have past past info
+            console.log("Moving to Step 3 for payment/verification.");
             let finalMethod = isEditingReception ? deliveryMethod : pastDeliveryType;
             if (finalMethod === 'delivery' && (!hasPastDelivery || isEditingReception)) {
-                if (!document.getElementById('ship-name').value.trim() ||
-                    !document.getElementById('ship-phone').value.trim() ||
-                    !document.getElementById('ship-address').value.trim() ||
-                    !document.getElementById('ship-postal').value.trim()) {
+                const nameV = document.getElementById('ship-name').value.trim();
+                const phoneV = document.getElementById('ship-phone').value.trim();
+                const addrV = document.getElementById('ship-address').value.trim();
+                const postalV = document.getElementById('ship-postal').value.trim();
+
+                if (!nameV || !phoneV || !addrV || !postalV) {
                     alert("กรุณากรอกข้อมูลจัดส่งให้ครบถ้วน");
                     return;
                 }
@@ -421,6 +603,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 previewImg.src = e.target.result;
                 slipImageBase64 = e.target.result.split(',')[1];
                 verifySlipWithAI(file);
+                // Clear input value so same file can be selected again
+                input.value = "";
             };
             reader.readAsDataURL(file);
         }
@@ -452,7 +636,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // 2. Receiver Name Check
             const rName = aiResult.receiver_name || '';
             if (!rName.includes(RECEIVER_NAME_TARGET)) {
-                showVerifyError("บัญชีปลายทางไม่ถูกต้อง (ผู้รับควรชื่อ ธัญดา)");
+                showVerifyError("บัญชีปลายทางไม่ถูกต้อง ");
                 return;
             }
 
@@ -499,6 +683,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         document.getElementById('btn-submit-final').style.display = 'none';
+        // Clear input as well for re-upload
+        const fileInput = document.getElementById('slip-file-input');
+        if (fileInput) fileInput.value = "";
     }
 
     function showVerifySuccess() {
@@ -562,8 +749,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 transaction_date: slipData.date ? slipData.date.replace(/\//g, '/') : "",
                 transaction_ref: slipData.ref_number || "",
                 receive_name: slipData.receiver_name || "",
-                amount: slipData.amount || expectedTotal,
-                item_count: itemCount,
+                amount: isEditMode ? expectedTotal : (slipData.amount || expectedTotal),
+                item_count: isEditMode ? 0 : itemCount,
                 image: uploadedImageUrl,
                 include_shipping: isIncludeShipping,
                 event_type: "workshop",
@@ -571,12 +758,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 recipient_name: finalMethod === 'delivery' ? shipName : "",
                 shipping_phone: finalMethod === 'delivery' ? shipPhone : "",
                 shipping_address: finalMethod === 'delivery' ? shipAddress : "",
-                shipping_postal: finalMethod === 'delivery' ? shipPostal : ""
+                shipping_postal: finalMethod === 'delivery' ? shipPostal : "",
+                remark: (isEditMode && expectedShipping > 0) ? "ค่าส่งจากการเปลี่ยนวิธีการรับ workshop" : ""
             };
 
             await fetch(SAVE_API_URL, {
                 method: 'POST',
-                mode: 'no-cors',
                 body: JSON.stringify({
                     ...payload,
                     isReturnShippingPrice: isReturnShippingPrice
@@ -653,35 +840,48 @@ document.addEventListener('DOMContentLoaded', () => {
     // === Navigation System ===
     function goToStep(step) {
         document.querySelectorAll('.donate-step').forEach(s => s.style.display = 'none');
-        document.getElementById(`step-${step}`).style.display = 'block';
+        const targetStep = document.getElementById(`step-${step}`);
+        if (targetStep) targetStep.style.display = 'block';
         currentState = step;
 
-        bar1.className = 'progress-bar-item';
-        bar2.className = 'progress-bar-item';
-        bar3.className = 'progress-bar-item';
+        if (bar1) {
+            bar1.className = 'progress-bar-item';
+            if (step >= 1) bar1.classList.add('step-1-active');
+        }
+        if (bar2) {
+            bar2.className = 'progress-bar-item';
+            if (step >= 2) bar2.classList.add('step-2-active');
+        }
+        if (bar3) {
+            bar3.className = 'progress-bar-item';
+            if (step >= 3) bar3.classList.add('step-3-active');
+        }
 
-        if (step >= 1) bar1.classList.add('step-1-active');
-        if (step >= 2) bar2.classList.add('step-2-active');
-        if (step >= 3) bar3.classList.add('step-3-active');
-
-        if (step === 1) stepLabel.innerText = "ข้อมูลผู้ร่วม workshop (1/3)";
-        if (step === 2) stepLabel.innerText = "เลือกสิทธิ์และวิธีรับ (2/3)";
-        if (step === 3) stepLabel.innerText = "ชำระเงินและแนบหลักฐานการชำระ (3/3)";
+        if (step === 1) {
+            stepLabel.innerText = "ข้อมูลผู้ร่วมทำ Workshop (1/3)";
+        }
+        if (step === 2) {
+            stepLabel.innerText = isEditMode ? "แก้ไขวิธีรับ Workshop (2/3)" : "เลือกสิทธิ์และวิธีรับ (2/3)";
+        }
+        if (step === 3) {
+            stepLabel.innerText = "ชำระเงินและแนบหลักฐานการชำระ (3/3)";
+        }
 
         const stepIndicatorWrapper = document.getElementById('step-indicator-wrapper');
-        const navTitle = document.querySelector('.nav-title');
-
         if (step === 0) {
             if (stepIndicatorWrapper) stepIndicatorWrapper.style.display = 'none';
-            if (navTitle) navTitle.innerText = "หน้าแรก";
         } else {
             if (stepIndicatorWrapper) stepIndicatorWrapper.style.display = 'block';
-            if (navTitle) navTitle.innerText = "Workshop NexT1DE";
         }
 
         const stickySummary = document.querySelector('.sticky-summary-box');
         if (stickySummary) {
-            stickySummary.style.display = (step === 2) ? 'flex' : 'none';
+            if (step === 2) {
+                // Let updatePricing handle display
+                updatePricing();
+            } else {
+                stickySummary.style.display = 'none';
+            }
         }
 
         window.scrollTo({ top: 0, behavior: 'smooth' });

@@ -348,7 +348,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         if (totalDonationsEl) totalDonationsEl.innerText = `มี ${count} รายการ`;
 
-        remarlMsgEl.innerHTML = `*ยอดสุทธิที่ผ่านการตรวจสอบสลิปเรียบร้อยแล้ว`
+        remarlMsgEl.innerHTML = `*ยอดสุทธิที่ผ่านการตรวจสอบความถูกต้องเรียบร้อยแล้ว`
         if (statusMsgEl) {
             const diff = total - targetAmount;
             if (diff < 0) {
