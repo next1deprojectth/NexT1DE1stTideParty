@@ -1329,6 +1329,14 @@ body.donate-page-body {
     gap: 8px;
 }
 
+.qr-container-new {
+    padding: 15px;
+    background: white;
+    display: inline-block;
+    margin-bottom: 25px;
+    align-self: center;
+}
+
 /* --- Error Modal --- */
 .error-modal-overlay {
     position: fixed;

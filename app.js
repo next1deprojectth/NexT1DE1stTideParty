@@ -1,13 +1,17 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // --- Navbar Scroll Logic ---
+    // --- Navbar Scroll Logic (Optimized) ---
     const navbar = document.querySelector('.navbar');
+    let isScrolled = false;
+
     window.addEventListener('scroll', () => {
-        if (window.scrollY > 50) {
+        if (window.scrollY > 50 && !isScrolled) {
             navbar.classList.add('scrolled');
-        } else {
+            isScrolled = true;
+        } else if (window.scrollY <= 50 && isScrolled) {
             navbar.classList.remove('scrolled');
+            isScrolled = false;
         }
-    });
+    }, { passive: true });
 
     // --- Hero Slider ---
     const slider = document.getElementById('hero-slider');
@@ -232,7 +236,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (result.status === 'ok') {
                 // 1. Filter out rejected entries (not shown in table)
                 const rawData = result.data.filter(d => d.status !== 'rejected');
-                
+
                 // 2. Further filter for items with actual amount > 0
                 allDonations = rawData.filter(d => (parseFloat(d.amount) || 0) > 0);
 
@@ -240,9 +244,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 let calculatedTotal = 0;
                 allDonations.forEach(d => {
                     let val = parseFloat(d.amount) || 0;
-                    if (d.include_shipping) {
-                        val = Math.max(0, val - 50); // Subtract 50 if shipping included
-                    }
                     calculatedTotal += val;
                 });
 
@@ -332,6 +333,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const progressFillEl = document.getElementById('progress-fill');
         const totalDonationsEl = document.getElementById('total-donations');
         const statusMsgEl = document.getElementById('donation-status-msg');
+        const remarlMsgEl = document.getElementById('donation-remark-msg');
 
         if (currentAmountEl) currentAmountEl.innerText = `฿${formatNumber(total)}`;
         if (progressFillEl) {
@@ -340,6 +342,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         if (totalDonationsEl) totalDonationsEl.innerText = `มี ${count} รายการ`;
 
+        remarlMsgEl.innerHTML = `ยอดสุทธิอาจมีการเปลี่ยนแปลง ขึ้นอยู่กับผลการตรวจสอบสลิป`
         if (statusMsgEl) {
             const diff = total - targetAmount;
             if (diff < 0) {
@@ -373,10 +376,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         pageData.forEach(item => {
             const tr = document.createElement('tr');
-            
+
             // Add pending badge if status is pending (below name)
-            const badgeHtml = item.status === 'pending' 
-                ? '<div class="status-badge-pending">รอตรวจสอบ</div>' 
+            const badgeHtml = item.status === 'pending'
+                ? '<div class="status-badge-pending">รอตรวจสอบ</div>'
                 : '';
 
             tr.innerHTML = `
