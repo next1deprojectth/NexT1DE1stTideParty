@@ -286,8 +286,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 const hasDonations = mergedDonationData.total_amount > 0;
 
                 if (verifyModal && verifyText && hasDonations) {
+                    console.log(mergedDonationData.donations);
                     const socialLabel = (selectedSocial === 'twitter' ? 'X' : (selectedSocial === 'tiktok' ? 'TikTok' : selectedSocial.toUpperCase()));
-                    verifyText.innerHTML = `พบข้อมูลบัญชี <b>${val}</b> จาก <b>${socialLabel}</b><br>มียอดโดเนทสะสมแล้ว <b>${formatNumber(mergedDonationData.total_amount)} ฿</b>`;
+                    verifyText.innerHTML = `พบข้อมูลบัญชี <b>${socialLabel}</b> ที่ตรงกับข้อมูลของคุณ <b></b><br>มีการแจ้งโดเนทเมื่อ <b>${formatThaiDate(mergedDonationData.donations[0].issue_date)}</b>`;
                     hideLoading();
                     verifyModal.style.display = 'flex';
                 } else {
