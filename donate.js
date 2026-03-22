@@ -50,6 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const donateGiveawayImg = document.getElementById('donate-giveaway-img-wrapper');
     const verifiedSuccessSection = document.getElementById('step2-success-container');
     const nicknameInput = document.getElementById('nickname-input');
+    const accountInfoBoxStep2 = document.getElementById('account-info-box-step2');
 
     // Step 3
     const summarySocial = document.getElementById('summary-social');
@@ -130,7 +131,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const feeNotice = document.getElementById('step2-fee-notice');
         const giveawayImg = document.getElementById('donate-giveaway-img-wrapper');
         const nicknameInput = document.getElementById('nickname-input');
-        const accountBox = document.getElementById('account-info-box-step2');
         const uploadZone = document.getElementById('upload-zone');
 
         const checkNotice = document.getElementById('user-check-notice');
@@ -145,7 +145,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (feeNotice) feeNotice.style.display = 'block';
         if (giveawayImg) giveawayImg.style.display = 'block';
         if (nicknameInput) nicknameInput.value = '';
-        if (accountBox) accountBox.style.display = 'block';
+        if (accountInfoBoxStep2) accountInfoBoxStep2.style.display = 'block';
         if (uploadZone) uploadZone.style.display = 'block';
         if (checkNotice) checkNotice.style.display = 'none';
 
@@ -1041,6 +1041,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const uploadContainer = document.getElementById('upload-slip-container');
         if (uploadContainer) uploadContainer.style.display = 'none';
+
+        if (accountInfoBoxStep2) accountInfoBoxStep2.style.display = 'none';
 
         currentTotalOriginal = (mergedDonationData.total_amount || 0) + slipData.amount;
         verifiedSuccessSection.style.display = 'block';
