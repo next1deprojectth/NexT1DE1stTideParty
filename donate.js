@@ -849,13 +849,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.getElementById('btn-submit-final').style.display = 'none';
             } else {
                 if (deliveryNotice) {
-                    deliveryNotice.innerHTML = '<p style="color:#E53E3E; font-weight:700; font-size:0.95rem; margin-bottom:5px;">หักค่าส่ง 50 บาท จากยอดโดเนทสะสม</p>' +
+                    deliveryNotice.innerHTML = '<p style="color:#E53E3E; font-weight:700; font-size:0.95rem; margin-bottom:5px;">ระบบจะหักค่าจัดส่งจำนวน 50 บาท จากยอดโดเนทสะสม</p>' +
                         '<p id="delivery-notice-sub" style="color:#E53E3E; font-weight:700; font-size:0.9rem; margin:0; display:none;"></p>' +
                         '<p id="delivery-notice-math" style="color:#718096; font-size:0.85rem; margin-top:5px; margin-bottom:0; display:block;"></p>';
                     const mathEl = document.getElementById('delivery-notice-math');
                     if (mathEl) {
                         const effectiveDonation = slipData.amount - 50;
-                        mathEl.innerText = `(รอบนี้คุณโดเนท ${effectiveDonation.toLocaleString()} บาท - ค่าส่ง 50 บาท)`;
+                        mathEl.innerText = `(ยอดรวมโดเนทรอบนี้คือ ${effectiveDonation.toLocaleString()} บาท /ค่าจัดส่ง 50 บาท`;
                     }
                 }
                 if (deliveryFields) deliveryFields.style.display = 'block';
