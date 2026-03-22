@@ -237,17 +237,23 @@ document.addEventListener('DOMContentLoaded', () => {
                 // 1. Filter out rejected entries (not shown in table)
                 const rawData = result.data.filter(d => d.status !== 'rejected');
 
-                // 2. Further filter for items with actual amount > 0
+                // 2. allDonations for TABLE (Show all non-rejected)
                 allDonations = rawData.filter(d => (parseFloat(d.amount) || 0) > 0);
 
-                // 3. Calculate Manual Total (Excluding shipping fee from target progress if applicable)
+                // 3. approvedDonations for PROGRESS BAR (Sum ONLY approved)
+                const approvedDonations = rawData.filter(d => {
+                    const amt = parseFloat(d.amount) || 0;
+                    const isApproved = String(d.status).toLowerCase() === 'approved';
+                    return amt > 0 && isApproved;
+                });
+
                 let calculatedTotal = 0;
-                allDonations.forEach(d => {
+                approvedDonations.forEach(d => {
                     let val = parseFloat(d.amount) || 0;
                     calculatedTotal += val;
                 });
 
-                // Use calculated total for progress bar, but shown count is from allDonations
+                // Use calculated total for progress bar, but total items in table is from allDonations
                 updateStats(calculatedTotal, allDonations.length);
                 renderDonationPage(currentPage);
 
@@ -342,7 +348,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         if (totalDonationsEl) totalDonationsEl.innerText = `มี ${count} รายการ`;
 
-        remarlMsgEl.innerHTML = `ยอดสุทธิอาจมีการเปลี่ยนแปลง ขึ้นอยู่กับผลการตรวจสอบสลิป`
+        remarlMsgEl.innerHTML = `*ยอดสุทธิที่ผ่านการตรวจสอบสลิปเรียบร้อยแล้ว`
         if (statusMsgEl) {
             const diff = total - targetAmount;
             if (diff < 0) {

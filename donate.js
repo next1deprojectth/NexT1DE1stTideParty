@@ -93,20 +93,25 @@ document.addEventListener('DOMContentLoaded', () => {
     })}`;
 
     const getNetAmount = () => {
+        const pastTotal = mergedDonationData ? (mergedDonationData.total_amount || 0) : 0;
+        const currentAmount = slipData ? (slipData.amount || 0) : 0;
+        let baseTotal = pastTotal + currentAmount;
+
         let finalMethod = selectedMethod;
         if (mergedDonationData.receive && !isChangingReception) {
             finalMethod = mergedDonationData.receive.delivery_type;
         }
 
-        const hasPastDelivery = mergedDonationData.receive && mergedDonationData.receive.delivery_type === 'delivery';
-        const paidShippingInDonation = mergedDonationData.donations && mergedDonationData.donations.some(d => d.include_shipping === true);
+        const pastMethod = mergedDonationData.receive ? mergedDonationData.receive.delivery_type : null;
 
-        let shouldDeduct = (finalMethod === 'delivery');
-
-        if (shouldDeduct) {
-            return Math.max(0, currentTotalOriginal - 50);
+        // Adjustment Logic
+        if (pastMethod === 'delivery' && finalMethod === 'onsite') {
+            return baseTotal + 50;
+        } else if ((!pastMethod || pastMethod === 'onsite') && finalMethod === 'delivery') {
+            return Math.max(0, baseTotal - 50);
         }
-        return currentTotalOriginal;
+
+        return baseTotal;
     };
 
     const resetStep2UI = () => {
@@ -435,7 +440,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const updateStep2Summary = () => {
         const hasPastDelivery = mergedDonationData.receive && mergedDonationData.receive.delivery_type === 'delivery';
         const paidShippingInDonation = mergedDonationData.donations && mergedDonationData.donations.some(d => d.include_shipping === true);
-        const netAmt = (paidShippingInDonation) ? currentTotalOriginal - 50 : currentTotalOriginal;
+        const currentAmount = slipData ? (slipData.amount || 0) : 0;
+        const netAmt = mergedDonationData.total_amount + currentAmount
 
         // Show net donation amount (total minus fee if applicable)
         document.getElementById('cumulative-amount').innerText = formatAmount(netAmt);
@@ -547,6 +553,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
     window.selectMethod = (method) => {
         selectedMethod = method;
+
+        // Update shipping fee text status
+        const feeTextEl = document.getElementById('shipping-fee-text');
+        if (feeTextEl) {
+            const hasPastDelivery = mergedDonationData.receive && mergedDonationData.receive.delivery_type === 'delivery';
+            if (hasPastDelivery) {
+                feeTextEl.innerText = 'ชำระค่าส่งแล้ว';
+                feeTextEl.style.color = '#38A169'; // Green
+            } else {
+                feeTextEl.innerText = 'หักค่าส่ง 50 บาท';
+                feeTextEl.style.color = '#F871B4'; // Pink
+            }
+        }
+
         document.querySelectorAll('.delivery-method-card').forEach(card => {
             const isActive = card.dataset.method === method;
             card.classList.toggle('active', isActive);
@@ -561,7 +581,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (iconCircle) iconCircle.style.background = isActive ? '#286ACD' : '#F7FAFC';
             if (svg) svg.style.stroke = isActive ? 'white' : '#718096';
-            if (label) label.style.color = isActive ? '#286ACD' : '#718096';
+            if (label) {
+                label.style.color = isActive ? '#4A5568' : '#718096';
+                // Adjust subtext span color if it's not the shipping-fee-text
+                const subSpan = label.querySelector('span:not(#shipping-fee-text)');
+                if (subSpan) subSpan.style.color = isActive ? '#A0AEC0' : '#A0AEC0';
+            }
         });
 
         const addrFields = document.getElementById('new-delivery-address-fields');
@@ -587,6 +612,21 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     document.getElementById('btn-change-reception').addEventListener('click', () => {
+        const r = mergedDonationData.receive;
+        // Only require phone verification if the past method was delivery (contains sensitive address)
+        if (r && r.delivery_type === 'delivery' && r.shipping_phone) {
+            const inputPhone = prompt("กรุณาระบุเบอร์โทรศัพท์ที่เคยใช้ลงทะเบียนเพื่อระบุตัวตนของคุณ:");
+            if (!inputPhone) return;
+
+            const cleanInput = inputPhone.replace(/[^0-9]/g, '');
+            const cleanTarget = String(r.shipping_phone).replace(/[^0-9]/g, '');
+
+            if (cleanInput !== cleanTarget) {
+                alert("เบอร์โทรศัพท์ไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง");
+                return;
+            }
+        }
+
         isChangingReception = true;
         // Also ensure the icons/colors are synced for the manual selection box
         if (!selectedMethod) selectedMethod = 'onsite';
@@ -719,14 +759,37 @@ document.addEventListener('DOMContentLoaded', () => {
             if (addrFields) addrFields.style.display = 'none';
 
             const rec = mergedDonationData.receive;
-            document.getElementById('past-type-text').innerText = rec.delivery_type === 'delivery' ? 'จัดส่งตามที่อยู่' : 'รับหน้างาน';
+            document.getElementById('past-type-text').innerText = rec.delivery_type === 'delivery' ? 'จัดส่งตามที่อยู่' : 'รับที่งานจามจุรีสแควร์ วันที่ 24-25 เม.ย. 69';
 
             if (rec.delivery_type === 'delivery') {
+                const maskText = (str, maxLen = 15) => {
+                    if (!str || str === '-') return '-';
+                    const s = String(str).trim();
+                    if (s.length <= 2) return s;
+                    const hiddenCount = s.length - 2;
+                    const xCount = Math.min(hiddenCount, maxLen - 2);
+                    return s[0] + 'x'.repeat(xCount) + s[s.length - 1];
+                };
+
+                const maskPhone = (str) => {
+                    if (!str || str === '-') return '-';
+                    const s = String(str).trim();
+                    if (s.length <= 2) return s;
+                    return 'x'.repeat(s.length - 2) + s.slice(-2);
+                };
+
+                const maskPostal = (str) => {
+                    if (!str || str === '-') return '-';
+                    const s = String(str).trim();
+                    if (s.length <= 2) return s;
+                    return 'x'.repeat(s.length - 2) + s.slice(-2);
+                };
+
                 document.getElementById('past-details').style.display = 'block';
-                document.getElementById('past-ship-name').innerText = rec.recipient_name || '-';
-                document.getElementById('past-ship-address').innerText = rec.shipping_address || '-';
-                document.getElementById('past-ship-postal').innerText = rec.shipping_postal || '';
-                document.getElementById('past-ship-phone').innerText = rec.shipping_phone || '-';
+                document.getElementById('past-ship-name').innerText = maskText(rec.recipient_name);
+                document.getElementById('past-ship-address').innerText = maskText(rec.shipping_address);
+                document.getElementById('past-ship-postal').innerText = maskPostal(rec.shipping_postal);
+                document.getElementById('past-ship-phone').innerText = maskPhone(rec.shipping_phone);
                 document.getElementById('past-fee-note').style.display = 'block';
             } else {
                 document.getElementById('past-details').style.display = 'none';
@@ -786,7 +849,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     const mathEl = document.getElementById('delivery-notice-math');
                     if (mathEl) {
                         const effectiveDonation = slipData.amount - 50;
-                        mathEl.innerText = `(รอบนี้คุณโดเนท ${effectiveDonation.toLocaleString()} บาท + ค่าส่ง 50 บาท)`;
+                        mathEl.innerText = `(รอบนี้คุณโดเนท ${effectiveDonation.toLocaleString()} บาท - ค่าส่ง 50 บาท)`;
                     }
                 }
                 if (deliveryFields) deliveryFields.style.display = 'block';
@@ -797,18 +860,9 @@ document.addEventListener('DOMContentLoaded', () => {
             if (deliveryNotice) {
                 deliveryNotice.style.display = 'block';
                 deliveryNotice.innerHTML = `
-                    <div style="background: #E6FFFA; border: 1.5px solid #38B2AC; border-radius: 20px; padding: 25px 20px; text-align: center; box-shadow: 0 4px 15px rgba(56, 178, 172, 0.08);">
-                        <div style="width: 48px; height: 48px; background: #38B2AC; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px;">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-                                <circle cx="12" cy="12" r="10"></circle>
-                                <polyline points="12 6 12 12 16 14"></polyline>
-                            </svg>
-                        </div>
-                        <p style="color: #2C7A7B; font-weight: 800; font-size: 1.1rem; margin-bottom: 8px; line-height: 1.4;">
-                            คุณต้องการเปลี่ยนมารับ Giveaway ที่หน้างาน
-                        </p>
+                    <div style="text-align: center; box-shadow: 0 4px 15px rgba(56, 178, 172, 0.08);">
                         <p style="color: #4A5568; font-size: 0.9rem; margin-bottom: 0px; font-weight: 500; line-height: 1.6;">
-                            ค่าส่ง 50 บาท ที่คุณเคยชำระมาแล้ว<br>จะถูกนำไปเป็นยอดโดเนทสะสมของคุณแทน
+                            ค่าส่ง 50 บาท ที่คุณชำระมาแล้ว<br>จะถูกนำไปเป็นยอดโดเนทสะสมของคุณแทน
                         </p>
                     </div>
                 `;

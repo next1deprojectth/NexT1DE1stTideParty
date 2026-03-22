@@ -344,7 +344,7 @@
                                 <p style="margin:0; font-size:0.95rem; color:#4A5568; font-weight:600;">
                                     ครั้งที่แล้วคุณเลือก <span id="past-type-text"
                                         style="color:#286ACD; font-weight:700;">จัดส่งตามที่อยู่</span></p>
-                                <p style="margin:2px 0 0; font-size:0.9rem; color:#718096;">ยืนยันหากใช้แบบเดิมไหม?</p>
+                                <p style="margin:2px 0 0; font-size:0.9rem; color:#718096;">ยืนยันหากใช้แบบเดิม?</p>
                             </div>
                             <button type="button" id="btn-change-reception"
                                 style="background: white; border: 1px solid #CBD5E0; color: #4A5568; width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; padding: 0;"
@@ -388,11 +388,13 @@
                                         stroke-linejoin="round">
                                         <path d="M3 9h18v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9Z"></path>
                                         <path d="m3 9 2.45-4.91A2 2 0 0 1 7.24 3h9.52a2 2 0 0 1 1.79 1.09L21 9"></path>
-                                        <path d="M12 3v6"></path>
                                     </svg>
                                 </div>
                                 <p class="method-label"
-                                    style="margin:0; font-weight:700; color:#718096; font-size:1rem;">รับที่งาน</p>
+                                    style="margin:0; font-weight:700; color:#4A5568; font-size:1rem;">
+                                    รับที่งาน<br><span style="font-size:0.85rem; color:#A0AEC0; font-weight: 500;">24-25
+                                        พ.ค. 67</span>
+                                </p>
                             </div>
                             <!-- Delivery Card -->
                             <div class="delivery-method-card" data-method="delivery" onclick="selectMethod('delivery')"
@@ -409,7 +411,10 @@
                                     </svg>
                                 </div>
                                 <p class="method-label"
-                                    style="margin:0; font-weight:700; color:#718096; font-size:1rem;">จัดส่งตามที่อยู่
+                                    style="margin:0; font-weight:700; color:#4A5568; font-size:1rem;">
+                                    จัดส่ง<br><span id="shipping-fee-text"
+                                        style="font-size:0.85rem; color:#F871B4; font-weight: 500;">ชำระเพิ่ม 50
+                                        บาท</span>
                                 </p>
                             </div>
                         </div>
@@ -529,15 +534,18 @@
                     <circle cx="12" cy="7" r="4"></circle>
                 </svg>
             </div>
-            <p id="user-verify-text" style="font-size: 1rem; color: #4A5568; font-weight: 500; margin-bottom: 20px; text-align: center; line-height: 1.6;"></p>
-            
+            <p id="user-verify-text"
+                style="font-size: 1rem; color: #4A5568; font-weight: 500; margin-bottom: 20px; text-align: center; line-height: 1.6;">
+            </p>
+
             <p style="font-size: 0.8rem; color: #A0AEC0; text-align: center; margin-bottom: 25px; font-weight: 600;">
                 (กรุณาระบุชื่อ account คุณใหม่หากไม่ใช่คุณ)
             </p>
 
             <div style="display: flex; flex-direction: column; gap: 10px; width: 100%;">
                 <button id="btn-is-me" class="gradient-btn-3"
-                    style="width: 100%; border: none; padding: 15px; border-radius: 15px; font-weight: 700; font-size: 1.1rem; color: white;">ใช่ ฉันเอง</button>
+                    style="width: 100%; border: none; padding: 15px; border-radius: 15px; font-weight: 700; font-size: 1.1rem; color: white;">ใช่
+                    ฉันเอง</button>
                 <button id="btn-not-me-modal"
                     style="width: 100%; background: transparent; border: 1.5px solid #E2E8F0; padding: 12px; border-radius: 12px; font-weight: 600; font-size: 0.9rem; color: #718096;">ไม่ใช่ฉัน</button>
             </div>

@@ -20,6 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let slipImageBase64 = '';
     let slipMimeType = '';
+    let isReturnShippingPrice = false;
 
     const WORKSHOP_PRICE = 277;
     const SHIPPING_FEE = 50;
@@ -167,10 +168,33 @@ document.addEventListener('DOMContentLoaded', () => {
             const pastDetails = document.getElementById('past-details');
             if (pastDetails) {
                 if (pastDeliveryType === 'delivery' && apiData && apiData.receive) {
-                    document.getElementById('past-name').innerText = apiData.receive.recipient_name || '-';
-                    document.getElementById('past-phone').innerText = apiData.receive.shipping_phone || '-';
-                    document.getElementById('past-address').innerText = apiData.receive.shipping_address || '-';
-                    document.getElementById('past-postal').innerText = apiData.receive.shipping_postal || '-';
+                    const maskText = (str, maxLen = 15) => {
+                        if (!str || str === '-') return '-';
+                        const s = String(str).trim();
+                        if (s.length <= 2) return s;
+                        const hiddenCount = s.length - 2;
+                        const xCount = Math.min(hiddenCount, maxLen - 3);
+                        return s[0] + 'x'.repeat(xCount) + s[s.length - 1];
+                    };
+
+                    const maskPhone = (str) => {
+                        if (!str || str === '-') return '-';
+                        const s = String(str).trim();
+                        if (s.length <= 2) return s;
+                        return 'x'.repeat(s.length - 3) + s.slice(-3);
+                    };
+
+                    const maskPostal = (str) => {
+                        if (!str || str === '-') return '-';
+                        const s = String(str).trim();
+                        if (s.length <= 2) return s;
+                        return 'x'.repeat(s.length - 2) + s.slice(-2);
+                    };
+
+                    document.getElementById('past-name').innerText = maskText(apiData.receive.recipient_name);
+                    document.getElementById('past-phone').innerText = maskPhone(apiData.receive.shipping_phone);
+                    document.getElementById('past-address').innerText = maskText(apiData.receive.shipping_address);
+                    document.getElementById('past-postal').innerText = maskPostal(apiData.receive.shipping_postal);
                     document.getElementById('past-fee-note').style.display = 'block';
                     pastDetails.style.display = 'block';
                 } else {
@@ -218,9 +242,16 @@ document.addEventListener('DOMContentLoaded', () => {
     deliveryCards.forEach(card => {
         card.addEventListener('click', () => {
             const newMethod = card.getAttribute('data-method');
-            if (hasPastDelivery && pastDeliveryType === 'delivery' && deliveryMethod === 'delivery' && newMethod === 'onsite') {
-                alert('หากเลือกวิธีนี้ จะไม่คืนเงินค่าส่งที่เคยจ่ายไป');
+            const onsiteNotice = document.getElementById('onsite-notice-box');
+
+            if (hasPastDelivery && pastDeliveryType === 'delivery' && newMethod === 'onsite') {
+                if (onsiteNotice) onsiteNotice.style.display = 'block';
+                isReturnShippingPrice = true;
+            } else {
+                if (onsiteNotice) onsiteNotice.style.display = 'none';
+                isReturnShippingPrice = false;
             }
+
             deliveryCards.forEach(c => {
                 c.classList.remove('active');
                 c.style.border = '1px solid #E2E8F0';
@@ -234,6 +265,20 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     btnEditReception.addEventListener('click', () => {
+        const r = apiData ? apiData.receive : null;
+        if (r && r.shipping_phone) {
+            const inputPhone = prompt("กรุณาระบุเบอร์โทรศัพท์ที่เคยใช้ลงทะเบียนเพื่อระบุตัวตนของคุณ:");
+            if (!inputPhone) return;
+
+            const cleanInput = inputPhone.replace(/[^0-9]/g, '');
+            const cleanTarget = String(r.shipping_phone).replace(/[^0-9]/g, '');
+
+            if (cleanInput !== cleanTarget) {
+                alert("เบอร์โทรศัพท์ไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง");
+                return;
+            }
+        }
+
         isEditingReception = true;
         pastBox.style.display = 'none';
         normalSelector.style.display = 'flex';
@@ -532,7 +577,10 @@ document.addEventListener('DOMContentLoaded', () => {
             await fetch(SAVE_API_URL, {
                 method: 'POST',
                 mode: 'no-cors',
-                body: JSON.stringify(payload)
+                body: JSON.stringify({
+                    ...payload,
+                    isReturnShippingPrice: isReturnShippingPrice
+                })
             });
             showSuccessScreen();
         } catch (error) {
