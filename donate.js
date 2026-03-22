@@ -1,4 +1,9 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Check if system is open
+    if (typeof API_CONFIG !== 'undefined' && API_CONFIG.IS_DONATE_OPEN === false) {
+        window.location.href = 'https://forms.gle/zDtENR1ryZWJPD9z9';
+        return;
+    }
 
     // --- State Management ---
     let currentState = 1;

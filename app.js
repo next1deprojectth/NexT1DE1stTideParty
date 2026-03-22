@@ -420,7 +420,87 @@ document.addEventListener('DOMContentLoaded', () => {
 
     fetchDonationData();
     setInterval(fetchDonationData, 30000);
+
+    // --- Feature Toggles & Handlers ---
+    window.handleDonate = function (e) {
+        if (e) e.preventDefault();
+        if (typeof API_CONFIG !== 'undefined' && API_CONFIG.IS_DONATE_OPEN === false) {
+            window.location.href = 'https://forms.gle/zDtENR1ryZWJPD9z9';
+        } else {
+            window.location.href = 'donate.html';
+        }
+    };
+
+    window.handleWorkshop = function (e) {
+        if (e) e.preventDefault();
+        if (typeof API_CONFIG !== 'undefined' && API_CONFIG.IS_WORKSHOP_OPEN === false) {
+            window.showComingSoon(
+                "Workshop Coming Soon!",
+                "กิจกรรม Workshop กำลังอยู่ระหว่างการเตรียมความพร้อม อดใจรออีกนิด แล้วมาสนุกด้วยกันเร็วๆ นี้ครับ!"
+            );
+        } else {
+            window.location.href = 'workshop.html';
+        }
+    };
+
+    // Attach listeners to all donate/workshop links
+    document.querySelectorAll('a[href="donate.html"]').forEach(link => {
+        link.addEventListener('click', window.handleDonate);
+    });
+    document.querySelectorAll('a[href="workshop.html"]').forEach(link => {
+        link.addEventListener('click', window.handleWorkshop);
+    });
+
+    // Special handler for CSR link
+    window.handleCSR = function(e) {
+        if (e) e.preventDefault();
+        window.showComingSoon(
+            "Coming Soon!",
+            "รายละเอียดโครงการ CSR ของ NexT1DE Project Thailand อดใจรออีกนิด เร็วๆ นี้แน่นอน!"
+        );
+    };
+
+    const navCSRLink = document.querySelector('.btn-pink');
+    if (navCSRLink) {
+        navCSRLink.addEventListener('click', window.handleCSR);
+    }
+
+    const navDonateLink = document.querySelector('.btn-blue');
+    if (navDonateLink && navDonateLink.innerText.includes('แจ้งโดเนท')) {
+        navDonateLink.addEventListener('click', window.handleDonate);
+    }
 });
+
+// --- Dynamic Modal Controls ---
+window.showComingSoon = function (title, desc) {
+    const modal = document.getElementById('coming-soon-modal');
+    const card = document.getElementById('coming-soon-card');
+    const titleEl = document.getElementById('cs-title');
+    const descEl = document.getElementById('cs-desc');
+
+    if (title && titleEl) titleEl.innerText = title;
+    if (desc && descEl) descEl.innerHTML = desc; // Use innerHTML to support <br>
+
+    if (modal && card) {
+        modal.style.display = 'flex';
+        // Trigger reflow for animation
+        void modal.offsetWidth;
+        modal.style.opacity = '1';
+        card.style.transform = 'scale(1)';
+    }
+};
+
+window.closeComingSoon = function () {
+    const modal = document.getElementById('coming-soon-modal');
+    const card = document.getElementById('coming-soon-card');
+    if (modal && card) {
+        modal.style.opacity = '0';
+        card.style.transform = 'scale(0.9)';
+        setTimeout(() => {
+            modal.style.display = 'none';
+        }, 300);
+    }
+};
 
 // --- Copy Function ---
 function copyAccountNumber() {

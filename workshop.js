@@ -1,4 +1,9 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Check if system is open
+    if (typeof API_CONFIG !== 'undefined' && API_CONFIG.IS_WORKSHOP_OPEN === false) {
+        window.location.href = 'index.html';
+        return;
+    }
 
     // --- State Management ---
     let currentState = 0;

@@ -28,8 +28,8 @@
             <div class="nav-actions">
                 <button class="btn-red-peach desktop-only"
                     onclick="document.querySelector('#stats-section').scrollIntoView({behavior: 'smooth'})">ดูผลโดเนท</button>
-                <button class="btn-pink" onclick="showComingSoon()">โครงการ CSR</button>
-                <button class="btn-blue" onclick="window.location.href='donate.html'">แจ้งโดเนท</button>
+                <button class="btn-pink">โครงการ CSR</button>
+                <button class="btn-blue">แจ้งโดเนท</button>
             </div>
         </div>
     </nav>
@@ -302,9 +302,8 @@
                     <polyline points="12 6 12 12 16 14"></polyline>
                 </svg>
             </div>
-            <h2 style="font-size: 1.5rem; color: #1A202C; font-weight: 800; margin-bottom: 10px;">Coming Soon!</h2>
-            <p style="color: #4A5568; font-size: 0.95rem; font-weight: 600; line-height: 1.5; margin-bottom: 25px;">
-                รายละเอียดโครงการ CSR ของ NexT1DE Project Thailand <br>อดใจรออีกนิด เร็วๆ นี้แน่นอน!</p>
+            <h2 id="cs-title" style="font-size: 1.5rem; color: #1A202C; font-weight: 800; margin-bottom: 10px;">Coming Soon!</h2>
+            <p id="cs-desc" style="color: #4A5568; font-size: 0.95rem; font-weight: 600; line-height: 1.5; margin-bottom: 25px;">อดใจรออีกนิด เร็วๆ นี้แน่นอน!</p>
             <button onclick="closeComingSoon()"
                 style="width: 100%; padding: 14px; border-radius: 16px; border: none; background: linear-gradient(135deg, #286ACD 0%, #A3E4DB 100%); color: white; font-weight: 800; font-size: 1.05rem; cursor: pointer; box-shadow: 0 4px 15px rgba(40, 106, 205, 0.3);">
                 เข้าใจแล้ว
@@ -312,26 +311,6 @@
         </div>
     </div>
 
-    <script>
-        function showComingSoon() {
-            const modal = document.getElementById('coming-soon-modal');
-            const card = document.getElementById('coming-soon-card');
-            modal.style.display = 'flex';
-            // Trigger reflow for animation
-            void modal.offsetWidth;
-            modal.style.opacity = '1';
-            card.style.transform = 'scale(1)';
-        }
-        function closeComingSoon() {
-            const modal = document.getElementById('coming-soon-modal');
-            const card = document.getElementById('coming-soon-card');
-            modal.style.opacity = '0';
-            card.style.transform = 'scale(0.9)';
-            setTimeout(() => {
-                modal.style.display = 'none';
-            }, 300);
-        }
-    </script>
 
     <script src="config.js"></script>
     <script src="app.js"></script>
