@@ -104,6 +104,7 @@
                 </div>
             </div>
 
+
             <div id="upload-slip-container">
                 <div class="fee-notice-box" id="step2-fee-notice" style="
                             background: #FFF5F5;
@@ -315,24 +316,6 @@
                     style="color:#718096; font-weight:600; font-size:0.65rem; margin-top:15px; margin-bottom:0;"></p>
             </div>
 
-            <!-- Message Quote Section (Optional) -->
-            <div id="quote-input-box"
-                style="background:#FFFFFF; border:1px solid #E2E8F0; border-radius:20px; padding:25px 20px; margin-bottom:25px; box-shadow: 0 4px 15px rgba(0,0,0,0.03);">
-                <p
-                    style="font-weight:800; color:#2D3748; font-size:1.1rem; margin-bottom:15px; display:flex; align-items:center; gap:10px;">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#F871B4" stroke-width="2.5"
-                        stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-                    </svg>
-                    อยากบอกอะไรน้องคลื่นและโอนา...
-                </p>
-                <textarea id="donate-quote" class="form-input"
-                    placeholder="ความในใจอะไรก็ได้ ข้อความนี้จะแสดงในหน้าเวบไซต์ (ไม่บังคับ)" maxlength="100" rows="4"
-                    style="border-radius: 18px; border: 1px solid #E2E8F0; background: #F8FAFC; padding: 15px; font-size: 0.95rem; resize: none;"></textarea>
-                <div id="quote-char-count"
-                    style="text-align: right; font-size: 0.75rem; color: #718096; margin-top: 10px; font-weight: 600;">
-                    0/100</div>
-            </div>
 
             <img src="images/donate_giftaway2.png" id="step3-giveaway-img"
                 style="width:100%; border-radius:15px; display:none; margin-bottom:20px;" alt="Giveaway Levels">
@@ -535,6 +518,32 @@
         </div>
     </div>
 
+    <!-- User Verify Modal -->
+    <div class="error-modal-overlay" id="user-verify-modal" style="display:none; z-index: 9500;">
+        <div class="error-modal-box" style="width: calc(100% - 40px); max-width: 400px; padding: 30px 25px;">
+            <div
+                style="width: 50px; height: 50px; background: #286ACD; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; box-shadow: 0 4px 12px rgba(40, 106, 205, 0.2);">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+            </div>
+            <p id="user-verify-text" style="font-size: 1rem; color: #4A5568; font-weight: 500; margin-bottom: 20px; text-align: center; line-height: 1.6;"></p>
+            
+            <p style="font-size: 0.8rem; color: #A0AEC0; text-align: center; margin-bottom: 25px; font-weight: 600;">
+                (กรุณาระบุชื่อ account คุณใหม่หากไม่ใช่คุณ)
+            </p>
+
+            <div style="display: flex; flex-direction: column; gap: 10px; width: 100%;">
+                <button id="btn-is-me" class="gradient-btn-3"
+                    style="width: 100%; border: none; padding: 15px; border-radius: 15px; font-weight: 700; font-size: 1.1rem; color: white;">ใช่ ฉันเอง</button>
+                <button id="btn-not-me-modal"
+                    style="width: 100%; background: transparent; border: 1.5px solid #E2E8F0; padding: 12px; border-radius: 12px; font-weight: 600; font-size: 0.9rem; color: #718096;">ไม่ใช่ฉัน</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Error Modal -->
     <div class="error-modal-overlay" id="error-modal" style="display:none">
         <div class="error-modal-box">
@@ -542,6 +551,33 @@
             <p class="error-msg">พบข้อขัดข้องลองใหม่อีกครั้ง</p>
             <button class="btn-error-close"
                 onclick="document.getElementById('error-modal').style.display='none'">ตกลง</button>
+        </div>
+    </div>
+
+    <!-- Quote Modal -->
+    <div class="error-modal-overlay" id="quote-modal" style="display:none; z-index: 9500;">
+        <div class="error-modal-box" style="width: calc(100% - 40px); max-width: 450px; padding: 30px 25px;">
+            <p
+                style="font-weight:800; color:#2D3748; font-size:1.15rem; margin-bottom:18px; display:flex; align-items:center; gap:10px; justify-content: center;">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#F871B4" stroke-width="2.5"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                </svg>
+                อยากบอกอะไรน้องคลื่นและโอนา...
+            </p>
+            <textarea id="donate-quote" class="form-input"
+                placeholder="ความในใจอะไรก็ได้ ข้อความนี้จะแสดงในหน้าเวบไซต์ (ไม่บังคับ)" maxlength="100" rows="4"
+                style="border-radius: 18px; border: 1px solid #E2E8F0; background: #F8FAFC; padding: 15px; font-size: 0.95rem; resize: none; margin-bottom: 5px;"></textarea>
+            <div id="quote-char-count"
+                style="text-align: right; font-size: 0.75rem; color: #718096; margin-top: 0; margin-bottom: 20px; font-weight: 600; width: 100%;">
+                0/100</div>
+
+            <div style="display: flex; flex-direction: column; gap: 10px; width: 100%;">
+                <button id="btn-submit-with-quote" class="gradient-btn-3"
+                    style="width: 100%; border: none; padding: 15px; border-radius: 15px; font-weight: 700; font-size: 1.1rem; color: white;">ส่งข้อมูลและบันทึก</button>
+                <button id="btn-skip-quote"
+                    style="width: 100%; background: transparent; border: none; padding: 10px; border-radius: 12px; font-weight: 600; font-size: 0.9rem; color: #A0AEC0;">ข้ามขั้นตอนนี้</button>
+            </div>
         </div>
     </div>
 

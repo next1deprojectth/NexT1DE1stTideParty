@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentState = 1;
     let slipData = null;
     let selectedSocial = 'x';
-    let selectedMethod = 'pickup'; // Default is onsite
+    let selectedMethod = 'onsite'; // Default is onsite
     let mergedDonationData = { status: 'new', total_amount: 0, donations: [], user: null, receive: null };
     let nickname = '';
     let currentTotalOriginal = 0;
@@ -101,12 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const hasPastDelivery = mergedDonationData.receive && mergedDonationData.receive.delivery_type === 'delivery';
         const paidShippingInDonation = mergedDonationData.donations && mergedDonationData.donations.some(d => d.include_shipping === true);
 
-        let shouldDeduct = false;
-        if (paidShippingInDonation) {
-            shouldDeduct = true;
-        } else if (finalMethod === 'delivery' && !hasPastDelivery) {
-            shouldDeduct = true;
-        }
+        let shouldDeduct = (finalMethod === 'delivery');
 
         if (shouldDeduct) {
             return Math.max(0, currentTotalOriginal - 50);
@@ -128,6 +123,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const accountBox = document.getElementById('account-info-box-step2');
         const uploadZone = document.getElementById('upload-zone');
 
+        const checkNotice = document.getElementById('user-check-notice');
+
         if (uploadContainer) uploadContainer.style.display = 'block';
         if (summaryContainer) summaryContainer.style.display = 'none';
         if (verificationDetails) verificationDetails.style.display = 'none';
@@ -140,6 +137,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (nicknameInput) nicknameInput.value = '';
         if (accountBox) accountBox.style.display = 'block';
         if (uploadZone) uploadZone.style.display = 'block';
+        if (checkNotice) checkNotice.style.display = 'none';
 
         slipData = { amount: 0, date: '', bankCode: '' };
         nickname = '';
@@ -253,12 +251,16 @@ document.addEventListener('DOMContentLoaded', () => {
             if (data.status !== 'ok') {
                 // Not found, treat as new
                 mergedDonationData = { status: 'new', total_amount: 0, donations: [], user: null, receive: null };
+                hideLoading();
+                resetStep2UI();
+                setStepUI(2);
             } else {
                 mergedDonationData = data;
                 // Calculate total_amount from donations array if not present
                 if (!mergedDonationData.total_amount) {
                     mergedDonationData.total_amount = data.donations.reduce((sum, d) => sum + (parseFloat(d.amount) || 0), 0);
                 }
+
                 // Pre-fill slipData with user's default bank if available (as fallback)
                 if (data.banks && data.banks.length > 0) {
                     const b = data.banks[0];
@@ -267,17 +269,46 @@ document.addEventListener('DOMContentLoaded', () => {
                     slipData.sender_account = slipData.sender_account || b.bank_no;
                     slipData.bank_code = slipData.bank_code || b.bank;
                 }
-                // If they have old receive data, figure out their previous default social (just keeping val is fine though)
+
+                // Show Verification Modal only if they have actual donation history
+                const verifyModal = document.getElementById('user-verify-modal');
+                const verifyText = document.getElementById('user-verify-text');
+                const hasDonations = mergedDonationData.total_amount > 0;
+
+                if (verifyModal && verifyText && hasDonations) {
+                    const socialLabel = (selectedSocial === 'twitter' ? 'X' : (selectedSocial === 'tiktok' ? 'TikTok' : selectedSocial.toUpperCase()));
+                    verifyText.innerHTML = `พบข้อมูลบัญชี <b>${val}</b> จาก <b>${socialLabel}</b><br>มียอดโดเนทสะสมแล้ว <b>${formatNumber(mergedDonationData.total_amount)} ฿</b>`;
+                    hideLoading();
+                    verifyModal.style.display = 'flex';
+                } else {
+                    hideLoading();
+                    resetStep2UI();
+                    setStepUI(2);
+                }
             }
-            hideLoading();
-            resetStep2UI();
-            setStepUI(2);
         } catch (e) {
             console.error(e);
             hideLoading();
             alert('เกิดข้อผิดพลาดในการเชื่อมต่อ: ' + e.message);
         }
     });
+
+    document.getElementById('btn-is-me').addEventListener('click', () => {
+        document.getElementById('user-verify-modal').style.display = 'none';
+        resetStep2UI();
+        setStepUI(2);
+    });
+
+    document.getElementById('btn-not-me-modal').addEventListener('click', () => {
+        document.getElementById('user-verify-modal').style.display = 'none';
+        socialInput.value = '';
+        mergedDonationData = { status: 'new', total_amount: 0, donations: [], user: null, receive: null };
+    });
+
+    // Helper for number formatting
+    function formatNumber(num) {
+        return Number(num).toLocaleString('th-TH', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+    }
 
     // --- Step 2 ---
     window.triggerFileInput = () => slipFileInput.click();
@@ -668,12 +699,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const hasPastDelivery = mergedDonationData.receive && mergedDonationData.receive.delivery_type === 'delivery';
         const paidShippingInDonation = mergedDonationData.donations && mergedDonationData.donations.some(d => d.include_shipping === true);
 
-        let shouldDeduct = false;
-        if (paidShippingInDonation) {
-            shouldDeduct = true;
-        } else if (finalMethod === 'delivery' && !hasPastDelivery) {
-            shouldDeduct = true;
-        }
+        let shouldDeduct = (finalMethod === 'delivery');
 
         if (shouldDeduct) {
             feeRow.style.display = 'flex';
@@ -766,6 +792,28 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (deliveryFields) deliveryFields.style.display = 'block';
                 document.getElementById('btn-submit-final').style.display = 'block';
             }
+        } else if ((finalMethod === 'pickup' || finalMethod === 'onsite') && hasPastDelivery && isChangingReception) {
+            // SCENARIO: Switching from past delivery to onsite (already paid fee)
+            if (deliveryNotice) {
+                deliveryNotice.style.display = 'block';
+                deliveryNotice.innerHTML = `
+                    <div style="background: #E6FFFA; border: 1.5px solid #38B2AC; border-radius: 20px; padding: 25px 20px; text-align: center; box-shadow: 0 4px 15px rgba(56, 178, 172, 0.08);">
+                        <div style="width: 48px; height: 48px; background: #38B2AC; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px;">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polyline points="12 6 12 12 16 14"></polyline>
+                            </svg>
+                        </div>
+                        <p style="color: #2C7A7B; font-weight: 800; font-size: 1.1rem; margin-bottom: 8px; line-height: 1.4;">
+                            คุณต้องการเปลี่ยนมารับ Giveaway ที่หน้างาน
+                        </p>
+                        <p style="color: #4A5568; font-size: 0.9rem; margin-bottom: 0px; font-weight: 500; line-height: 1.6;">
+                            ค่าส่ง 50 บาท ที่คุณเคยชำระมาแล้ว<br>จะถูกนำไปเป็นยอดโดเนทสะสมของคุณแทน
+                        </p>
+                    </div>
+                `;
+            }
+            document.getElementById('btn-submit-final').style.display = 'block';
         } else {
             if (deliveryNotice) deliveryNotice.style.display = 'none';
             document.getElementById('btn-submit-final').style.display = 'block';
@@ -788,7 +836,97 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // --- Final Submit ---
-    document.getElementById('btn-submit-final').addEventListener('click', async () => {
+    const submitDonationData = async () => {
+        let finalMethod = selectedMethod;
+        if (mergedDonationData.receive && !isChangingReception) {
+            finalMethod = mergedDonationData.receive.delivery_type;
+        }
+
+        const rec = mergedDonationData.receive;
+        let shipName = document.getElementById('ship-name').value.trim();
+        let phone = document.getElementById('phone-number').value.trim();
+        let address = document.getElementById('shipping-address').value.trim();
+        let postal = document.getElementById('postal-code').value.trim();
+
+        if (rec && !isChangingReception && finalMethod === 'delivery') {
+            shipName = rec.recipient_name || '';
+            phone = rec.shipping_phone || '';
+            address = rec.shipping_address || '';
+            postal = rec.shipping_postal || '';
+        }
+
+        document.getElementById('quote-modal').style.display = 'none';
+        showLoading('กำลังบันทึกข้อมูล...');
+
+        try {
+            // 1. Upload Image first
+            let uploadedImageUrl = "";
+            if (slipImageBase64) {
+                const uploadBody = {
+                    action: "uploadImage",
+                    mimeType: slipMimeType,
+                    base64: slipImageBase64
+                };
+                const uploadRes = await fetch(UPLOAD_API_URL, {
+                    method: 'POST',
+                    body: JSON.stringify(uploadBody)
+                });
+                const uploadData = await uploadRes.json();
+                if (uploadData.status === 'ok') {
+                    uploadedImageUrl = uploadData.view_url;
+                } else {
+                    throw new Error('ไม่สามารถอัปโหลดรูปภาพได้');
+                }
+            }
+
+            // 2. Save Donation Data
+            const isStep3Reached = currentTotalOriginal >= 177;
+            const hasPastDelivery = mergedDonationData.receive && mergedDonationData.receive.delivery_type === 'delivery';
+
+            // Check if switching from past delivery to onsite/pickup
+            const isReturnShippingPrice = isStep3Reached && hasPastDelivery && isChangingReception && (finalMethod === 'pickup' || finalMethod === 'onsite');
+
+            const body = {
+                action: "saveDonate",
+                social_name: socialInput.value,
+                social_type: selectedSocial,
+                name: slipData.sender_name,
+                bank_no: slipData.sender_account,
+                bank: slipData.bank_code,
+                transaction_date: slipData.date.replace(/\//g, '/'),
+                transaction_ref: slipData.ref_number,
+                receive_name: slipData.receiver_name,
+                amount: slipData.amount,
+                image: uploadedImageUrl,
+                username: nickname,
+                event_type: isStep3Reached ? "donate" : "",
+                delivery_type: isStep3Reached ? ((finalMethod === 'delivery') ? 'delivery' : 'onsite') : "",
+                include_shipping: isStep3Reached ? (finalMethod === 'delivery' && !hasPastDelivery) : false,
+                isReturnShippingPrice: isReturnShippingPrice,
+                recipient_name: isStep3Reached ? (finalMethod === 'delivery' ? shipName : "") : "",
+                shipping_phone: isStep3Reached ? (finalMethod === 'delivery' ? phone : "") : "",
+                shipping_address: isStep3Reached ? (finalMethod === 'delivery' ? address : "") : "",
+                shipping_postal: isStep3Reached ? (finalMethod === 'delivery' ? postal : "") : "",
+                quote: document.getElementById('donate-quote').value || ""
+            };
+
+            await fetch(SAVE_API_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                body: JSON.stringify(body)
+            });
+
+            hideLoading();
+            showSuccessScreen();
+
+        } catch (error) {
+            console.error("Save Error:", error);
+            hideLoading();
+            alert('เกิดข้อผิดพลาด: ' + error.message);
+        }
+    };
+
+    document.getElementById('btn-submit-final').addEventListener('click', () => {
         let finalMethod = selectedMethod;
         if (mergedDonationData.receive && !isChangingReception) {
             finalMethod = mergedDonationData.receive.delivery_type;
@@ -818,69 +956,15 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        showLoading('กำลังบันทึกข้อมูล...');
+        // Instead of submitting, show Quote Modal
+        document.getElementById('quote-modal').style.display = 'flex';
+    });
 
-        try {
-            // 1. Upload Image first
-            let uploadedImageUrl = "";
-            if (slipImageBase64) {
-                const uploadBody = {
-                    action: "uploadImage",
-                    mimeType: slipMimeType,
-                    base64: slipImageBase64
-                };
-                const uploadRes = await fetch(UPLOAD_API_URL, {
-                    method: 'POST',
-                    body: JSON.stringify(uploadBody)
-                });
-                const uploadData = await uploadRes.json();
-                if (uploadData.status === 'ok') {
-                    uploadedImageUrl = uploadData.view_url;
-                } else {
-                    throw new Error('ไม่สามารถอัปโหลดรูปภาพได้');
-                }
-            }
-
-            // 2. Save Donation Data
-            const isStep3Reached = currentTotalOriginal >= 177;
-            const hasPastDelivery = mergedDonationData.receive && mergedDonationData.receive.delivery_type === 'delivery';
-            const body = {
-                action: "saveDonate",
-                social_name: socialInput.value,
-                social_type: selectedSocial,
-                name: slipData.sender_name,
-                bank_no: slipData.sender_account,
-                bank: slipData.bank_code,
-                transaction_date: slipData.date.replace(/\//g, '/'),
-                transaction_ref: slipData.ref_number,
-                receive_name: slipData.receiver_name,
-                amount: slipData.amount,
-                image: uploadedImageUrl,
-                username: nickname,
-                event_type: isStep3Reached ? "donate" : "",
-                delivery_type: isStep3Reached ? (finalMethod === 'delivery' ? 'delivery' : 'onsite') : "",
-                include_shipping: isStep3Reached ? (finalMethod === 'delivery' && !hasPastDelivery) : false,
-                recipient_name: isStep3Reached ? (finalMethod === 'delivery' ? shipName : "") : "",
-                shipping_phone: isStep3Reached ? (finalMethod === 'delivery' ? phone : "") : "",
-                shipping_address: isStep3Reached ? (finalMethod === 'delivery' ? address : "") : "",
-                shipping_postal: isStep3Reached ? (finalMethod === 'delivery' ? postal : "") : "",
-                quote: document.getElementById('donate-quote').value || ""
-            };
-
-            await fetch(SAVE_API_URL, {
-                method: 'POST',
-                mode: 'no-cors',
-                body: JSON.stringify(body)
-            });
-
-            hideLoading();
-            showSuccessScreen();
-
-        } catch (error) {
-            console.error("Save Error:", error);
-            hideLoading();
-            alert('เกิดข้อผิดพลาด: ' + error.message);
-        }
+    // Quote Modal Listeners
+    document.getElementById('btn-submit-with-quote').addEventListener('click', submitDonationData);
+    document.getElementById('btn-skip-quote').addEventListener('click', () => {
+        document.getElementById('donate-quote').value = ""; // Clear quote
+        submitDonationData();
     });
 
 

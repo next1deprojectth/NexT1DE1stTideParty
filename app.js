@@ -383,11 +383,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 : '';
 
             tr.innerHTML = `
-                <td>
-                    <div class="donor-name">${item.name}</div>
-                    ${badgeHtml}
-                </td>
-                <td class="amount">฿${formatNumber(item.amount)}</td>
+                <td class="donor-name">${item.name}</td>
+                <td class="amount">฿${formatNumber(item.amount)}  ${badgeHtml} </td>
                 <td class="date">${formatThaiDate(item.transaction_date)}</td>
             `;
             tbody.appendChild(tr);
