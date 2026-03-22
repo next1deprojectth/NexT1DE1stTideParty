@@ -75,12 +75,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const calculateGifts = (totalAmount) => {
         const gifts = {
-            a6Sticker: (totalAmount>= 177) ? 1 : 0,
-            uvSticker: (totalAmount>= 477) ? 1 : 0,
-            clearPurse: (totalAmount>= 477) ? 1 : 0,
-            acrylicFrame: (totalAmount>= 777) ? 1 : 0,
-            lightSignStrap: (totalAmount>= 1277) ? 1 : 0,
-            workshop: (totalAmount>= 1277) ? 1 : 0
+            a6Sticker: (totalAmount >= 177) ? 1 : 0,
+            uvSticker: (totalAmount >= 477) ? 1 : 0,
+            clearPurse: (totalAmount >= 477) ? 1 : 0,
+            acrylicFrame: (totalAmount >= 777) ? 1 : 0,
+            lightSignStrap: (totalAmount >= 1277) ? 1 : 0,
+            workshop: (totalAmount >= 1277) ? 1 : 0
         };
 
         let nextGoal = 0;
@@ -90,7 +90,15 @@ document.addEventListener('DOMContentLoaded', () => {
         else if (totalAmount < 777) { nextGoal = 777; diff = 777 - totalAmount; }
         else if (totalAmount < 1277) { nextGoal = 1277; diff = 1277 - totalAmount; }
 
-        return { gifts, diff, hasAny: totalAmount>= 177 };
+        return { gifts, diff, hasAny: totalAmount >= 177 };
+    };
+
+    const getLevelTitle = (amount) => {
+        if (amount >= 1277) return "คุณได้รับ Giveaway Level 4";
+        if (amount >= 777) return "คุณได้รับ Giveaway Level 3";
+        if (amount >= 477) return "คุณได้รับ Giveaway Level 2";
+        if (amount >= 177) return "คุณได้รับ Giveaway Level 1";
+        return "Giveaway ที่คุณได้รับ";
     };
 
     const formatAmount = (num) => `฿${num.toLocaleString('th-TH', {
@@ -272,7 +280,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
 
                 // Pre-fill slipData with user's default bank if available (as fallback)
-                if (data.banks && data.banks.length> 0) {
+                if (data.banks && data.banks.length > 0) {
                     const b = data.banks[0];
                     if (!slipData) slipData = { amount: 0, sender_name: '', is_slip: false, date: '' };
                     slipData.sender_name = slipData.sender_name || b.name;
@@ -283,12 +291,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Show Verification Modal only if they have actual donation history
                 const verifyModal = document.getElementById('user-verify-modal');
                 const verifyText = document.getElementById('user-verify-text');
-                const hasDonations = mergedDonationData.total_amount> 0;
+                const hasDonations = mergedDonationData.total_amount > 0;
 
                 if (verifyModal && verifyText && hasDonations) {
                     console.log(mergedDonationData.donations);
                     const socialLabel = (selectedSocial === 'twitter' ? 'X' : (selectedSocial === 'tiktok' ? 'TikTok' : selectedSocial.toUpperCase()));
-                    verifyText.innerHTML = `พบข้อมูลบัญชี <b>${socialLabel}</b> ที่ตรงกับข้อมูลของคุณ <b></b><br>มีการแจ้งโดเนทเมื่อ <b>${formatThaiDate(mergedDonationData.donations[0].issue_date)} น.</b> `;
+                    verifyText.innerHTML = `พบข้อมูลบัญชี <b>${socialLabel}</b> ที่ตรงกับข้อมูลของคุณ <b></b><br>มีการแจ้งโดเนทเมื่อ <b>${formatThaiDate(mergedDonationData.donations[0].issue_date)} น.</b > `;
                     hideLoading();
                     verifyModal.style.display = 'flex';
                 } else {
@@ -432,12 +440,12 @@ document.addEventListener('DOMContentLoaded', () => {
         let h = `<div style="display:flex; flex-wrap:wrap; gap:8px; justify-content:${justify}; margin-top:10px; justify-content:center">`;
         const badgeStyle = `style="background:#404040; color:white; padding:6px 18px; border-radius:50px; font-size:0.7rem; font-weight:700; white-space:nowrap; box-shadow: 0 4px 10px rgba(0,0,0,0.1); border:none;"`;
 
-        if (gifts.a6Sticker> 0) h += `<span ${badgeStyle}>A6 Sticker</span>`;
-        if (gifts.uvSticker> 0) h += `<span ${badgeStyle}>UV Sticker</span>`;
-        if (gifts.clearPurse> 0) h += `<span ${badgeStyle}>Clear Plastic Purse</span>`;
-        if (gifts.acrylicFrame> 0) h += `<span ${badgeStyle}>Acrylic Frame</span>`;
-        if (gifts.lightSignStrap> 0) h += `<span ${badgeStyle}>Light Sign Strap</span>`;
-        if (gifts.workshop> 0) h += `<span ${badgeStyle}>Work Shop</span>`;
+        if (gifts.a6Sticker > 0) h += `<span ${badgeStyle}>A6 Sticker</span>`;
+        if (gifts.uvSticker > 0) h += `<span ${badgeStyle}>UV Sticker</span>`;
+        if (gifts.clearPurse > 0) h += `<span ${badgeStyle}>Clear Plastic Purse</span>`;
+        if (gifts.acrylicFrame > 0) h += `<span ${badgeStyle}>Acrylic Frame</span>`;
+        if (gifts.lightSignStrap > 0) h += `<span ${badgeStyle}>Light Sign Strap</span>`;
+        if (gifts.workshop > 0) h += `<span ${badgeStyle}>Work Shop</span>`;
 
         h += '</div>';
         return h;
@@ -481,8 +489,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const getStatusBadgeHtml = (status) => {
             let bg = "#F59E0B", color = "#FFF", text = "รอตรวจสอบ";
-            if (status === "ผ่าน" || status === "approved") { bg = "#059669"; text = "ผ่าน"; }
-            if (status === "ไม่ผ่าน" || status === "rejected") { bg = "#DC2626"; text = "ไม่ผ่าน"; }
+            if (status === "ตรวจผ่านแล้ว" || status === "approved") { bg = "#059669"; text = "ตรวจผ่านแล้ว"; }
+            if (status === "ตรวจไม่ผ่าน" || status === "rejected") { bg = "#DC2626"; text = "ตรวจไม่ผ่าน"; }
             return `<div style="background:${bg}; color:white; padding:2px 8px; border-radius:6px; font-size:0.6rem; font-weight:800; display:inline-block; margin-top:4px;">${text}</div>`;
         };
 
@@ -510,7 +518,7 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
         `;
 
-        if (mergedDonationData.donations && mergedDonationData.donations.length> 0) {
+        if (mergedDonationData.donations && mergedDonationData.donations.length > 0) {
             mergedDonationData.donations.forEach(don => {
                 const donDate = don.transaction_date || don.date || don['วันเวลาโอน'] || don.timestamp || '-';
                 timelineHtml += `
@@ -676,13 +684,13 @@ document.addEventListener('DOMContentLoaded', () => {
     function formatToDatetimeLocal(str) {
         if (!str) return '';
         // Check if already in 'YYYY-MM-DDTHH:MM' format
-        if (str.includes('T') && str.length>= 16) {
+        if (str.includes('T') && str.length >= 16) {
             return str.substring(0, 16);
         }
 
         // Handle 'DD/MM/YYYY HH:MM:SS' or 'DD/MM/YYYY HH:MM'
         const parts = str.split(/[\s/:.-]/);
-        if (parts.length>= 5) {
+        if (parts.length >= 5) {
             // Assuming DD/MM/YYYY HH:MM:SS or DD/MM/YYYY HH:MM
             const day = parts[0];
             const month = parts[1];
@@ -714,7 +722,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (dateStr.includes('/')) {
             // DD/MM/YYYY
             const parts = dateStr.split(/[\s/:]/);
-            if (parts.length>= 3) {
+            if (parts.length >= 3) {
                 const day = parseInt(parts[0], 10);
                 const monthIdx = parseInt(parts[1], 10) - 1;
                 const year = parseInt(parts[2], 10);
@@ -778,7 +786,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (addrFields) addrFields.style.display = 'none';
 
             const rec = mergedDonationData.receive;
-            document.getElementById('past-type-text').innerText = rec.delivery_type === 'delivery' ? 'จัดส่งตามที่อยู่' : 'รับที่งานจามจุรีสแควร์ วันที่ 24-25 เม.ย. 69';
+            document.getElementById('past-type-text').innerText = rec.delivery_type === 'delivery' ? 'จัดส่งตามที่อยู่' : 'รับที่งานจามจุรีสแควร์ วันที่ 25-26 เม.ย. 69';
 
             if (rec.delivery_type === 'delivery') {
                 const maskText = (str, maxLen = 15) => {
@@ -829,7 +837,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (!giftInfo.hasAny) {
             if (pillText) {
-                pillText.innerText = 'Giveaway ที่คุณได้รับ';
+                pillText.innerText = getLevelTitle(netAmt);
                 pillText.style.color = '#3487ff';
             }
             giftStatusBox.innerHTML = '<p style="margin:0; font-weight:700; color:#ff67a3; font-size:1rem;">คุณไม่ได้รับ Giveaway</p>';
@@ -838,13 +846,13 @@ document.addEventListener('DOMContentLoaded', () => {
             giftImg.style.display = 'block';
         } else {
             if (pillText) {
-                pillText.innerText = 'Giveaway ที่คุณได้รับ';
+                pillText.innerText = getLevelTitle(netAmt);
                 pillText.style.color = '#3487ff';
             }
             let giftStr = getGiftHtml(giftInfo.gifts);
             giftStr += `<p style="margin:0; font-size:0.85rem; color:#718096; margin-top:15px; font-weight:500;">( อาจมีการเปลี่ยนแปลง หลังคำนวณค่าจัดส่ง )</p>`;
             giftStatusBox.innerHTML = giftStr;
-            giftMoreEl.innerText = (giftInfo.diff> 0) ? `(โดเนทเพิ่ม ${formatAmount(giftInfo.diff)} เพื่อรับ Giveaway มากขึ้น)` : '';
+            giftMoreEl.innerText = (giftInfo.diff > 0) ? `(โดเนทเพิ่ม ${formatAmount(giftInfo.diff)} เพื่อรับ Giveaway มากขึ้น)` : '';
             giftImg.style.display = 'none';
         }
 
@@ -954,7 +962,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             // 2. Save Donation Data
-            const isStep3Reached = currentTotalOriginal>= 177;
+            const isStep3Reached = currentTotalOriginal >= 177;
             const hasPastDelivery = mergedDonationData.receive && mergedDonationData.receive.delivery_type === 'delivery';
 
             // Check if switching from past delivery to onsite/pickup
@@ -1019,7 +1027,7 @@ document.addEventListener('DOMContentLoaded', () => {
             postal = rec.shipping_postal || '';
         }
 
-        if (currentTotalOriginal>= 177 && finalMethod === 'delivery') {
+        if (currentTotalOriginal >= 177 && finalMethod === 'delivery') {
             if (!shipName || !phone || !address || !postal) {
                 alert('กรุณากรอกข้อมูลการจัดส่งให้ครบถ้วน');
                 return;
@@ -1101,10 +1109,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const giftWrapper = document.querySelector('.success-gift-list-wrapper');
         const nextGoal = document.getElementById('success-next-goal');
+        const successTitleEl = document.getElementById('success-gift-title');
 
         if (giftInfo.hasAny) {
             giftWrapper.style.display = 'block';
-            if (giftInfo.diff> 0) {
+            if (successTitleEl) successTitleEl.innerText = getLevelTitle(netAmt) + (getLevelTitle(netAmt).includes('Level') ? '' : 'คือ');
+            if (giftInfo.diff > 0) {
                 nextGoal.style.display = 'block';
                 nextGoal.innerText = `โดเนทอีก ${formatAmount(giftInfo.diff)} เพื่อรับ Giveaway เพิ่มมากขึ้น`;
             } else {
@@ -1193,7 +1203,7 @@ document.addEventListener('DOMContentLoaded', () => {
         quoteInput.addEventListener('input', () => {
             const length = quoteInput.value.length;
             quoteCount.innerText = `${length}/100`;
-            if (length>= 100) {
+            if (length >= 100) {
                 quoteCount.style.color = '#E53E3E';
             } else {
                 quoteCount.style.color = '#718096';
