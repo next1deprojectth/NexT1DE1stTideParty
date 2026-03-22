@@ -9,6 +9,8 @@
         rel="stylesheet">
     <link rel="icon" type="image/png" href="images/logo-project.png">
     <link rel="stylesheet" href="style.css">
+    <link rel="preload" href="images/background.jpg" as="image">
+    <link rel="preload" href="images/image_project1.jpg" as="image">
 </head>
 
 <body>
@@ -36,12 +38,90 @@
 
     <main class="main-container">
 
+        <!-- Stats Section -->
+        <section id="stats-section" class="stats-container-row">
+            <div class="stats-grid-wrapper">
+                <!-- Donation Progress Card -->
+                <div class="stats-card donation-card glass">
+                    <div style="display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; margin-bottom: 20px; width: 100%;">
+                        <div></div>
+                        <h3 class="stats-label" style="margin-bottom: 0;">ยอดโดเนทปัจจุบัน</h3>
+                        <div style="text-align: right;">
+                            <button onclick="document.getElementById('latest-donations').scrollIntoView({behavior: 'smooth'})"
+                                style="padding: 6px 15px; border-radius: 50px; font-size: 0.85rem; background: var(--mariner-blue); color: white; cursor: pointer; font-weight: 700; box-shadow: 0 4px 10px rgba(40, 106, 205, 0.2); transition: all 0.2s; border: none;">
+                                ดูข้อมูล
+                            </button>
+                        </div>
+                    </div>
+                    <div class="progress-section">
+                        <div class="progress-bar-container-new">
+                            <div class="progress-bar-bg-custom">
+                                <div class="progress-bar-fill-custom" id="progress-fill" style="width: 0%;"></div>
+                            </div>
+                        </div>
+                        <div class="amount-display-custom">
+                            <span class="current-amount-custom" id="current-amount">กำลังโหลด...</span>
+                            <span class="amount-separator">/</span>
+                            <span class="target-amount-custom" id="target-amount">47,777</span>
+                        </div>
+                        <div id="donation-status-msg" class="donation-status-msg">
+                            <!-- Message will be updated by JS -->
+                        </div>
+                    </div>
+                    <div id="donation-remark-msg" class="donation-remark-msg">
+                        <!-- Message remark -->
+                    </div>
+                </div>
+
+                <!-- Countdown Timer Card -->
+                <div class="stats-card timer-card glass-dark">
+                    <h3 class="stats-label">เหลือเวลาโดเนท</h3>
+                    <div class="countdown-content">
+                        <div class="timer-box-new">
+                            <div class="timer-grid-custom">
+                                <div class="timer-unit">
+                                    <span id="days">12</span>
+                                    <small>DAYS</small>
+                                </div>
+                                <span class="timer-sep">:</span>
+                                <div class="timer-unit">
+                                    <span id="hours">04</span>
+                                    <small>HRS</small>
+                                </div>
+                                <span class="timer-sep">:</span>
+                                <div class="timer-unit">
+                                    <span id="mins">55</span>
+                                    <small>MINS</small>
+                                </div>
+                                <span class="timer-sep">:</span>
+                                <div class="timer-unit">
+                                    <span id="secs">00</span>
+                                    <small>SECS</small>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="timer-end-text">สิ้นสุด 16 เมษายน 2569 23:59:59 น.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- Action Buttons -->
-        <section class="hero-section mobile-only" id="mobile-donate-btn-section">
+        <!-- <section class="hero-section mobile-only" id="mobile-donate-btn-section">
             <div class="hero-action-buttons">
                 <a href="#stats-section" class="btn-hero-radius20 btn-hero-red-peach">ดูผลโดเนท</a>
             </div>
+        </section> -->
+
+        <!-- Quote Marquee Section -->
+        <section id="quote-section" class="quote-marquee-container" style="display:none;">
+            <div class="marquee-wrapper">
+                <div class="marquee-content" id="quote-marquee-content">
+                    <!-- Cards will be populated by JS -->
+                </div>
+            </div>
         </section>
+
 
         <!-- Hero Section -->
         <section class="hero-section">
@@ -112,77 +192,9 @@
             </div>
         </section>
 
-        <!-- Quote Marquee Section -->
-        <section id="quote-section" class="quote-marquee-container" style="display:none;">
-            <div class="marquee-wrapper">
-                <div class="marquee-content" id="quote-marquee-content">
-                    <!-- Cards will be populated by JS -->
-                </div>
-            </div>
-        </section>
-
-        <!-- Stats Section -->
-        <section id="stats-section" class="stats-container-row">
-            <div class="stats-grid-wrapper">
-                <!-- Donation Progress Card -->
-                <div class="stats-card donation-card glass">
-                    <h3 class="stats-label">ยอดโดเนทปัจจุบัน</h3>
-                    <div class="progress-section">
-                        <div class="progress-bar-container-new">
-                            <div class="progress-bar-bg-custom">
-                                <div class="progress-bar-fill-custom" id="progress-fill" style="width: 0%;"></div>
-                            </div>
-                        </div>
-                        <div class="amount-display-custom">
-                            <span class="current-amount-custom" id="current-amount">กำลังโหลด...</span>
-                            <span class="amount-separator">/</span>
-                            <span class="target-amount-custom" id="target-amount">47,777</span>
-                        </div>
-                        <div id="donation-status-msg" class="donation-status-msg">
-                            <!-- Message will be updated by JS -->
-                        </div>
-                    </div>
-                    <div id="donation-remark-msg" class="donation-remark-msg">
-                        <!-- Message remark -->
-                    </div>
-                </div>
-
-                <!-- Countdown Timer Card -->
-                <div class="stats-card timer-card glass-dark">
-                    <h3 class="stats-label">เหลือเวลาโดเนท</h3>
-                    <div class="countdown-content">
-                        <div class="timer-box-new">
-                            <div class="timer-grid-custom">
-                                <div class="timer-unit">
-                                    <span id="days">12</span>
-                                    <small>DAYS</small>
-                                </div>
-                                <span class="timer-sep">:</span>
-                                <div class="timer-unit">
-                                    <span id="hours">04</span>
-                                    <small>HRS</small>
-                                </div>
-                                <span class="timer-sep">:</span>
-                                <div class="timer-unit">
-                                    <span id="mins">55</span>
-                                    <small>MINS</small>
-                                </div>
-                                <span class="timer-sep">:</span>
-                                <div class="timer-unit">
-                                    <span id="secs">00</span>
-                                    <small>SECS</small>
-                                </div>
-                            </div>
-                        </div>
-                        <p class="timer-end-text">สิ้นสุด 16 เมษายน 2569 23:59:59 น.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
         <!-- Latest Donations & Poster Section -->
         <section class="content-row">
-            <div class="latest-donations-card glass">
+            <div class="latest-donations-card glass" id="latest-donations">
                 <div class="card-header">
                     <div class="header-title-group">
                         <h3 style="margin:0;">ยอดโดเนทล่าสุด</h3>
@@ -213,7 +225,8 @@
             </div>
 
             <div class="poster-card glass">
-                <img src="images/donate_giftaway.png" alt="Donation Giveaway" id="giveaway-poster" class="zoomable">
+                <img src="images/donate_giftaway.jpg" alt="Donation Giveaway" id="giveaway-poster" class="zoomable"
+                    loading="lazy">
             </div>
         </section>
 
@@ -223,7 +236,7 @@
                 <h3 class="qr-main-title">ช่องทางโดเนท</h3>
 
                 <div class="qr-container-new">
-                    <img src="images/qrcode_promptpay.png" alt="QR PromptPay" class="qr-image-large">
+                    <img src="images/qrcode_promptpay.png" alt="QR PromptPay" class="qr-image-large" loading="lazy">
                 </div>
 
                 <!-- Account Info Box -->
@@ -302,8 +315,11 @@
                     <polyline points="12 6 12 12 16 14"></polyline>
                 </svg>
             </div>
-            <h2 id="cs-title" style="font-size: 1.5rem; color: #1A202C; font-weight: 800; margin-bottom: 10px;">Coming Soon!</h2>
-            <p id="cs-desc" style="color: #4A5568; font-size: 0.95rem; font-weight: 600; line-height: 1.5; margin-bottom: 25px;">อดใจรออีกนิด เร็วๆ นี้แน่นอน!</p>
+            <h2 id="cs-title" style="font-size: 1.5rem; color: #1A202C; font-weight: 800; margin-bottom: 10px;">Coming
+                Soon!</h2>
+            <p id="cs-desc"
+                style="color: #4A5568; font-size: 0.95rem; font-weight: 600; line-height: 1.5; margin-bottom: 25px;">
+                อดใจรออีกนิด เร็วๆ นี้แน่นอน!</p>
             <button onclick="closeComingSoon()"
                 style="width: 100%; padding: 14px; border-radius: 16px; border: none; background: linear-gradient(135deg, #286ACD 0%, #A3E4DB 100%); color: white; font-weight: 800; font-size: 1.05rem; cursor: pointer; box-shadow: 0 4px 15px rgba(40, 106, 205, 0.3);">
                 เข้าใจแล้ว

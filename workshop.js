@@ -50,6 +50,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const stepLabel = document.getElementById('step-label-text');
     const navBack = document.getElementById('nav-back');
     const mainBg = document.getElementById('main-bg');
+    const socialUsernameEl = document.getElementById('social-username');
+
+    if (socialUsernameEl) {
+        socialUsernameEl.addEventListener('input', () => {
+            let val = socialUsernameEl.value.replace(/\s/g, '');
+            if (val.startsWith('@')) val = val.substring(1);
+            socialUsernameEl.value = val;
+        });
+    }
 
     // === Step 0 Logic ===
     const btnNextStep0 = document.getElementById('btn-next-step0');
