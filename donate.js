@@ -1046,7 +1046,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('btn-submit-with-quote').addEventListener('click', () => {
         const quote = document.getElementById('donate-quote').value.trim();
         if (!quote) {
-            alert('กรุณากรอกข้อความที่อยากบอก หรือกดข้ามหากไม่ต้องการกรอกข้อมูล');
+            alert('เขียนข้อความถึง NexT1DE หรือกดข้ามหากยังไม่ต้องการ');
             document.getElementById('donate-quote').focus();
             return;
         }
@@ -1183,16 +1183,63 @@ document.addEventListener('DOMContentLoaded', () => {
     แชร์
         `;
         shareBtn.addEventListener('click', () => {
-            const shareUrl = 'https://next1deprojectth.github.io/NexT1DE1stTideParty';
-            if (navigator.share) {
-                navigator.share({
-                    url: shareUrl
-                }).catch(e => console.log('Share failed', e));
-            } else {
-                navigator.clipboard.writeText(shareUrl).then(() => {
-                    alert('คัดลอกลิงก์เรียบร้อยแล้ว');
-                });
-            }
+            const screen = document.querySelector('.success-content');
+            const btns = document.querySelector('.success-actions');
+
+            if (typeof showLoading === 'function') showLoading("กำลังเตรียมรูปภาพสำหรับแชร์...");
+
+            // Hide buttons during capture
+            if (btns) btns.style.opacity = '0';
+
+            html2canvas(screen, {
+                useCORS: true,
+                scale: 2,
+                backgroundColor: null,
+                logging: false,
+                ignoreElements: (element) => element.tagName === 'IMG', // FORCE IGNORE ALL IMAGES TO AVOID TAINT
+                onclone: (clonedDoc) => {
+                    const clonedContent = clonedDoc.querySelector('.success-content');
+                    if (clonedContent) {
+                        // Apply beautiful gradient to capture area only
+                        clonedContent.style.background = 'linear-gradient(165deg, #1e3a8a 0%, #2563eb 40%, #0d9488 100%)';
+                        clonedContent.style.padding = '40px 20px';
+                        clonedContent.style.borderRadius = '30px';
+                        clonedContent.style.display = 'flex';
+                        clonedContent.style.flexDirection = 'column';
+                        clonedContent.style.alignItems = 'center';
+
+                        const clonedBtns = clonedDoc.querySelector('.success-actions');
+                        if (clonedBtns) clonedBtns.style.display = 'none';
+                    }
+                }
+            }).then(canvas => {
+                if (btns) btns.style.opacity = '1';
+                if (typeof hideLoading === 'function') hideLoading();
+
+                canvas.toBlob(blob => {
+                    const file = new File([blob], 'NexT1DE-Moment.png', { type: 'image/png' });
+                    const shareData = {
+                        files: [file],
+                        title: 'NexT1DE 1st Tide Party',
+                        text: 'ฉันได้สนับสนุนโปรเจกต์ NexT1DE 1st Tide Party แล้ว! #NextT1DE1stTideParty #NexT1DE @NexT1DEProjectTH'
+                    };
+
+                    if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+                        navigator.share(shareData).catch(e => console.log('Share failed', e));
+                    } else {
+                        const link = document.createElement('a');
+                        link.href = canvas.toDataURL('image/png');
+                        link.download = 'NexT1DE-Moment.png';
+                        link.click();
+                        alert('เบราว์เซอร์ของคุณไม่รองรับการแชร์รูปภาพโดยตรง ระบบบันทึกรูปภาพลงในเครื่องแล้ว คุณสามารถแชร์ต่อได้ทันทีครับ!');
+                    }
+                }, 'image/png', 0.9);
+            }).catch(err => {
+                console.error('Capture error', err);
+                if (btns) btns.style.opacity = '1';
+                if (typeof hideLoading === 'function') hideLoading();
+                alert('เกิดข้อผิดพลาดในการสร้างรูปภาพ กรุณาลองใหม่อีกครั้ง');
+            });
         });
     }
 

@@ -163,7 +163,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
 
                 // Allow minimum 0 if they already have rights (or if edit mode)
-                if (totalRights> 0 || isEditMode) {
+                if (totalRights > 0 || isEditMode) {
                     itemCount = 0;
                 } else {
                     itemCount = 1;
@@ -208,15 +208,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function initStep2() {
         const rightsSection = document.getElementById('current-rights-box');
-        if (totalRights> 0) {
+        if (totalRights > 0) {
             if (rightsSection) rightsSection.style.display = 'block';
             displayRights.innerText = totalRights.toString();
             let rightsTextArray = [];
             if (apiData && apiData.rights) {
-                if (apiData.rights.from_donate> 0) rightsTextArray.push(`${apiData.rights.from_donate} สิทธิ์จากการโดเนท`);
-                if (apiData.rights.from_direct> 0) rightsTextArray.push(`${apiData.rights.from_direct} สิทธิ์จากการซื้อ workshop`);
+                if (apiData.rights.from_donate > 0) rightsTextArray.push(`${apiData.rights.from_donate} สิทธิ์จากการโดเนท`);
+                if (apiData.rights.from_direct > 0) rightsTextArray.push(`${apiData.rights.from_direct} สิทธิ์จากการซื้อ workshop`);
             }
-            if (rightsTextArray.length> 0) {
+            if (rightsTextArray.length > 0) {
                 rightsDetail.innerText = rightsTextArray.join(' และ ');
                 rightsDetail.style.display = 'block';
             } else {
@@ -293,8 +293,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     btnMinus.addEventListener('click', () => {
-        let min = totalRights> 0 ? 0 : 1;
-        if (itemCount> min) {
+        let min = totalRights > 0 ? 0 : 1;
+        if (itemCount > min) {
             itemCount--;
             updatePricing();
         }
@@ -429,7 +429,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // Update Button Styles
-        let minActionCount = totalRights> 0 ? 0 : 1;
+        let minActionCount = totalRights > 0 ? 0 : 1;
         if (itemCount <= minActionCount) {
             btnMinus.style.background = "#EDF2F7";
             btnMinus.style.color = "#CBD5E0";
@@ -466,7 +466,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (isEditMode) {
             const methodChanged = isEditingReception && (finalMethod !== pastDeliveryType);
             const addressChanged = isEditingReception && checkAddressChanged();
-            const requiresPayment = (expectedTotal> 0);
+            const requiresPayment = (expectedTotal > 0);
 
             if (stickySummary) {
                 if (methodChanged || addressChanged || requiresPayment) {
@@ -773,7 +773,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 shipping_phone: finalMethod === 'delivery' ? shipPhone : "",
                 shipping_address: finalMethod === 'delivery' ? shipAddress : "",
                 shipping_postal: finalMethod === 'delivery' ? shipPostal : "",
-                remark: (isEditMode && expectedShipping> 0) ? "ค่าส่งจากการเปลี่ยนวิธีการรับ workshop" : ""
+                remark: (isEditMode && expectedShipping > 0) ? "ค่าส่งจากการเปลี่ยนวิธีการรับ workshop" : ""
             };
 
             await fetch(SAVE_API_URL, {
@@ -787,8 +787,6 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (error) {
             console.error('Save failed', error);
             alert('เกิดข้อผิดพลาดในการบันทึกข้อมูล: ' + error.message);
-            btnSubmit.style.display = 'block';
-        } finally {
             document.getElementById('submit-loading').style.display = 'none';
         }
     });
@@ -838,16 +836,64 @@ document.addEventListener('DOMContentLoaded', () => {
     const shareBtn = document.getElementById('btn-share');
     if (shareBtn) {
         shareBtn.addEventListener('click', () => {
-            const shareUrl = 'https://next1deprojectth.github.io/NexT1DE1stTideParty';
-            if (navigator.share) {
-                navigator.share({
-                    url: shareUrl
-                }).catch(e => console.log('Share failed', e));
-            } else {
-                navigator.clipboard.writeText(shareUrl).then(() => {
-                    alert('คัดลอกลิงก์เรียบร้อยแล้ว');
-                });
-            }
+            const screen = document.getElementById('step-success');
+            const homeBtn = document.getElementById('btn-back-home');
+
+            if (shareBtn) shareBtn.style.opacity = '0';
+            if (homeBtn) homeBtn.style.opacity = '0';
+
+            html2canvas(screen, {
+                useCORS: true,
+                scale: 2,
+                backgroundColor: null,
+                logging: false,
+                ignoreElements: (element) => element.tagName === 'IMG', // FORCE IGNORE ALL IMAGES TO AVOID TAINT
+                onclone: (clonedDoc) => {
+                    const clonedScreen = clonedDoc.getElementById('step-success');
+                    if (clonedScreen) {
+                        clonedScreen.style.background = 'linear-gradient(165deg, #1e3a8a 0%, #2563eb 40%, #0d9488 100%)';
+                        clonedScreen.style.padding = '40px 20px';
+                        clonedScreen.style.display = 'flex';
+                        clonedScreen.style.flexDirection = 'column';
+                        clonedScreen.style.alignItems = 'center';
+                        clonedScreen.style.minHeight = 'auto';
+                        clonedScreen.style.height = 'auto';
+                        clonedScreen.style.justifyContent = 'center';
+
+                        const cs = clonedDoc.getElementById('btn-share');
+                        const ch = clonedDoc.getElementById('btn-back-home');
+                        if (cs) cs.style.display = 'none';
+                        if (ch) ch.style.display = 'none';
+                    }
+                }
+            }).then(canvas => {
+                if (shareBtn) shareBtn.style.opacity = '1';
+                if (homeBtn) homeBtn.style.opacity = '1';
+
+                canvas.toBlob(blob => {
+                    const file = new File([blob], 'NexT1DE-Workshop.png', { type: 'image/png' });
+                    const shareData = {
+                        files: [file],
+                        title: 'NexT1DE Workshop Moment',
+                        text: 'ฉันได้รับสิทธิ์ร่วม Workshop กับ NexT1DE แล้ว! #NextT1DE1stTideParty #NexT1DE @NexT1DEProjectTH'
+                    };
+
+                    if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+                        navigator.share(shareData).catch(e => console.log('Share failed', e));
+                    } else {
+                        const link = document.createElement('a');
+                        link.href = canvas.toDataURL('image/png');
+                        link.download = 'NexT1DE-Workshop.png';
+                        link.click();
+                        alert('เบราว์เซอร์ของคุณไม่รองรับการแชร์รูปภาพโดยตรง ระบบบันทึกรูปภาพลงในเครื่องแล้ว คุณสามารถแชร์ต่อได้ทันที!');
+                    }
+                }, 'image/png', 0.9);
+            }).catch(err => {
+                console.error('Capture failed', err);
+                if (shareBtn) shareBtn.style.opacity = '1';
+                if (homeBtn) homeBtn.style.opacity = '1';
+                alert('เกิดข้อผิดพลาดในการสร้างรูปภาพ');
+            });
         });
     }
 
@@ -860,15 +906,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (bar1) {
             bar1.className = 'progress-bar-item';
-            if (step>= 1) bar1.classList.add('step-1-active');
+            if (step >= 1) bar1.classList.add('step-1-active');
         }
         if (bar2) {
             bar2.className = 'progress-bar-item';
-            if (step>= 2) bar2.classList.add('step-2-active');
+            if (step >= 2) bar2.classList.add('step-2-active');
         }
         if (bar3) {
             bar3.className = 'progress-bar-item';
-            if (step>= 3) bar3.classList.add('step-3-active');
+            if (step >= 3) bar3.classList.add('step-3-active');
         }
 
         if (step === 1) {
