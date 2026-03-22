@@ -20,11 +20,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function switchTab(tab) {
     activeTab = tab;
-    
+
     // UI update
     document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
     document.getElementById(`tab-${tab}`).classList.add('active');
-    
+
     // Clear feed first
     const container = document.getElementById('feed-container');
     container.innerHTML = '';
@@ -67,11 +67,11 @@ function refreshCurrentTab() {
 
 function filterByStatus(status, btn) {
     currentStatusFilter = status;
-    
+
     // UI update for filter buttons
     document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
-    
+
     if (dataCache[activeTab]) {
         renderFeed(dataCache[activeTab], activeTab);
     }
@@ -102,10 +102,10 @@ function renderFeed(items, type) {
     // Update info bar with filtered count
     const totalCount = items.length;
     const filteredCount = sorted.length;
-    document.getElementById('tab-info-bar').innerText = 
-        currentStatusFilter === 'all' 
-        ? `พบรายการทั้งหมด ${totalCount} รายการ`
-        : `พบรายการที่กรองไว้ ${filteredCount} จาก ${totalCount} รายการ`;
+    document.getElementById('tab-info-bar').innerText =
+        currentStatusFilter === 'all'
+            ? `พบรายการทั้งหมด ${totalCount} รายการ`
+            : `พบรายการที่กรองไว้ ${filteredCount} จาก ${totalCount} รายการ`;
 
     if (sorted.length === 0) {
         container.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 50px; color: var(--text-muted); font-weight: 700;">ไม่พบรายการสถานะ "${currentStatusFilter}"</div>`;
@@ -131,13 +131,13 @@ function createCardElement(item, type) {
     // Status Label Translation
     const statusMap = {
         'pending': 'รอตรวจสอบ',
-        'approved': 'ผ่านแล้ว',
+        'approved': 'ผ่าน',
         'rejected': 'ไม่ผ่าน'
     };
 
     // Shipping alert
-    const shippingHtml = item.include_shipping 
-        ? '<div class="shipping-alert">📢 หักค่าส่ง</div>' 
+    const shippingHtml = item.include_shipping
+        ? '<div class="shipping-alert">📢 หักค่าส่ง</div>'
         : '';
 
     // Status Area Logic
@@ -145,7 +145,7 @@ function createCardElement(item, type) {
     if (status === 'pending') {
         statusAreaHtml = `
             <div class="status-workflow-area">
-                <button class="status-vibrant-btn approved" onclick="updateStatus(${item.order}, 'approved', '${type}')">ผ่านแล้ว</button>
+                <button class="status-vibrant-btn approved" onclick="updateStatus(${item.order}, 'approved', '${type}')">ผ่าน</button>
                 <button class="status-vibrant-btn rejected" onclick="updateStatus(${item.order}, 'rejected', '${type}')">ไม่ผ่าน</button>
             </div>
         `;
@@ -189,14 +189,14 @@ function createCardElement(item, type) {
                 </div>
                 <div class="detail-row">
                     <span class="detail-label">ชื่อผู้โอน</span>
-                    <div class="detail-value" style="color:var(--primary); font-weight:800;">${item.username}</div>
+                    <div class="detail-value" style="color:var(--primary); font-weight:800;">${item.bank.name}</div>
                 </div>
                 ${shippingHtml}
             </div>
         </div>
 
         <div class="card-footer-info">
-            <div class="user-full-info">User: ${item.user.social_name} (@${item.user.user_id})</div>
+            <div class="user-full-info"> Account : ${item.user.social_name} ( จาก ${item.user.social_type})</div>
             ${item.remark ? `<div class="remark-container" onclick="openRemarkModal(${item.order}, '${type}')"><span class="label">หมายเหตุ:</span> ${item.remark}</div>` : ''}
         </div>
 
@@ -225,7 +225,7 @@ function showStatusSelection(order, type) {
     container.innerHTML = `
         <div class="status-workflow-area">
             <button class="status-vibrant-btn pending" onclick="updateStatus(${order}, 'pending', '${type}')">รอตรวจ</button>
-            <button class="status-vibrant-btn approved" onclick="updateStatus(${order}, 'approved', '${type}')">ผ่านแล้ว</button>
+            <button class="status-vibrant-btn approved" onclick="updateStatus(${order}, 'approved', '${type}')">ผ่าน</button>
             <button class="status-vibrant-btn rejected" onclick="updateStatus(${order}, 'rejected', '${type}')">ไม่ผ่าน</button>
         </div>
     `;
@@ -264,7 +264,7 @@ async function updateStatus(order, status, type) {
                 items[idx].status = status;
                 if (type === 'donate') items[idx].donate_status = status;
                 else items[idx].workshop_status = status;
-                
+
                 // Refresh UI
                 renderFeed(items, type);
             }
@@ -294,7 +294,7 @@ async function saveTransactionDetails(payload, type) {
         if (result.status === 'ok') {
             showToast('บันทึกข้อมูลเรียบร้อยแล้ว');
             closeModal();
-            
+
             // Update local cache
             const items = dataCache[type];
             const idx = items.findIndex(i => i.order === payload.order);
@@ -337,7 +337,7 @@ async function saveRemark() {
         if (result.status === 'ok') {
             showToast('บันทึกหมายเหตุสำเร็จ');
             closeRemarkModal();
-            
+
             const items = dataCache[type];
             const idx = items.findIndex(i => i.order === order);
             if (idx !== -1) {
@@ -398,12 +398,12 @@ function openEditModal(order, type) {
     document.getElementById('edit-order').value = order;
     document.getElementById('edit-type').value = type;
     document.getElementById('edit-amount').value = item.amount;
-    
+
     // Format date for pre-fill (YYYY/MM/DD HH:mm:ss)
     let d = new Date(item.transaction_date);
-    let dateStr = `${d.getFullYear()}/${String(d.getMonth()+1).padStart(2,'0')}/${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}:${String(d.getSeconds()).padStart(2,'0')}`;
+    let dateStr = `${d.getFullYear()}/${String(d.getMonth() + 1).padStart(2, '0')}/${String(d.getDate()).padStart(2, '0')} ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}:${String(d.getSeconds()).padStart(2, '0')}`;
     document.getElementById('edit-date').value = dateStr;
-    
+
     document.getElementById('edit-ref').value = item.transaction_ref;
 
     const workshopFields = document.getElementById('workshop-fields');
@@ -424,7 +424,7 @@ function closeModal() {
 function openRemarkModal(order, type) {
     const item = dataCache[type].find(i => i.order === order);
     if (!item) return;
-    
+
     currentProcessingOrder = { order, type };
     document.getElementById('remark-input').value = item.remark || '';
     document.getElementById('remark-modal').classList.add('active');

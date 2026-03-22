@@ -20,12 +20,17 @@
     <!-- Unified Navbar -->
     <nav class="unified-nav">
         <a href="dashboard.html" class="nav-back-btn">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
         </a>
-        <div class="nav-title">ค้นหาข้อมูลโซเชียล</div>
+        <div class="nav-title">ค้นหาข้อมูลจากโซเชียล</div>
         <div class="nav-right-slot">
-            <button id="nav-search-btn" style="display:none; background:transparent; border:none; cursor:pointer; color:#1A365D; padding:5px 8px;">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <button id="nav-search-btn"
+                style="display:none; background:transparent; border:none; cursor:pointer; color:#1A365D; padding:5px 8px;">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                    stroke-linecap="round" stroke-linejoin="round">
                     <circle cx="11" cy="11" r="8"></circle>
                     <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                 </svg>
@@ -93,10 +98,12 @@
             <!-- User Info Card -->
             <div class="profile-card" style="padding:40px 30px; text-align:center;">
                 <div style="display:flex; flex-direction:column; align-items:center; gap:15px;">
-                    <div class="profile-avatar" id="profile-avatar" style="width:90px; height:90px; font-size:2.5rem;">U</div>
+                    <div class="profile-avatar" id="profile-avatar" style="width:90px; height:90px; font-size:2.5rem;">U
+                    </div>
                     <div class="profile-info">
                         <h2 id="profile-name" style="font-size:1.8rem;">Username</h2>
-                        <p id="profile-social-type" style="padding:6px 20px; font-size:1rem; border-radius:30px;">ช่องทาง: -</p>
+                        <p id="profile-social-type" style="padding:6px 20px; font-size:1rem; border-radius:30px;">
+                            ช่องทาง: -</p>
                     </div>
                 </div>
             </div>
@@ -104,7 +111,8 @@
             <!-- Summary Card -->
             <div class="profile-card"
                 style="background: linear-gradient(135deg, #2B6CB0 0%, #4299E1 100%); border:none; box-shadow:0 15px 35px rgba(66, 153, 225, 0.3);">
-                <p class="section-title" style="color: rgba(255,255,255,0.9); text-align: center; margin-bottom: 10px; justify-content:center;">
+                <p class="section-title"
+                    style="color: rgba(255,255,255,0.9); text-align: center; margin-bottom: 10px; justify-content:center;">
                     ยอดโดเนทรวมทั้งหมด</p>
                 <p id="profile-total-amount"
                     style="font-size: 3.5rem; letter-spacing:-1px; font-weight: 800; color: white; text-align: center; margin: 0; line-height: 1;">
@@ -112,8 +120,7 @@
 
                 <div
                     style="margin-top: 35px; background: rgba(255,255,255,0.95); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); border-radius: 20px; padding: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
-                    <p
-                        style="font-size: 1rem; font-weight: 800; color: #2D3748; margin: 0 0 15px; text-align: center;">
+                    <p style="font-size: 1rem; font-weight: 800; color: #2D3748; margin: 0 0 15px; text-align: center;">
                         Giveaway ที่ได้รับ</p>
                     <div id="profile-gifts-container"></div>
                 </div>
@@ -124,7 +131,11 @@
                 <div class="section-title">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
                         stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line>
+                        <path
+                            d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z">
+                        </path>
+                        <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                        <line x1="12" y1="22.08" x2="12" y2="12"></line>
                     </svg>
                     วิธีรับ Giveaway
                 </div>
@@ -140,7 +151,8 @@
                                 id="rec-postal"></span></p>
                         <p style="margin: 0;"><strong>เบอร์โทร:</strong> <span id="rec-phone"></span></p>
                     </div>
-                    <p id="reception-onsite-box" style="display:none; font-size: 0.95rem; color: #4A5568; margin:0; font-weight:500;">
+                    <p id="reception-onsite-box"
+                        style="display:none; font-size: 0.95rem; color: #4A5568; margin:0; font-weight:500;">
                         คุณเลือกรับ Giveaway ที่หน้างาน (จามจุรีสแควร์ชั้น G)
                     </p>
                 </div>
@@ -149,7 +161,11 @@
             <!-- Donations History -->
             <div class="profile-card">
                 <p class="section-title">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
                     ประวัติการโอนเงิน
                 </p>
                 <div class="history-list" id="profile-history-list" style="margin-top: 25px;">
