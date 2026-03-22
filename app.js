@@ -230,10 +230,24 @@ document.addEventListener('DOMContentLoaded', () => {
             const result = await response.json();
 
             if (result.status === 'ok') {
-                allDonations = result.data.filter(d => (parseFloat(d.amount) || 0) > 0);
-                // Keep original API total/count for overall stats if they are meant to be absolute,
-                // but usually they should match the items shown.
-                updateStats(result.total, result.count);
+                // 1. Filter out rejected entries (not shown in table)
+                const rawData = result.data.filter(d => d.status !== 'rejected');
+                
+                // 2. Further filter for items with actual amount > 0
+                allDonations = rawData.filter(d => (parseFloat(d.amount) || 0) > 0);
+
+                // 3. Calculate Manual Total (Excluding shipping fee from target progress if applicable)
+                let calculatedTotal = 0;
+                allDonations.forEach(d => {
+                    let val = parseFloat(d.amount) || 0;
+                    if (d.include_shipping) {
+                        val = Math.max(0, val - 50); // Subtract 50 if shipping included
+                    }
+                    calculatedTotal += val;
+                });
+
+                // Use calculated total for progress bar, but shown count is from allDonations
+                updateStats(calculatedTotal, allDonations.length);
                 renderDonationPage(currentPage);
 
                 // --- Quote Marquee Rendering ---
@@ -359,8 +373,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
         pageData.forEach(item => {
             const tr = document.createElement('tr');
+            
+            // Add pending badge if status is pending (below name)
+            const badgeHtml = item.status === 'pending' 
+                ? '<div class="status-badge-pending">รอตรวจสอบ</div>' 
+                : '';
+
             tr.innerHTML = `
-                <td>${item.name}</td>
+                <td>
+                    <div class="donor-name">${item.name}</div>
+                    ${badgeHtml}
+                </td>
                 <td class="amount">฿${formatNumber(item.amount)}</td>
                 <td class="date">${formatThaiDate(item.transaction_date)}</td>
             `;

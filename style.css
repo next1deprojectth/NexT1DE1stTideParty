@@ -663,6 +663,22 @@ button:active {
     text-align: center;
 }
 
+.status-badge-pending {
+    display: inline-block;
+    background: #FFFBEB;
+    color: #F59E0B;
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 0.65rem;
+    font-weight: 800;
+    margin-top: 4px;
+    border: 1px solid #FEF3C7;
+}
+
+.donor-name {
+    font-weight: 500;
+}
+
 .table-container .amount {
     color: var(--mariner-blue);
     font-weight: 700;

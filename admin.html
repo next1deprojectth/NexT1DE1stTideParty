@@ -1,13 +1,17 @@
 <!DOCTYPE html>
 <html lang="th">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - NexT1DE</title>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700;800&family=Outfit:wght@700;800&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700;800&family=Outfit:wght@700;800&display=swap"
+        rel="stylesheet">
     <link rel="icon" type="image/png" href="images/logo-project.png">
     <link rel="stylesheet" href="admin.css">
 </head>
+
 <body>
 
     <!-- Loading Screen -->
@@ -17,14 +21,15 @@
     </div>
 
     <div class="admin-container">
-        
+
         <!-- Header Section -->
         <header class="admin-header">
             <div class="admin-logo">
                 <img src="images/logo-project.png" alt="Logo">
                 <div class="admin-title">
-                    <h1>Admin Dashboard</h1>
-                    <p style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">NexT1DE 1st Tide Party Control Panel</p>
+                    <h1 style="color: #FFFFFF;">Admin Dashboard</h1>
+                    <p style="font-size: 0.75rem; color: #FFFFFF; font-weight: 600;">NexT1DE 1st Tide Party Control
+                        Panel</p>
                 </div>
             </div>
 
@@ -40,7 +45,12 @@
                     <option value="delivery">เฉพาะจัดส่ง (ส่งบ้าน)</option>
                     <option value="onsite">รับหน้างาน (Onsite)</option>
                 </select>
-                <input type="text" id="search-input" class="search-input" placeholder="ค้นหาชื่อ..." style="width: 150px;">
+                <input type="text" id="search-input" class="search-input" placeholder="ค้นหาชื่อ..."
+                    style="width: 150px;">
+                <a href="verify.html" class="btn-refresh" style="background: var(--pastel-purple-text); text-decoration: none; display: flex; align-items: center; gap: 8px;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                    ตรวจสอบใบเสร็จ
+                </a>
                 <button onclick="fetchData()" class="btn-refresh">
                     Refresh
                 </button>
@@ -100,7 +110,8 @@
     </div>
 
     <!-- Notification Toast -->
-    <div id="toast" style="position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px); background: #2D3748; color: white; padding: 12px 25px; border-radius: 50px; font-weight: 700; font-size: 0.9rem; transition: all 0.3s; z-index: 10000; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+    <div id="toast"
+        style="position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px); background: #2D3748; color: white; padding: 12px 25px; border-radius: 50px; font-weight: 700; font-size: 0.9rem; transition: all 0.3s; z-index: 10000; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
         Copied to clipboard!
     </div>
 
@@ -108,4 +119,5 @@
     <script src="admin.js"></script>
 
 </body>
+
 </html>
