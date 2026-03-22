@@ -1,4 +1,41 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700;800&display=swap');
+
 /* profile.css */
+* { font-family: 'Noto Sans Thai', sans-serif; }
+
+/* Unified Navbar */
+.unified-nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 70px;
+    background: #FFFFFF;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    z-index: 1000;
+    border-bottom: 1.5px solid #F1F5F9;
+}
+
+.nav-back-btn {
+    width: 42px; height: 42px;
+    display: flex; align-items: center; justify-content: center;
+    background: #F8FAFC; border-radius: 12px;
+    color: #475569; text-decoration: none;
+    transition: 0.2s;
+}
+
+.nav-back-btn:hover { background: #F1F5F9; transform: translateX(-3px); }
+
+.nav-title {
+    font-size: 1.1rem; font-weight: 800;
+    color: #0F172A; position: absolute; left: 50%;
+    transform: translateX(-50%); white-space: nowrap;
+}
+
+.nav-right-slot { width: 42px; display: flex; justify-content: flex-end; }
+
+/* Content Cards */
 .profile-card {
     background: rgba(255, 255, 255, 0.85);
     backdrop-filter: blur(16px);
@@ -14,12 +51,6 @@
 .profile-card:hover {
     transform: translateY(-2px);
     box-shadow: 0 15px 35px rgba(0,0,0,0.08);
-}
-
-.profile-header {
-    display: flex;
-    align-items: center;
-    gap: 20px;
 }
 
 .profile-avatar {

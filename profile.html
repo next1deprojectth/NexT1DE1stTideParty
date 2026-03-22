@@ -17,25 +17,19 @@
     <!-- Background Image -->
     <div class="page-background donate-hide"></div>
 
-    <!-- Fixed Navbar -->
-    <nav class="nav-bar">
-        <button class="nav-back" id="nav-back" aria-label="กลับหน้าแรก" onclick="window.history.back()">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-                stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="15 18 9 12 15 6"></polyline>
-            </svg>
-        </button>
-        <span class="nav-title">ตรวจสอบข้อมูลผู้บริจาค</span>
-        <div style="display: flex; align-items: center; gap: 5px;">
-            <button id="nav-search-btn" style="display:none; background:transparent; border:none; cursor:pointer; color:#1A365D; padding:5px 8px; transition:transform 0.2s;">
+    <!-- Unified Navbar -->
+    <nav class="unified-nav">
+        <a href="dashboard.html" class="nav-back-btn">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        </a>
+        <div class="nav-title">ค้นหาข้อมูลโซเชียล</div>
+        <div class="nav-right-slot">
+            <button id="nav-search-btn" style="display:none; background:transparent; border:none; cursor:pointer; color:#1A365D; padding:5px 8px;">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                     <circle cx="11" cy="11" r="8"></circle>
                     <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                 </svg>
             </button>
-            <div class="nav-logo" onclick="window.location.href='index.html'" style="cursor: pointer;">
-                <img src="images/logo-project.png" alt="NexT1DE Logo">
-            </div>
         </div>
     </nav>
 
