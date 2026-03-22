@@ -157,7 +157,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (step === 1) {
             step1.style.display = 'block';
             bars[0].classList.add('step-1-active');
-            stepLabelText.innerText = 'ระบุตัวตน (1/3)';
+            stepLabelText.innerText = 'ข้อมูลผู้โดเนท (1/3)';
             window.scrollTo({ top: 0, behavior: 'smooth' });
 
             // RESET Step 1 UI
