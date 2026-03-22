@@ -833,67 +833,261 @@ document.addEventListener('DOMContentLoaded', () => {
         window.location.href = 'index.html';
     });
 
+    const loadImageAsDataUrl = (relativePath) => {
+        if (window.location.protocol === 'file:') {
+            return Promise.resolve(null);
+        }
+        return fetch(new URL(relativePath, window.location.href))
+            .then((res) => (res.ok ? res.blob() : Promise.reject(new Error('fetch'))))
+            .then(
+                (blob) =>
+                    new Promise((resolve) => {
+                        const fr = new FileReader();
+                        fr.onload = () => resolve(fr.result);
+                        fr.onerror = () => resolve(null);
+                        fr.readAsDataURL(blob);
+                    })
+            )
+            .catch(() => null);
+    };
+
+    const padCanvasToAspectRatio = (source, widthRatio, heightRatio) => {
+        const targetAspect = widthRatio / heightRatio;
+        const sw = source.width;
+        const sh = source.height;
+        const curAspect = sw / sh;
+        let outW;
+        let outH;
+        if (curAspect > targetAspect + 0.0001) {
+            outW = sw;
+            outH = Math.max(1, Math.round(sw / targetAspect));
+        } else {
+            outH = sh;
+            outW = Math.max(1, Math.round(sh * targetAspect));
+        }
+        const out = document.createElement('canvas');
+        out.width = outW;
+        out.height = outH;
+        const ctx = out.getContext('2d');
+        const dx = Math.floor((outW - sw) / 2);
+        const dy = Math.floor((outH - sh) / 2);
+        ctx.fillStyle = '#0c1222';
+        ctx.fillRect(0, 0, outW, outH);
+        ctx.drawImage(source, dx, dy);
+        return out;
+    };
+
+    const cleanupHtml2CanvasArtifacts = () => {
+        document.querySelectorAll('.html2canvas-container').forEach((el) => el.remove());
+    };
+
     const shareBtn = document.getElementById('btn-share');
+    let workshopShareInProgress = false;
     if (shareBtn) {
-        shareBtn.addEventListener('click', () => {
-            const screen = document.getElementById('step-success');
-            const homeBtn = document.getElementById('btn-back-home');
+        shareBtn.addEventListener('click', async () => {
+            if (workshopShareInProgress) return;
+            const captureRoot =
+                document.getElementById('workshop-share-capture-root') ||
+                document.getElementById('step-success');
+            if (!captureRoot) return;
 
-            if (shareBtn) shareBtn.style.opacity = '0';
-            if (homeBtn) homeBtn.style.opacity = '0';
+            workshopShareInProgress = true;
 
-            html2canvas(screen, {
-                useCORS: true,
+            const [bgDataUrl, logoDataUrl] = await Promise.all([
+                loadImageAsDataUrl('images/background_workshop.png'),
+                loadImageAsDataUrl('images/logo-project.png')
+            ]);
+
+            const fallbackBg =
+                'linear-gradient(165deg, #243b6b 0%, #2f6fdb 42%, #1ba89a 100%)';
+
+            html2canvas(captureRoot, {
+                useCORS: false,
                 scale: 2,
                 backgroundColor: null,
                 logging: false,
-                ignoreElements: (element) => element.tagName === 'IMG', // FORCE IGNORE ALL IMAGES TO AVOID TAINT
                 onclone: (clonedDoc) => {
-                    const clonedScreen = clonedDoc.getElementById('step-success');
-                    if (clonedScreen) {
-                        clonedScreen.style.background = 'linear-gradient(165deg, #1e3a8a 0%, #2563eb 40%, #0d9488 100%)';
-                        clonedScreen.style.padding = '40px 20px';
-                        clonedScreen.style.display = 'flex';
-                        clonedScreen.style.flexDirection = 'column';
-                        clonedScreen.style.alignItems = 'center';
-                        clonedScreen.style.minHeight = 'auto';
-                        clonedScreen.style.height = 'auto';
-                        clonedScreen.style.justifyContent = 'center';
+                    clonedDoc.body.style.margin = '0';
+                    clonedDoc.body.style.padding = '0';
+                    clonedDoc.body.style.backgroundColor = 'transparent';
+                    clonedDoc.querySelectorAll('script').forEach((el) => el.remove());
+                    clonedDoc.querySelectorAll('link[rel="preload"]').forEach((el) => el.remove());
 
-                        const cs = clonedDoc.getElementById('btn-share');
-                        const ch = clonedDoc.getElementById('btn-back-home');
-                        if (cs) cs.style.display = 'none';
-                        if (ch) ch.style.display = 'none';
-                    }
-                }
-            }).then(canvas => {
-                if (shareBtn) shareBtn.style.opacity = '1';
-                if (homeBtn) homeBtn.style.opacity = '1';
+                    const root = clonedDoc.getElementById('workshop-share-capture-root');
+                    const liveRoot = document.getElementById('workshop-share-capture-root');
+                    if (!root) return;
 
-                canvas.toBlob(blob => {
-                    const file = new File([blob], 'NexT1DE-Workshop.png', { type: 'image/png' });
-                    const shareData = {
-                        files: [file],
-                        title: 'NexT1DE Workshop Moment',
-                        text: 'ฉันได้รับสิทธิ์ร่วม Workshop กับ NexT1DE แล้ว! #NextT1DE1stTideParty #NexT1DE @NexT1DEProjectTH'
-                    };
-
-                    if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
-                        navigator.share(shareData).catch(e => console.log('Share failed', e));
+                    const h = liveRoot ? liveRoot.scrollHeight : root.scrollHeight;
+                    root.style.boxSizing = 'border-box';
+                    // FORCE 3:4 RATIO
+                    root.style.width = '600px';
+                    root.style.height = '800px';
+                    root.style.padding = '50px 30px';
+                    root.style.display = 'flex';
+                    root.style.flexDirection = 'column';
+                    root.style.alignItems = 'center';
+                    root.style.justifyContent = 'center';
+                    root.style.setProperty('opacity', '1', 'important');
+                    root.style.setProperty('filter', 'none', 'important');
+                    if (bgDataUrl) {
+                        // Apply 50% BLACK OVERLAY on background image
+                        root.style.background = `linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url(${bgDataUrl}) center center / cover no-repeat`;
                     } else {
-                        const link = document.createElement('a');
-                        link.href = canvas.toDataURL('image/png');
-                        link.download = 'NexT1DE-Workshop.png';
-                        link.click();
-                        alert('เบราว์เซอร์ของคุณไม่รองรับการแชร์รูปภาพโดยตรง ระบบบันทึกรูปภาพลงในเครื่องแล้ว คุณสามารถแชร์ต่อได้ทันที!');
+                        root.style.background = fallbackBg;
                     }
-                }, 'image/png', 0.9);
-            }).catch(err => {
-                console.error('Capture failed', err);
-                if (shareBtn) shareBtn.style.opacity = '1';
-                if (homeBtn) homeBtn.style.opacity = '1';
-                alert('เกิดข้อผิดพลาดในการสร้างรูปภาพ');
-            });
+
+                    const pillCardStack = clonedDoc.getElementById('workshop-success-pill-card');
+                    if (pillCardStack) {
+                        pillCardStack.style.setProperty('display', 'flex', 'important');
+                        pillCardStack.style.setProperty('flex-direction', 'column', 'important');
+                        pillCardStack.style.setProperty('align-items', 'center', 'important');
+                        pillCardStack.style.setProperty('justify-content', 'flex-start', 'important');
+                        pillCardStack.style.setProperty('gap', '0', 'important');
+                        pillCardStack.style.setProperty('width', '100%', 'important');
+                        pillCardStack.style.setProperty('max-width', '450px', 'important');
+                        pillCardStack.style.setProperty('margin', '0 auto 20px', 'important');
+                        pillCardStack.style.setProperty('box-sizing', 'border-box', 'important');
+                        
+                        const pillEl = pillCardStack.children[0];
+                        const cardEl = pillCardStack.children[1];
+                        if (pillEl) {
+                            pillEl.style.setProperty('position', 'relative', 'important');
+                            pillEl.style.setProperty('z-index', '10', 'important');
+                            pillEl.style.setProperty('background', '#FF7B9C', 'important');
+                            pillEl.style.setProperty('color', '#ffffff', 'important');
+                            pillEl.style.setProperty('margin', '0 auto -20px', 'important'); // Pull it over the white card
+                            pillEl.style.setProperty('flex-shrink', '0', 'important');
+                            pillEl.style.setProperty('padding', '10px 30px', 'important');
+                            pillEl.style.setProperty('white-space', 'nowrap', 'important');
+                            pillEl.style.setProperty('border-radius', '100px', 'important');
+                            pillEl.style.setProperty('font-size', '1rem', 'important');
+                        }
+                        if (cardEl) {
+                            cardEl.style.setProperty('margin', '0', 'important');
+                            cardEl.style.setProperty('position', 'relative', 'important');
+                            cardEl.style.setProperty('z-index', '1', 'important');
+                            cardEl.style.setProperty('flex-shrink', '0', 'important');
+                            cardEl.style.setProperty('background', '#ffffff', 'important');
+                            cardEl.style.setProperty('padding-top', '40px', 'important'); // Extra padding for the pill
+                        }
+                    }
+
+                    root.querySelectorAll('.success-project-title').forEach((el) => {
+                        el.style.setProperty('background', 'none', 'important');
+                        el.style.setProperty('-webkit-background-clip', 'border-box', 'important');
+                        el.style.setProperty('background-clip', 'border-box', 'important');
+                        el.style.setProperty('-webkit-text-fill-color', '#A3E4DB', 'important');
+                        el.style.setProperty('color', '#A3E4DB', 'important');
+                        el.style.setProperty('font-size', '34px', 'important');
+                        el.style.setProperty('white-space', 'nowrap', 'important');
+                        el.style.setProperty('font-weight', '800', 'important');
+                        el.style.setProperty('filter', 'none', 'important');
+                        el.style.setProperty('text-shadow', 'none', 'important');
+                    });
+
+                    root.querySelectorAll('div[style*="backdrop-filter"]').forEach((div) => {
+                        div.style.setProperty('background', '#ffffff', 'important');
+                        div.style.setProperty('backdrop-filter', 'none', 'important');
+                        div.style.setProperty('-webkit-backdrop-filter', 'none', 'important');
+                        div.style.setProperty('opacity', '1', 'important');
+                    });
+
+                    root.querySelectorAll('img').forEach((img) => {
+                        img.style.setProperty('opacity', '1', 'important');
+                        if (logoDataUrl) {
+                            img.removeAttribute('crossorigin');
+                            img.src = logoDataUrl;
+                            img.style.setProperty(
+                                'filter',
+                                'drop-shadow(0 2px 10px rgba(255,255,255,0.55))',
+                                'important'
+                            );
+                        } else {
+                            img.style.display = 'none';
+                        }
+                    });
+
+                    root.querySelectorAll('h2, p').forEach((el) => {
+                        const st = el.getAttribute('style') || '';
+                        if (st.includes('text-shadow') || st.includes('color: white')) {
+                            el.style.setProperty('opacity', '1', 'important');
+                            el.style.setProperty('color', '#ffffff', 'important');
+                        }
+                    });
+
+                    root.querySelectorAll('span, p').forEach((el) => {
+                        const st = el.getAttribute('style') || '';
+                        if (st.includes('#1A202C') || st.includes('#4A5568')) {
+                            el.style.setProperty('opacity', '1', 'important');
+                        }
+                        if (st.includes('#1A202C')) {
+                            el.style.setProperty('color', '#1a202c', 'important');
+                        }
+                        if (st.includes('#4A5568')) {
+                            el.style.setProperty('color', '#2d3748', 'important');
+                        }
+                    });
+                }
+            })
+                .then((canvas) => {
+                    cleanupHtml2CanvasArtifacts();
+                    const outCanvas = padCanvasToAspectRatio(canvas, 3, 4);
+
+                    outCanvas.toBlob(
+                        (blob) => {
+                            workshopShareInProgress = false;
+                            cleanupHtml2CanvasArtifacts();
+                            if (!blob) return;
+                            const file = new File([blob], 'NexT1DE-Workshop.png', { type: 'image/png' });
+                            const filesOnly = { files: [file] };
+
+                            if (navigator.share && (!navigator.canShare || navigator.canShare(filesOnly))) {
+                                navigator.share(filesOnly).catch((e) => console.log('Share failed', e));
+                            } else {
+                                const link = document.createElement('a');
+                                link.href = outCanvas.toDataURL('image/png');
+                                link.download = 'NexT1DE-Workshop.png';
+                                link.click();
+                                alert(
+                                    'เบราว์เซอร์ของคุณไม่รองรับการแชร์รูปภาพโดยตรง ระบบบันทึกรูปภาพลงในเครื่องแล้ว คุณสามารถแชร์ต่อได้ทันที!'
+                                );
+                            }
+                        },
+                        'image/png',
+                        1
+                    );
+                })
+                .catch((err) => {
+                    console.error('Capture failed', err);
+                    cleanupHtml2CanvasArtifacts();
+                    workshopShareInProgress = false;
+                    alert('เกิดข้อผิดพลาดในการสร้างรูปภาพ');
+                });
+        });
+    }
+
+    const shareUrlBtn = document.getElementById('btn-share-url');
+    if (shareUrlBtn) {
+        shareUrlBtn.addEventListener('click', () => {
+            const shareData = {
+                title: 'NexT1DE 1st Tide Party',
+                text: 'มาร่วมเป็นส่วนหนึ่งของ Workshop กับ NexT1DE กันเถอะ!',
+                url: window.location.origin + '/workshop.html'
+            };
+            if (navigator.share) {
+                navigator.share(shareData).catch(console.error);
+            } else {
+                navigator.clipboard.writeText(shareData.url).then(() => {
+                    alert('คัดลอกลิงก์เรียบร้อยแล้ว!');
+                });
+            }
+        });
+    }
+
+    const backHomeBtn = document.getElementById('btn-back-home');
+    if (backHomeBtn) {
+        backHomeBtn.addEventListener('click', () => {
+            window.location.href = 'index.html';
         });
     }
 

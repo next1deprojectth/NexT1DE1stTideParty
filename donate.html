@@ -497,7 +497,7 @@
                     style="display:none; color:#91A3FF; font-size:1.1rem; font-weight:700; margin-top:-10px; margin-bottom:15px;">
                     + 50 บาทค่าส่ง</p>
                 <div class="success-gift-list-wrapper">
-                    <p class="success-gift-title" id="success-gift-title">Giveaway ที่คุณได้รับคือ</p>
+                    <p class="success-gift-title" id="success-gift-title"></p>
 
                     <div style="display:flex; align-items:center; gap:10px; margin-top:10px;">
                         <div style="flex:1; display:flex; justify-content:center;">
@@ -510,24 +510,26 @@
                 <p class="success-next-goal" id="success-next-goal" โดเนทเพิ่มเพื่อรับ Giveaway มากขึ้น</p>
             </div>
             <p class="success-footer">by NexT1DE Project Thailand</p>
-            <div id="success-divider" style="display:none; height:1px; background:#E2E8F0; width:100%; margin:15px 0;"></div>
-            <div id="success-qr-code-box" style="display:none; flex-direction:column; align-items:center; gap:8px; margin-bottom: 25px;">
-                <p style="font-size:0.8rem; color:#718096; font-weight:800; margin:0;">Profile ของคุณ</p>
-                <div style="background:white; padding:8px; border-radius:12px; box-shadow:0 10px 25px rgba(0,0,0,0.1); border:1.5px solid #EDF2F7;">
-                    <img id="success-qr-img" src="" alt="Profile QR" style="width:110px; height:110px; display:block;" crossOrigin="anonymous">
+            <div class="success-actions" style="display: flex; gap: 8px; justify-content: center; width: 100%; max-width: 380px; margin: 20px auto 0; align-items: stretch;">
+                <button class="btn-success-home" onclick="window.location.href='index.html'" style="flex: 1; padding: 16px; border-radius: 18px; border: none; background: linear-gradient(135deg, #286ACD 0%, #A3E4DB 100%); color: white; font-weight: 800; font-size: 1rem; cursor: pointer; box-shadow: 0 4px 20px rgba(40, 106, 205, 0.4); white-space: nowrap;">หน้าหลัก</button>
+                <div style="display: flex; gap: 8px; flex: 2.2;">
+                    <button class="btn-success-share" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 16px; border-radius: 18px; border: 1.5px solid #E2E8F0; background: white; color: #2D3748; font-weight: 800; font-size: 1rem; cursor: pointer;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2D3748" stroke-width="2.5"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
+                            <polyline points="16 6 12 2 8 6"></polyline>
+                            <line x1="12" y1="2" x2="12" y2="15"></line>
+                        </svg>
+                        แชร์รูป
+                    </button>
+                    <button id="btn-share-link-donate"
+                        style="width: 54px; display: flex; align-items: center; justify-content: center; border-radius: 18px; border: 1.5px solid #E2E8F0; background: white; cursor: pointer; flex-shrink: 0; padding: 0;">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2D3748" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                        </svg>
+                    </button>
                 </div>
-            </div>
-            <div class="success-actions">
-                <button class="btn-success-home" onclick="window.location.href='index.html'">กลับหน้าหลัก</button>
-                <button class="btn-success-share">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                        stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
-                        <polyline points="16 6 12 2 8 6"></polyline>
-                        <line x1="12" y1="2" x2="12" y2="15"></line>
-                    </svg>
-                    แชร์ความภูมิใจของคุณ
-                </button>
             </div>
         </div>
     </div>

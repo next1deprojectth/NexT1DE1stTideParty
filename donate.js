@@ -1113,13 +1113,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (giftInfo.hasAny) {
             giftWrapper.style.display = 'block';
-            if (successTitleEl) successTitleEl.innerText = getLevelTitle(netAmt) + (getLevelTitle(netAmt).includes('Level') ? '' : 'คือ');
-            if (giftInfo.diff > 0) {
-                nextGoal.style.display = 'block';
-                nextGoal.innerText = `โดเนทอีก ${formatAmount(giftInfo.diff)} เพื่อรับ Giveaway เพิ่มมากขึ้น`;
+            let message = "";
+            if (netAmt < 177) {
+                message = `โดเนทอีก ฿${177 - netAmt} จะได้รับ Giftaway ชิ้นแรก!`;
+            } else if (netAmt < 477) {
+                message = `สะสมอีก ฿${477 - netAmt} ก็จะได้รับ Giveaway เพิ่ม!`;
+            } else if (netAmt < 777) {
+                message = `โดเนทเพิ่มอีก ฿${777 - netAmt} เพื่อรับ Giveaway เพิ่ม!`;
+            } else if (netAmt < 1277) {
+                message = `อีก ฿${1277 - netAmt} คุณก็จะได้ Giveaway ครบทุกชิ้นแล้ว! `;
             } else {
-                nextGoal.style.display = 'none';
+                message = `ยินดีด้วย คุณได้รับ Giveaway ครบทุกชิ้น`;
             }
+            if (successTitleEl) successTitleEl.innerText = message;
+            if (nextGoal) nextGoal.style.display = 'none';
 
             if (listEl) {
                 listEl.innerHTML = getGiftHtml(giftInfo.gifts, 'flex-start');
@@ -1136,8 +1143,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (divider) divider.style.display = 'block';
             }
         } else {
-            giftWrapper.style.display = 'none';
-            nextGoal.style.display = 'none';
             const qrBox = document.getElementById('success-qr-code-box');
             const divider = document.getElementById('success-divider');
             if (qrBox) qrBox.style.display = 'none';
@@ -1150,96 +1155,167 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelector('.step-indicator-container').style.display = 'none';
     };
 
-    document.getElementById('nav-back').addEventListener('click', () => {
-        if (currentState === 3) {
-            // Reset Step 3
-            isChangingReception = false;
-            selectedMethod = null;
-            document.querySelectorAll('.method-option').forEach(el => {
-                el.classList.remove('active');
-                el.style.borderColor = '#E2E8F0';
-                el.style.background = 'white';
-            });
-            // document.getElementById('btn-use-old-reception').innerText = 'ใช้ที่อยู่รับของแบบเดิม';
-            // document.getElementById('btn-use-old-reception').style.background = '#286ACD';
+    const loadImageAsDataUrl = (relativePath) => {
+        if (window.location.protocol === 'file:') return Promise.resolve(null);
+        return fetch(new URL(relativePath, window.location.href))
+            .then((res) => (res.ok ? res.blob() : Promise.reject(new Error('fetch'))))
+            .then((blob) => new Promise((resolve) => {
+                const fr = new FileReader();
+                fr.onload = () => resolve(fr.result);
+                fr.onerror = () => resolve(null);
+                fr.readAsDataURL(blob);
+            }))
+            .catch(() => null);
+    };
 
-            setStepUI(2);
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        } else if (currentState === 2) {
-            resetStep2UI(); // Ensure fresh start next time
-            setStepUI(1);
-        } else {
-            window.location.href = 'index.html';
-        }
-    });
     const shareBtn = document.querySelector('.btn-success-share');
+    let donateShareInProgress = false;
     if (shareBtn) {
         shareBtn.innerHTML = `
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
                 <polyline points="16 6 12 2 8 6"></polyline>
                 <line x1="12" y1="2" x2="12" y2="15"></line>
             </svg>
-    แชร์
+            แชร์
         `;
-        shareBtn.addEventListener('click', () => {
-            const screen = document.querySelector('.success-content');
+        shareBtn.addEventListener('click', async () => {
+            if (donateShareInProgress) return;
+            const root = document.getElementById('success-screen');
             const btns = document.querySelector('.success-actions');
+            if (!root) return;
 
+            donateShareInProgress = true;
             if (typeof showLoading === 'function') showLoading("กำลังเตรียมรูปภาพสำหรับแชร์...");
+            if (btns) btns.style.display = 'none';
 
-            // Hide buttons during capture
-            if (btns) btns.style.opacity = '0';
+            try {
+                const [bgDataUrl, logoDataUrl] = await Promise.all([
+                    loadImageAsDataUrl('images/background.jpg'),
+                    loadImageAsDataUrl('images/logo-project.png')
+                ]);
 
-            html2canvas(screen, {
-                useCORS: true,
-                scale: 2,
-                backgroundColor: null,
-                logging: false,
-                ignoreElements: (element) => element.tagName === 'IMG', // FORCE IGNORE ALL IMAGES TO AVOID TAINT
-                onclone: (clonedDoc) => {
-                    const clonedContent = clonedDoc.querySelector('.success-content');
-                    if (clonedContent) {
-                        // Apply beautiful gradient to capture area only
-                        clonedContent.style.background = 'linear-gradient(165deg, #1e3a8a 0%, #2563eb 40%, #0d9488 100%)';
-                        clonedContent.style.padding = '40px 20px';
-                        clonedContent.style.borderRadius = '30px';
-                        clonedContent.style.display = 'flex';
-                        clonedContent.style.flexDirection = 'column';
-                        clonedContent.style.alignItems = 'center';
+                // const fallbackBg = 'linear-gradient(165deg, #1e3a8a 0%, #2563eb 40%, #0d9488 100%)';
 
-                        const clonedBtns = clonedDoc.querySelector('.success-actions');
-                        if (clonedBtns) clonedBtns.style.display = 'none';
+                html2canvas(root, {
+                    useCORS: false,
+                    scale: 2,
+                    backgroundColor: null,
+                    logging: false,
+                    onclone: (clonedDoc) => {
+                        const clonedRoot = clonedDoc.getElementById('success-screen');
+                        const clonedBg = clonedDoc.querySelector('.success-bg');
+                        if (clonedBg) clonedBg.style.display = 'none';
+                        if (clonedRoot) {
+                            clonedRoot.style.position = 'relative';
+                            // FORCE 3:4 RATIO
+                            clonedRoot.style.width = '600px';
+                            clonedRoot.style.height = '800px';
+                            clonedRoot.style.display = 'flex';
+                            clonedRoot.style.flexDirection = 'column';
+                            clonedRoot.style.alignItems = 'center';
+                            clonedRoot.style.justifyContent = 'center';
+                            clonedRoot.style.padding = '40px';
+                            if (bgDataUrl) {
+                                clonedRoot.style.background = `url(${bgDataUrl}) center center / cover no-repeat`;
+                            } else {
+                                // clonedRoot.style.background = fallbackBg;
+                            }
+                            const qrBoxHide = clonedDoc.getElementById('success-qr-code-box');
+                            if (qrBoxHide) qrBoxHide.style.display = 'none';
+                            clonedRoot.style.setProperty('opacity', '1', 'important');
+                            clonedRoot.style.setProperty('filter', 'none', 'important');
+
+                            // Price - WHITE CARD RESTORED, Friendly Blue color
+                            const cumCard = clonedDoc.querySelector('.success-cumulative-card');
+                            if (cumCard) {
+                                cumCard.style.setProperty('background', '#ffffff', 'important'); // RESTORE WHITE BOX
+                                cumCard.style.setProperty('background-image', 'none', 'important');
+                                cumCard.style.setProperty('border-radius', '24px', 'important');
+                                cumCard.style.setProperty('padding', '25px', 'important');
+                                cumCard.style.setProperty('box-shadow', '0 10px 25px rgba(0,0,0,0.05)', 'important');
+                                cumCard.style.setProperty('border', 'none', 'important');
+                                cumCard.style.setProperty('opacity', '1', 'important');
+                            }
+
+                            const priceVal = clonedDoc.querySelector('.success-price-value');
+                            if (priceVal) {
+                                priceVal.style.setProperty('background', 'linear-gradient(135deg, #286ACD 0%, #A3E4DB 100%)', 'important');
+                                priceVal.style.setProperty('background-image', 'linear-gradient(135deg, #286ACD 0%, #A3E4DB 100%)', 'important');
+                                priceVal.style.setProperty('border-radius', '20px', 'important'); // Rounded corners
+                                priceVal.style.setProperty('padding', '35px 20px', 'important');
+                                priceVal.style.setProperty('-webkit-text-fill-color', '#ffffff', 'important'); // White text
+                                priceVal.style.setProperty('color', '#ffffff', 'important');
+                                priceVal.style.setProperty('font-size', '100px', 'important');
+                                priceVal.style.setProperty('font-weight', '800', 'important');
+                                priceVal.style.setProperty('text-shadow', 'none', 'important');
+                                priceVal.style.setProperty('display', 'block', 'important');
+                                priceVal.style.setProperty('width', '100%', 'important');
+                                priceVal.style.setProperty('margin', '0 auto', 'important');
+                                priceVal.style.setProperty('-webkit-background-clip', 'border-box', 'important');
+                                priceVal.style.setProperty('background-clip', 'border-box', 'important');
+                            }
+
+                            // Titles - Solid color
+                            clonedRoot.querySelectorAll('.success-project-title').forEach((el) => {
+                                el.style.setProperty('background', 'none', 'important');
+                                el.style.setProperty('-webkit-text-fill-color', '#286ACD', 'important');
+                                el.style.setProperty('color', '#286ACD', 'important');
+                                el.style.setProperty('font-size', '34px', 'important');
+                                el.style.setProperty('white-space', 'nowrap', 'important');
+                                el.style.setProperty('filter', 'none', 'important');
+                            });
+
+                            // Thank you - Black text
+                            const thankYou = clonedDoc.querySelector('.success-thank-you');
+                            if (thankYou) {
+                                thankYou.style.setProperty('color', '#000000', 'important');
+                                thankYou.style.setProperty('font-weight', '700', 'important');
+                                thankYou.style.setProperty('opacity', '1', 'important');
+                            }
+
+                            // Hashtags - Dark Blue
+                            const hashtags = clonedDoc.querySelector('.success-hashtags');
+                            if (hashtags) {
+                                hashtags.style.setProperty('color', '#286ACD', 'important');
+                                hashtags.style.setProperty('font-weight', '700', 'important');
+                                hashtags.style.setProperty('opacity', '1', 'important');
+                            }
+
+                            // Logo replacement
+                            clonedRoot.querySelectorAll('img').forEach((img) => {
+                                if (img.id === 'success-qr-img') return;
+                                if (logoDataUrl) img.src = logoDataUrl;
+                            });
+                        }
                     }
-                }
-            }).then(canvas => {
-                if (btns) btns.style.opacity = '1';
-                if (typeof hideLoading === 'function') hideLoading();
+                }).then(canvas => {
+                    if (btns) btns.style.display = 'flex';
+                    if (typeof hideLoading === 'function') hideLoading();
 
-                canvas.toBlob(blob => {
-                    const file = new File([blob], 'NexT1DE-Moment.png', { type: 'image/png' });
-                    const shareData = {
-                        files: [file],
-                        title: 'NexT1DE 1st Tide Party',
-                        text: 'ฉันได้สนับสนุนโปรเจกต์ NexT1DE 1st Tide Party แล้ว! #NextT1DE1stTideParty #NexT1DE @NexT1DEProjectTH'
-                    };
+                    canvas.toBlob((blob) => {
+                        donateShareInProgress = false;
+                        if (!blob) return;
+                        const file = new File([blob], 'NexT1DE-Moment.png', { type: 'image/png' });
+                        const filesData = { files: [file] };
 
-                    if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
-                        navigator.share(shareData).catch(e => console.log('Share failed', e));
-                    } else {
-                        const link = document.createElement('a');
-                        link.href = canvas.toDataURL('image/png');
-                        link.download = 'NexT1DE-Moment.png';
-                        link.click();
-                        alert('เบราว์เซอร์ของคุณไม่รองรับการแชร์รูปภาพโดยตรง ระบบบันทึกรูปภาพลงในเครื่องแล้ว คุณสามารถแชร์ต่อได้ทันทีครับ!');
-                    }
-                }, 'image/png', 0.9);
-            }).catch(err => {
-                console.error('Capture error', err);
-                if (btns) btns.style.opacity = '1';
+                        if (navigator.share && navigator.canShare && navigator.canShare(filesData)) {
+                            navigator.share(filesData).catch(() => { });
+                        } else {
+                            const link = document.createElement('a');
+                            link.href = canvas.toDataURL('image/png');
+                            link.download = 'NexT1DE-Moment.png';
+                            link.click();
+                            alert('บันทึกรูปภาพเรียบร้อยแล้ว!');
+                        }
+                    }, 'image/png', 1);
+                });
+            } catch (err) {
+                console.error(err);
+                if (btns) btns.style.display = 'flex';
                 if (typeof hideLoading === 'function') hideLoading();
-                alert('เกิดข้อผิดพลาดในการสร้างรูปภาพ กรุณาลองใหม่อีกครั้ง');
-            });
+                donateShareInProgress = false;
+            }
         });
     }
 
@@ -1254,6 +1330,24 @@ document.addEventListener('DOMContentLoaded', () => {
                 quoteCount.style.color = '#E53E3E';
             } else {
                 quoteCount.style.color = '#718096';
+            }
+        });
+    }
+
+    const shareUrlBtn = document.getElementById('btn-share-link-donate');
+    if (shareUrlBtn) {
+        shareUrlBtn.addEventListener('click', () => {
+            const shareData = {
+                title: 'NexT1DE 1st Tide Party',
+                text: 'มาร่วมสนับสนุน NexT1DE และ Ohna กันเถอะ!',
+                url: window.location.origin + '/donate.html'
+            };
+            if (navigator.share) {
+                navigator.share(shareData).catch(console.error);
+            } else {
+                navigator.clipboard.writeText(shareData.url).then(() => {
+                    alert('คัดลอกลิงก์เรียบร้อยแล้ว!');
+                });
             }
         });
     }

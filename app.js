@@ -390,7 +390,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
             tr.innerHTML = `
                 <td class="donor-name">${item.name}</td>
-                <td class="amount">฿${formatNumber(item.amount)}  ${badgeHtml} </td>
+                <td class="amount">
+                    <span class="price-text">฿${formatNumber(item.amount)}</span>
+                    ${badgeHtml}
+                </td>
                 <td class="date">${formatThaiDate(item.transaction_date)}</td>
             `;
             tbody.appendChild(tr);
