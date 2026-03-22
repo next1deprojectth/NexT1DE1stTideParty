@@ -75,12 +75,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const calculateGifts = (totalAmount) => {
         const gifts = {
-            a6Sticker: (totalAmount >= 177) ? 1 : 0,
-            uvSticker: (totalAmount >= 477) ? 1 : 0,
-            clearPurse: (totalAmount >= 477) ? 1 : 0,
-            acrylicFrame: (totalAmount >= 777) ? 1 : 0,
-            lightSignStrap: (totalAmount >= 1277) ? 1 : 0,
-            workshop: (totalAmount >= 1277) ? 1 : 0
+            a6Sticker: (totalAmount>= 177) ? 1 : 0,
+            uvSticker: (totalAmount>= 477) ? 1 : 0,
+            clearPurse: (totalAmount>= 477) ? 1 : 0,
+            acrylicFrame: (totalAmount>= 777) ? 1 : 0,
+            lightSignStrap: (totalAmount>= 1277) ? 1 : 0,
+            workshop: (totalAmount>= 1277) ? 1 : 0
         };
 
         let nextGoal = 0;
@@ -90,7 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
         else if (totalAmount < 777) { nextGoal = 777; diff = 777 - totalAmount; }
         else if (totalAmount < 1277) { nextGoal = 1277; diff = 1277 - totalAmount; }
 
-        return { gifts, diff, hasAny: totalAmount >= 177 };
+        return { gifts, diff, hasAny: totalAmount>= 177 };
     };
 
     const formatAmount = (num) => `฿${num.toLocaleString('th-TH', {
@@ -272,7 +272,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
 
                 // Pre-fill slipData with user's default bank if available (as fallback)
-                if (data.banks && data.banks.length > 0) {
+                if (data.banks && data.banks.length> 0) {
                     const b = data.banks[0];
                     if (!slipData) slipData = { amount: 0, sender_name: '', is_slip: false, date: '' };
                     slipData.sender_name = slipData.sender_name || b.name;
@@ -283,12 +283,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Show Verification Modal only if they have actual donation history
                 const verifyModal = document.getElementById('user-verify-modal');
                 const verifyText = document.getElementById('user-verify-text');
-                const hasDonations = mergedDonationData.total_amount > 0;
+                const hasDonations = mergedDonationData.total_amount> 0;
 
                 if (verifyModal && verifyText && hasDonations) {
                     console.log(mergedDonationData.donations);
                     const socialLabel = (selectedSocial === 'twitter' ? 'X' : (selectedSocial === 'tiktok' ? 'TikTok' : selectedSocial.toUpperCase()));
-                    verifyText.innerHTML = `พบข้อมูลบัญชี <b>${socialLabel}</b> ที่ตรงกับข้อมูลของคุณ <b></b><br>มีการแจ้งโดเนทเมื่อ <b>${formatThaiDate(mergedDonationData.donations[0].issue_date)}</b>`;
+                    verifyText.innerHTML = `พบข้อมูลบัญชี <b>${socialLabel}</b> ที่ตรงกับข้อมูลของคุณ <b></b><br>มีการแจ้งโดเนทเมื่อ <b>${formatThaiDate(mergedDonationData.donations[0].issue_date)} น.</b> `;
                     hideLoading();
                     verifyModal.style.display = 'flex';
                 } else {
@@ -432,12 +432,12 @@ document.addEventListener('DOMContentLoaded', () => {
         let h = `<div style="display:flex; flex-wrap:wrap; gap:8px; justify-content:${justify}; margin-top:10px; justify-content:center">`;
         const badgeStyle = `style="background:#404040; color:white; padding:6px 18px; border-radius:50px; font-size:0.7rem; font-weight:700; white-space:nowrap; box-shadow: 0 4px 10px rgba(0,0,0,0.1); border:none;"`;
 
-        if (gifts.a6Sticker > 0) h += `<span ${badgeStyle}>A6 Sticker</span>`;
-        if (gifts.uvSticker > 0) h += `<span ${badgeStyle}>UV Sticker</span>`;
-        if (gifts.clearPurse > 0) h += `<span ${badgeStyle}>Clear Plastic Purse</span>`;
-        if (gifts.acrylicFrame > 0) h += `<span ${badgeStyle}>Acrylic Frame</span>`;
-        if (gifts.lightSignStrap > 0) h += `<span ${badgeStyle}>Light Sign Strap</span>`;
-        if (gifts.workshop > 0) h += `<span ${badgeStyle}>Work Shop</span>`;
+        if (gifts.a6Sticker> 0) h += `<span ${badgeStyle}>A6 Sticker</span>`;
+        if (gifts.uvSticker> 0) h += `<span ${badgeStyle}>UV Sticker</span>`;
+        if (gifts.clearPurse> 0) h += `<span ${badgeStyle}>Clear Plastic Purse</span>`;
+        if (gifts.acrylicFrame> 0) h += `<span ${badgeStyle}>Acrylic Frame</span>`;
+        if (gifts.lightSignStrap> 0) h += `<span ${badgeStyle}>Light Sign Strap</span>`;
+        if (gifts.workshop> 0) h += `<span ${badgeStyle}>Work Shop</span>`;
 
         h += '</div>';
         return h;
@@ -479,6 +479,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const socialUsername = mergedDonationData.socialName || document.getElementById('social-username').value || selectedSocial;
 
+        const getStatusBadgeHtml = (status) => {
+            let bg = "#F59E0B", color = "#FFF", text = "รอตรวจสอบ";
+            if (status === "ผ่าน" || status === "approved") { bg = "#059669"; text = "ผ่าน"; }
+            if (status === "ไม่ผ่าน" || status === "rejected") { bg = "#DC2626"; text = "ไม่ผ่าน"; }
+            return `<div style="background:${bg}; color:white; padding:2px 8px; border-radius:6px; font-size:0.6rem; font-weight:800; display:inline-block; margin-top:4px;">${text}</div>`;
+        };
+
         let timelineHtml = `
             <div style="background: white; border-radius: 32px; padding: 45px 25px 25px; border: 1px solid #E2E8F0; margin-top: 50px; text-align: left; position: relative;">
                 <div style="position: absolute; top: -18px; left: 50%; transform: translateX(-50%); background: white; border: 1.5px solid #E2E8F0; padding: 8px 30px; border-radius: 50px; white-space: nowrap; box-shadow: 0 4px 12px rgba(0,0,0,0.03);">
@@ -491,27 +498,33 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="history-item">
                 <div class="history-dot current"></div>
                 <div class="history-content">
-                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
                         <p class="history-label">สนับสนุนโปรเจกต์ <span style="font-weight:400; color:#718096;">(รอบนี้)</span></p>
-                        <p class="history-amount">${formatAmount(slipData.amount)}</p>
+                        <div style="text-align: right;">
+                            <p class="history-amount">${formatAmount(slipData.amount)}</p>
+                            ${getStatusBadgeHtml("รอตรวจสอบ")}
+                        </div>
                     </div>
-                    <p class="history-date" style="margin-top:2px;">${formatThaiDate(slipData.date)}</p>
+                    <p class="history-date" style="margin-top:-10px;">${formatThaiDate(slipData.date)}</p>
                 </div>
             </div>
         `;
 
-        if (mergedDonationData.donations && mergedDonationData.donations.length > 0) {
+        if (mergedDonationData.donations && mergedDonationData.donations.length> 0) {
             mergedDonationData.donations.forEach(don => {
                 const donDate = don.transaction_date || don.date || don['วันเวลาโอน'] || don.timestamp || '-';
                 timelineHtml += `
                     <div class="history-item">
                         <div class="history-dot past"></div>
                         <div class="history-content">
-                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
                                 <p class="history-label">สนับสนุนโปรเจกต์</p>
-                                <p class="history-amount">${formatAmount(don.amount)}</p>
+                                <div style="text-align: right;">
+                                    <p class="history-amount">${formatAmount(don.amount)}</p>
+                                    ${getStatusBadgeHtml(don.donate_status || "ผ่าน")}
+                                </div>
                             </div>
-                            <p class="history-date" style="margin-top:2px;">${formatThaiDate(donDate)}</p>
+                            <p class="history-date" style="margin-top:-10px;">${formatThaiDate(donDate)}</p>
                         </div>
                     </div>
                 `;
@@ -663,20 +676,20 @@ document.addEventListener('DOMContentLoaded', () => {
     function formatToDatetimeLocal(str) {
         if (!str) return '';
         // Check if already in 'YYYY-MM-DDTHH:MM' format
-        if (str.includes('T') && str.length >= 16) {
+        if (str.includes('T') && str.length>= 16) {
             return str.substring(0, 16);
         }
 
         // Handle 'DD/MM/YYYY HH:MM:SS' or 'DD/MM/YYYY HH:MM'
         const parts = str.split(/[\s/:.-]/);
-        if (parts.length >= 5) {
+        if (parts.length>= 5) {
             // Assuming DD/MM/YYYY HH:MM:SS or DD/MM/YYYY HH:MM
             const day = parts[0];
             const month = parts[1];
             const year = parts[2];
             const hour = parts[3];
             const minute = parts[4];
-            return `${year}-${month}-${day}T${hour}:${minute}`;
+            return `${year} -${month} -${day}T${hour}:${minute} `;
         }
         return '';
     }
@@ -688,7 +701,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const [d, t] = str.split('T');
         if (!d || !t) return str;
         const [y, m, day] = d.split('-');
-        return `${day}/${m}/${y} ${t}:00`; // Convert to DD/MM/YYYY HH:MM:SS
+        return `${day} /${m}/${y} ${t}:00`; // Convert to DD/MM/YYYY HH:MM:SS
     }
 
     const formatThaiDate = (dateStr) => {
@@ -701,7 +714,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (dateStr.includes('/')) {
             // DD/MM/YYYY
             const parts = dateStr.split(/[\s/:]/);
-            if (parts.length >= 3) {
+            if (parts.length>= 3) {
                 const day = parseInt(parts[0], 10);
                 const monthIdx = parseInt(parts[1], 10) - 1;
                 const year = parseInt(parts[2], 10);
@@ -718,7 +731,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const hours = date.getHours().toString().padStart(2, '0');
             const minutes = date.getMinutes().toString().padStart(2, '0');
             const thaiMonths = ["ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค."];
-            return `${day} ${thaiMonths[monthIdx]} ${year.toString().slice(-2)}, ${hours}:${minutes}`;
+            return `${day} ${thaiMonths[monthIdx]} ${year.toString().slice(-2)}, ${hours}:${minutes} `;
         }
 
         return dateStr;
@@ -820,7 +833,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 pillText.style.color = '#3487ff';
             }
             giftStatusBox.innerHTML = '<p style="margin:0; font-weight:700; color:#ff67a3; font-size:1rem;">คุณไม่ได้รับ Giveaway</p>';
-            giftMoreEl.innerText = `(โดเนทเพิ่ม ${formatAmount(giftInfo.diff)} เพื่อรับ Giveaway มากขึ้น)`;
+            giftMoreEl.innerText = `(โดเนทเพิ่ม ${formatAmount(giftInfo.diff)
+                } เพื่อรับ Giveaway มากขึ้น)`;
             giftImg.style.display = 'block';
         } else {
             if (pillText) {
@@ -830,7 +844,7 @@ document.addEventListener('DOMContentLoaded', () => {
             let giftStr = getGiftHtml(giftInfo.gifts);
             giftStr += `<p style="margin:0; font-size:0.85rem; color:#718096; margin-top:15px; font-weight:500;">( อาจมีการเปลี่ยนแปลง หลังคำนวณค่าจัดส่ง )</p>`;
             giftStatusBox.innerHTML = giftStr;
-            giftMoreEl.innerText = (giftInfo.diff > 0) ? `(โดเนทเพิ่ม ${formatAmount(giftInfo.diff)} เพื่อรับ Giveaway มากขึ้น)` : '';
+            giftMoreEl.innerText = (giftInfo.diff> 0) ? `(โดเนทเพิ่ม ${formatAmount(giftInfo.diff)} เพื่อรับ Giveaway มากขึ้น)` : '';
             giftImg.style.display = 'none';
         }
 
@@ -855,7 +869,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     const mathEl = document.getElementById('delivery-notice-math');
                     if (mathEl) {
                         const effectiveDonation = slipData.amount - 50;
-                        mathEl.innerText = `(ยอดรวมโดเนทรอบนี้คือ ${effectiveDonation.toLocaleString()} บาท /ค่าจัดส่ง 50 บาท`;
+                        mathEl.innerText = `(ยอดรวมโดเนทรอบนี้คือ ${effectiveDonation.toLocaleString()} บาท / ค่าจัดส่ง 50 บาท`;
                     }
                 }
                 if (deliveryFields) deliveryFields.style.display = 'block';
@@ -866,10 +880,10 @@ document.addEventListener('DOMContentLoaded', () => {
             if (deliveryNotice) {
                 deliveryNotice.style.display = 'block';
                 deliveryNotice.innerHTML = `
-                    <div style="text-align: center; box-shadow: 0 4px 15px rgba(56, 178, 172, 0.08);">
-                        <p style="color: #4A5568; font-size: 0.9rem; margin-bottom: 0px; font-weight: 500; line-height: 1.6;">
-                            ค่าส่ง 50 บาท ที่คุณชำระมาแล้ว<br>จะถูกนำไปเป็นยอดโดเนทสะสมของคุณแทน
-                        </p>
+                <div style="text-align: center; box-shadow: 0 4px 15px rgba(56, 178, 172, 0.08);">
+                <p style="color: #4A5568; font-size: 0.9rem; margin-bottom: 0px; font-weight: 500; line-height: 1.6;">
+                    ค่าส่ง 50 บาท ที่คุณชำระมาแล้ว<br>จะถูกนำไปเป็นยอดโดเนทสะสมของคุณแทน
+                </p>
                     </div>
                 `;
             }
@@ -940,7 +954,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             // 2. Save Donation Data
-            const isStep3Reached = currentTotalOriginal >= 177;
+            const isStep3Reached = currentTotalOriginal>= 177;
             const hasPastDelivery = mergedDonationData.receive && mergedDonationData.receive.delivery_type === 'delivery';
 
             // Check if switching from past delivery to onsite/pickup
@@ -1005,7 +1019,7 @@ document.addEventListener('DOMContentLoaded', () => {
             postal = rec.shipping_postal || '';
         }
 
-        if (currentTotalOriginal >= 177 && finalMethod === 'delivery') {
+        if (currentTotalOriginal>= 177 && finalMethod === 'delivery') {
             if (!shipName || !phone || !address || !postal) {
                 alert('กรุณากรอกข้อมูลการจัดส่งให้ครบถ้วน');
                 return;
@@ -1021,7 +1035,15 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Quote Modal Listeners
-    document.getElementById('btn-submit-with-quote').addEventListener('click', submitDonationData);
+    document.getElementById('btn-submit-with-quote').addEventListener('click', () => {
+        const quote = document.getElementById('donate-quote').value.trim();
+        if (!quote) {
+            alert('กรุณากรอกข้อความที่อยากบอก หรือกดข้ามหากไม่ต้องการกรอกข้อมูล');
+            document.getElementById('donate-quote').focus();
+            return;
+        }
+        submitDonationData();
+    });
     document.getElementById('btn-skip-quote').addEventListener('click', () => {
         document.getElementById('donate-quote').value = ""; // Clear quote
         submitDonationData();
@@ -1082,7 +1104,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (giftInfo.hasAny) {
             giftWrapper.style.display = 'block';
-            if (giftInfo.diff > 0) {
+            if (giftInfo.diff> 0) {
                 nextGoal.style.display = 'block';
                 nextGoal.innerText = `โดเนทอีก ${formatAmount(giftInfo.diff)} เพื่อรับ Giveaway เพิ่มมากขึ้น`;
             } else {
@@ -1143,12 +1165,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const shareBtn = document.querySelector('.btn-success-share');
     if (shareBtn) {
         shareBtn.innerHTML = `
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
                 <polyline points="16 6 12 2 8 6"></polyline>
                 <line x1="12" y1="2" x2="12" y2="15"></line>
             </svg>
-            แชร์
+    แชร์
         `;
         shareBtn.addEventListener('click', () => {
             const shareUrl = 'https://next1deprojectth.github.io/NexT1DE1stTideParty';
@@ -1171,7 +1193,7 @@ document.addEventListener('DOMContentLoaded', () => {
         quoteInput.addEventListener('input', () => {
             const length = quoteInput.value.length;
             quoteCount.innerText = `${length}/100`;
-            if (length >= 100) {
+            if (length>= 100) {
                 quoteCount.style.color = '#E53E3E';
             } else {
                 quoteCount.style.color = '#718096';
