@@ -670,9 +670,9 @@ button:active {
 }
 
 .table-container td {
-    padding: 15px 10px;
+    padding: 8px 8px;
     border-top: 1px solid rgba(0, 0, 0, 0.05);
-    font-size: 0.95rem;
+    font-size: 0.85rem;
     text-align: center;
 }
 
@@ -714,7 +714,7 @@ button:active {
 .total-items {
     grid-column: 3;
     justify-self: end;
-    font-size: 0.8rem;
+    font-size: 0.7rem;
     color: #718096;
     font-weight: 500;
 }
