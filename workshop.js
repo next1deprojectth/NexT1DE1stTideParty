@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let slipImageBase64 = '';
     let slipMimeType = '';
 
-    const WORKSHOP_PRICE = 100;
+    const WORKSHOP_PRICE = 277;
     const SHIPPING_FEE = 50;
 
     // --- Endpoints ---
