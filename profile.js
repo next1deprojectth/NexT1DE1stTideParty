@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Setup Tabs
     function updateTabs(social) {
         socialTabs.forEach(t => t.classList.remove('active'));
-        const activeTab = Array.from(socialTabs).find(t => t.dataset.social === social) || document.getElementById('tab-twitter');
+        const activeTab = Array.from(socialTabs).find(t => t.dataset.social === social) || document.getElementById('tab-x');
         if (activeTab) {
             activeTab.classList.add('active');
             selectedSocial = activeTab.dataset.social;

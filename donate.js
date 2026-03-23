@@ -386,7 +386,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 if (verifyModal && verifyText && hasDonations) {
                     console.log(mergedDonationData.donations);
-                    const socialLabel = (selectedSocial === 'twitter' ? 'X' : (selectedSocial === 'tiktok' ? 'TikTok' : selectedSocial.toUpperCase()));
+                    const socialLabel = (selectedSocial === 'x' ? 'X' : (selectedSocial === 'tiktok' ? 'TikTok' : selectedSocial.toUpperCase()));
                     verifyText.innerHTML = `พบข้อมูลบัญชี <b>${socialLabel}</b> ที่ตรงกับข้อมูลของคุณ <b></b><br>มีการแจ้งโดเนทเมื่อ <b>${formatThaiDate(mergedDonationData.donations[0].issue_date)} น.</b > `;
                     hideLoading();
                     verifyModal.style.display = 'flex';
