@@ -226,19 +226,19 @@ document.addEventListener('DOMContentLoaded', () => {
         let desc = "";
 
         if (totalAmount < 177) {
-            title = "โดเนทขั้นต่ำเริ่มต้นที่ ฿177 เพื่อรับ Givtaway ชิ้นแรก";
+            title = "โดเนทขั้นต่ำเริ่มต้นที่ ฿177 เพื่อรับ Giveaway ชิ้นแรก";
             desc = "และหากต้องการจัดส่ง กรุณาบวกค่าส่ง 50 บาทในยอดโอน เช่น ฿177 → โอน ฿227";
         } else if (totalAmount < 477) {
             title = "ยอดโดเนทสะสมของคุณ ได้ Giveaway Level 1";
-            desc = `สะสมต่อให้ถึง ฿477 เพื่อรับ Givtaway Level 2${isDelivery ? ' และรอบนี้ไม่ต้องรวมค่าจัดส่งเพิ่ม' : ''}`;
+            desc = `สะสมต่อให้ถึง ฿477 เพื่อรับ Giveaway Level 2${isDelivery ? ' และรอบนี้ไม่ต้องรวมค่าจัดส่งเพิ่ม' : ''}`;
         } else if (totalAmount < 777) {
             title = "ยอดโดเนทสะสมของคุณ ได้ Giveaway Level 2";
-            desc = `สะสมต่อให้ถึง ฿777 เพื่อรับ Givtaway Level 3${isDelivery ? ' และรอบนี้ไม่ต้องรวมค่าจัดส่งเพิ่ม' : ''}`;
+            desc = `สะสมต่อให้ถึง ฿777 เพื่อรับ Giveaway Level 3${isDelivery ? ' และรอบนี้ไม่ต้องรวมค่าจัดส่งเพิ่ม' : ''}`;
         } else if (totalAmount < 1277) {
             title = "ยอดโดเนทสะสมของคุณ ได้ Giveaway Level 3";
-            desc = `สะสมต่อให้ถึง ฿1277 เพื่อรับ Givtaway Level สุดท้าย${isDelivery ? ' และรอบนี้ไม่ต้องรวมค่าจัดส่งเพิ่ม' : ''}`;
+            desc = `สะสมต่อให้ถึง ฿1277 เพื่อรับ Giveaway Level สุดท้าย${isDelivery ? ' และรอบนี้ไม่ต้องรวมค่าจัดส่งเพิ่ม' : ''}`;
         } else {
-            title = "คุณได้รับ Givtaway ครบทุกชิ้นแล้ว";
+            title = "คุณได้รับ Giveaway ครบทุกชิ้นแล้ว";
             desc = "ขอบคุณที่สนับสนุน Next1DE ขนาดนี้ ยอดโดเนทของคุณทุกบาทมีความหมายสำหรับพวกเราอย่างมาก";
         }
 
@@ -1420,7 +1420,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         donateShareInProgress = false;
                         if (!blob) return;
                         const file = new File([blob], 'NexT1DE-Moment.png', { type: 'image/png' });
-                        const shareHashtags = '#NexT1DE1stTideParty #NexT1DEProjectTH #NexT1DE';
+                        const shareHashtags = '#NexT1DE1stTideParty #NexT1DEProjectTH #NexT1DE ';
                         const filesData = {
                             files: [file],
                             title: 'NexT1DE 1st Tide Party',

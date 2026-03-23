@@ -679,7 +679,7 @@ button:active {
 .table-container td {
     padding: 10px 5px;
     border-top: 1px solid rgba(0, 0, 0, 0.05);
-    font-size: 0.82rem;
+    font-size: 0.9rem;
     vertical-align: middle;
 }
 
@@ -1494,4 +1494,17 @@ button:active {
     font-weight: 700;
     color: #4A5568;
     padding: 12px 5px;
+}
+
+.table-container thead th {
+    font-size: 0.82rem !important;
+    font-weight: 700 !important;
+    color: #4A5568 !important;
+    padding: 12px 5px !important;
+}
+/* Force smallest table headers */
+.table-container table thead tr th {
+    font-size: 0.7rem !important;
+    line-height: 1.2 !important;
+    padding: 8px 4px !important;
 }
