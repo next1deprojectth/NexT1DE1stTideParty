@@ -18,6 +18,17 @@ document.addEventListener('DOMContentLoaded', () => {
     let slipImageBase64 = '';
     let slipMimeType = '';
 
+    // --- Load Persistent Data ---
+    const savedType = localStorage.getItem('next1de_social_type');
+    const savedName = localStorage.getItem('next1de_social_name');
+    if (savedName) {
+        document.getElementById('social-username').value = savedName;
+    }
+    if (savedType) {
+        selectedSocial = savedType;
+        // Update tabs UI after selectors are defined
+    }
+
     const RECEIVER_NAME_TARGET = "ธัญดา";
     const WEBHOOK_URL = "https://next1de.app.n8n.cloud/webhook/6e4a539b-5580-40f9-a85f-47a488a2e842";
     const API_ENDPOINT = API_CONFIG.BASE_URL;
@@ -38,6 +49,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const socialTabs = document.querySelectorAll('.social-tab');
     const socialInput = document.getElementById('social-username');
     const btnConfirmStep1 = document.getElementById('btn-confirm-step1');
+
+    // Update Tabs UI if loaded from storage
+    if (savedType) {
+        socialTabs.forEach(tab => {
+            if (tab.dataset.social === savedType) {
+                tab.classList.add('active');
+            } else {
+                tab.classList.remove('active');
+            }
+        });
+    }
 
     // Step 2
     const uploadZone = document.getElementById('upload-zone');
@@ -191,6 +213,39 @@ document.addEventListener('DOMContentLoaded', () => {
         nickname = socialInput ? socialInput.value : '';
     };
 
+    const updateStep2FeeNotice = () => {
+        const titleEl = document.getElementById('step2-fee-title');
+        const descEl = document.getElementById('step2-fee-desc');
+        if (!titleEl || !descEl) return;
+
+        const totalAmount = mergedDonationData.total_amount || 0;
+        const deliveryType = (mergedDonationData.receive && mergedDonationData.receive.delivery_type) || '';
+        const isDelivery = deliveryType === 'delivery';
+
+        let title = "";
+        let desc = "";
+
+        if (totalAmount < 177) {
+            title = "โดเนทขั้นต่ำเริ่มต้นที่ ฿177 เพื่อรับ Givtaway ชิ้นแรก";
+            desc = "และหากต้องการจัดส่ง กรุณาบวกค่าส่ง 50 บาทในยอดโอน เช่น ฿177 → โอน ฿227";
+        } else if (totalAmount < 477) {
+            title = "ยอดโดเนทสะสมของคุณ ได้ Giveaway Level 1";
+            desc = `สะสมต่อให้ถึง ฿477 เพื่อรับ Givtaway Level 2${isDelivery ? ' และรอบนี้ไม่ต้องรวมค่าจัดส่งเพิ่ม' : ''}`;
+        } else if (totalAmount < 777) {
+            title = "ยอดโดเนทสะสมของคุณ ได้ Giveaway Level 2";
+            desc = `สะสมต่อให้ถึง ฿777 เพื่อรับ Givtaway Level 3${isDelivery ? ' และรอบนี้ไม่ต้องรวมค่าจัดส่งเพิ่ม' : ''}`;
+        } else if (totalAmount < 1277) {
+            title = "ยอดโดเนทสะสมของคุณ ได้ Giveaway Level 3";
+            desc = `สะสมต่อให้ถึง ฿1277 เพื่อรับ Givtaway Level สุดท้าย${isDelivery ? ' และรอบนี้ไม่ต้องรวมค่าจัดส่งเพิ่ม' : ''}`;
+        } else {
+            title = "คุณได้รับ Givtaway ครบทุกชิ้นแล้ว";
+            desc = "ขอบคุณที่สนับสนุน Next1DE ขนาดนี้ ยอดโดเนทของคุณทุกบาทมีความหมายสำหรับพวกเราอย่างมาก";
+        }
+
+        titleEl.innerText = title;
+        descEl.innerText = desc;
+    };
+
     const setStepUI = (step) => {
         currentState = step;
         step1.style.display = 'none';
@@ -220,6 +275,7 @@ document.addEventListener('DOMContentLoaded', () => {
             bars[1].classList.add('step-2-active');
             stepLabelText.innerText = 'ข้อมูลการโดเนท (2/3)';
             window.scrollTo({ top: 0, behavior: 'smooth' });
+            updateStep2FeeNotice();
         } else if (step === 3) {
             step3.style.display = 'block';
             bars[0].classList.add('step-1-active');
@@ -289,6 +345,11 @@ document.addEventListener('DOMContentLoaded', () => {
             alert('กรุณากรอกชื่อบัญชีโซเชียลของคุณ');
             return;
         }
+
+        // --- Persistent Cookie/Local Storage ---
+        localStorage.setItem('next1de_social_type', selectedSocial);
+        localStorage.setItem('next1de_social_name', val);
+
         showLoading('กำลังตรวจสอบข้อมูลรับสิทธิ์...');
         try {
             console.log('GetDonate API Data socialName:', encodeURIComponent(val));
@@ -441,6 +502,11 @@ document.addEventListener('DOMContentLoaded', () => {
                         document.getElementById('verification-error-text').style.display = 'none';
                         document.getElementById('verification-success-data').style.display = 'block';
                         document.getElementById('slip-verification-buttons').style.display = 'flex';
+                        
+                        // Hide fee notice when showing verified details
+                        const feeNotice = document.getElementById('step2-fee-notice');
+                        if (feeNotice) feeNotice.style.display = 'none';
+                        
                         slipData = aiData;
 
                         document.getElementById('verify-sender-name').innerText = slipData.sender_name || '-';
@@ -984,11 +1050,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     body: JSON.stringify(uploadBody)
                 });
                 const uploadData = await uploadRes.json();
+                console.log('Upload Result Status:', uploadData.status);
                 if (uploadData.status === 'ok') {
                     uploadedImageUrl = uploadData.view_url;
+                    console.log('Upload Success, URL:', uploadedImageUrl);
                 } else {
+                    console.error('Upload Failed Response:', uploadData);
                     throw new Error('ไม่สามารถอัปโหลดรูปภาพได้');
                 }
+            } else {
+                console.warn('slipImageBase64 is empty! Skipping upload.');
             }
 
             // 2. Save Donation Data
@@ -1000,17 +1071,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const body = {
                 action: "saveDonate",
-                social_name: socialInput.value,
-                social_type: selectedSocial,
-                name: slipData.sender_name,
-                bank_no: slipData.sender_account,
-                bank: slipData.bank_code,
-                transaction_date: slipData.date.replace(/\//g, '/'),
-                transaction_ref: slipData.ref_number,
-                receive_name: slipData.receiver_name,
-                amount: slipData.amount,
-                image: uploadedImageUrl,
-                username: nickname,
+                social_name: socialInput.value || "",
+                social_type: selectedSocial || "",
+                name: slipData.sender_name || "",
+                bank_no: slipData.sender_account || "",
+                bank: slipData.bank_code || "",
+                transaction_date: (slipData.date || "").replace(/\//g, '/'),
+                transaction_ref: slipData.ref_number || "",
+                receive_name: slipData.receiver_name || "",
+                amount: slipData.amount || 0,
+                image: uploadedImageUrl || "",
+                username: nickname || "",
                 event_type: isStep3Reached ? "donate" : "",
                 delivery_type: isStep3Reached ? ((finalMethod === 'delivery') ? 'delivery' : 'onsite') : "",
                 include_shipping: isStep3Reached ? (finalMethod === 'delivery' && !hasPastDelivery) : false,
@@ -1022,14 +1093,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 quote: document.getElementById('donate-quote').value || ""
             };
 
-            await fetch(SAVE_API_URL, {
+            console.log('Saving Donation Data with Body:', body);
+            const saveRes = await fetch(SAVE_API_URL, {
                 method: 'POST',
-                mode: 'no-cors',
                 body: JSON.stringify(body)
             });
+            const saveData = await saveRes.json();
+            console.log('Save Result:', saveData);
 
-            hideLoading();
-            showSuccessScreen();
+            if (saveData.status === 'ok') {
+                hideLoading();
+                showSuccessScreen();
+            } else {
+                throw new Error(saveData.message || 'บันทึกข้อมูลไม่สำเร็จ');
+            }
 
         } catch (error) {
             console.error("Save Error:", error);
@@ -1395,6 +1472,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 navigator.clipboard.writeText(shareUrl).then(() => {
                     alert('คัดลอกลิงก์เรียบร้อยแล้ว!');
                 });
+            }
+        });
+    }
+
+    const navBack = document.getElementById('nav-back');
+    if (navBack) {
+        navBack.addEventListener('click', () => {
+            if (currentState === 1) {
+                window.location.href = 'index.html';
+            } else if (currentState === 2 || currentState === 3) {
+                setStepUI(currentState - 1);
             }
         });
     }

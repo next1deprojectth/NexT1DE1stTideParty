@@ -86,6 +86,41 @@
 
 
 
+            <div class="fee-notice-box" id="step2-fee-notice" style="
+                        background: #FFF5F5;
+                        border: 1.5px solid #FEB2B2;
+                        border-radius: 20px;
+                        padding: 15px 20px;
+                        margin-bottom: 20px;
+                        box-shadow: 0 4px 12px rgba(229, 62, 62, 0.08);
+                        animation: pulse 2s infinite ease-in-out;
+                    ">
+                <div style="display:flex; gap:12px; align-items:flex-start;">
+                    <div
+                        style="width:22px; height:22px; background:#FEB2B2; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:3px;">
+                        <span style="color:white; font-size:13px; font-weight:900;">i</span>
+                    </div>
+                    <div>
+                        <p id="step2-fee-title"
+                            style="font-weight:800; color:#E53E3E; font-size:1.1rem; margin:0; line-height: 1.4; letter-spacing: -0.2px;">
+                            โดเนทขั้นต่ำเริ่มต้นที่ ฿177 เพื่อรับ Givtaway ชิ้นแรก </p>
+                        <p id="step2-fee-desc"
+                            style="font-size:0.9rem; color:#718096; margin-top:2px; font-weight:600; opacity:0.9;">
+                            หากต้องการจัดส่ง กรุณาบวกค่าส่ง 50 บาทในยอดโอนด้วยนะคะ เช่น ฿177 → โอน ฿227 ค่ะ</p>
+                        <button type="button"
+                            onclick="document.getElementById('donate-giveaway-img-wrapper').scrollIntoView({behavior: 'smooth'})"
+                            style="margin-top: 14px; background: linear-gradient(135deg, #FC8181 0%, #E53E3E 100%); border: none; color: white; padding: 10px 22px; border-radius: 15px; font-weight: 800; font-size: 0.85rem; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(229, 62, 62, 0.2); -webkit-tap-highlight-color: transparent; transition: transform 0.2s ease;">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                            ดู Giveaway ได้ที่นี่
+                        </button>
+                    </div>
+                </div>
+            </div>
+
             <!-- Account Info Box (From index.html) -->
             <div class="account-info-box" id="account-info-box-step2" style="margin-bottom: 25px;">
                 <div class="bank-header">
@@ -105,32 +140,7 @@
                 </div>
             </div>
 
-
             <div id="upload-slip-container">
-                <div class="fee-notice-box" id="step2-fee-notice" style="
-                            background: #FFF5F5;
-                            border: 1.5px solid #FEB2B2;
-                            border-radius: 20px;
-                            padding: 15px 20px;
-                            margin-bottom: 20px;
-                            box-shadow: 0 4px 12px rgba(229, 62, 62, 0.08);
-                            animation: pulse 2s infinite ease-in-out;
-                        ">
-                    <div style="display:flex; gap:12px; align-items:flex-start;">
-                        <div
-                            style="width:22px; height:22px; background:#FEB2B2; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:3px;">
-                            <span style="color:white; font-size:13px; font-weight:900;">i</span>
-                        </div>
-                        <div>
-                            <p
-                                style="font-weight:800; color:#E53E3E; font-size:1.1rem; margin:0; line-height: 1.4; letter-spacing: -0.2px;">
-                                หากจัดส่ง Giveaway มีค่าส่ง 50 บาท</p>
-                            <p style="font-size:0.65rem; color:#718096; margin-top:2px; font-weight:600; opacity:0.9;">
-                                (ระบบจะหักจากยอดโอนสะสมอัตโนมัติ หากต้องการรับ Giveaway ด้วยวิธีการจัดส่ง
-                                กรุณาโอนเพิ่มจากยอดโดเนทที่ต้องการอีก 50 บาท)</p>
-                        </div>
-                    </div>
-                </div>
 
                 <!-- Upload Drop Zone -->
                 <div class="upload-zone" id="upload-zone" onclick="triggerFileInput()">
@@ -256,7 +266,7 @@
                         <div style="position: relative; display: flex; align-items: center;">
                             <input type="text" class="form-input" id="nickname-input" placeholder="นามแฝง"
                                 autocomplete="off" style="padding-right: 40px; flex: 1;">
-                            <button id="btn-clear-nickname" 
+                            <button id="btn-clear-nickname"
                                 style="display: none; position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: #EDF2F7; border: none; border-radius: 50%; width: 20px; height: 20px; min-width: 20px; min-height: 20px; cursor: pointer; color: #718096; font-size: 10px; font-weight: 800; display: flex; align-items: center; justify-content: center; -webkit-tap-highlight-color: transparent; flex-shrink: 0; padding: 0; z-index: 10;">✕</button>
                         </div>
                     </div>
@@ -514,10 +524,13 @@
                 <p class="success-next-goal" id="success-next-goal" โดเนทเพิ่มเพื่อรับ Giveaway มากขึ้น</p>
             </div>
             <p class="success-footer">by NexT1DE Project Thailand</p>
-            <div class="success-actions" style="display: flex; gap: 8px; justify-content: center; width: 100%; max-width: 380px; margin: 20px auto 0; align-items: stretch;">
-                <button class="btn-success-home" onclick="window.location.href='index.html'" style="flex: 1; padding: 16px; border-radius: 18px; border: none; background: linear-gradient(135deg, #286ACD 0%, #A3E4DB 100%); color: white; font-weight: 800; font-size: 1rem; cursor: pointer; box-shadow: 0 4px 20px rgba(40, 106, 205, 0.4); white-space: nowrap;">หน้าหลัก</button>
+            <div class="success-actions"
+                style="display: flex; gap: 8px; justify-content: center; width: 100%; max-width: 380px; margin: 20px auto 0; align-items: stretch;">
+                <button class="btn-success-home" onclick="window.location.href='index.html'"
+                    style="flex: 1; padding: 16px; border-radius: 18px; border: none; background: linear-gradient(135deg, #286ACD 0%, #A3E4DB 100%); color: white; font-weight: 800; font-size: 1rem; cursor: pointer; box-shadow: 0 4px 20px rgba(40, 106, 205, 0.4); white-space: nowrap;">หน้าหลัก</button>
                 <div style="display: flex; gap: 8px; flex: 2.2;">
-                    <button class="btn-success-share" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 16px; border-radius: 18px; border: 1.5px solid #E2E8F0; background: white; color: #2D3748; font-weight: 800; font-size: 1rem; cursor: pointer;">
+                    <button class="btn-success-share"
+                        style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 16px; border-radius: 18px; border: 1.5px solid #E2E8F0; background: white; color: #2D3748; font-weight: 800; font-size: 1rem; cursor: pointer;">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2D3748" stroke-width="2.5"
                             stroke-linecap="round" stroke-linejoin="round">
                             <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
@@ -528,7 +541,8 @@
                     </button>
                     <button id="btn-share-link-donate"
                         style="width: 54px; display: flex; align-items: center; justify-content: center; border-radius: 18px; border: 1.5px solid #E2E8F0; background: white; cursor: pointer; flex-shrink: 0; padding: 0;">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2D3748" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2D3748" stroke-width="2.5"
+                            stroke-linecap="round" stroke-linejoin="round">
                             <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
                             <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
                         </svg>
@@ -587,8 +601,8 @@
                 </svg>
                 อยากบอกอะไร NexT1DE และ Ohna
             </p>
-            <textarea id="donate-quote" class="form-input" placeholder="ข้อความนี้จะแสดงในหน้าเวบไซต์ (ไม่บังคับ)"
-                maxlength="100" rows="4"
+            <textarea id="donate-quote" class="form-input"
+                placeholder="ข้อความนี้จะแสดงข้อความวิ่งในหน้าเวบไซต์ (ไม่บังคับ)" maxlength="100" rows="4"
                 style="border-radius: 18px; border: 1px solid #E2E8F0; background: #F8FAFC; padding: 15px; font-size: 0.95rem; resize: none; margin-bottom: 5px;"></textarea>
             <div id="quote-char-count"
                 style="text-align: right; font-size: 0.75rem; color: #718096; margin-top: 0; margin-bottom: 20px; font-weight: 600; width: 100%;">

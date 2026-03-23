@@ -24,6 +24,17 @@ document.addEventListener('DOMContentLoaded', () => {
     let expectedTotal = 0;
     let expectedShipping = 0;
 
+    // --- Load Persistent Data ---
+    const savedType = localStorage.getItem('next1de_social_type');
+    const savedName = localStorage.getItem('next1de_social_name');
+    if (savedName) {
+        document.getElementById('social-username').value = savedName;
+        socialNameInput = savedName; // Also sync to inner state
+    }
+    if (savedType) {
+        selectedSocial = savedType;
+    }
+
     let slipImageBase64 = '';
     let slipMimeType = '';
     let isReturnShippingPrice = false;
@@ -73,6 +84,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const tabs = document.querySelectorAll('.social-tab');
     tabs.forEach(tab => {
+        // Init UI from saved data
+        if (savedType && tab.getAttribute('data-social') === savedType) {
+            tab.classList.add('active');
+        } else if (!savedType && tab.getAttribute('data-social') === selectedSocial) {
+            tab.classList.add('active');
+        } else {
+            tab.classList.remove('active');
+        }
+
         tab.addEventListener('click', () => {
             tabs.forEach(t => t.classList.remove('active'));
             tab.classList.add('active');
@@ -132,6 +152,10 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
         socialNameInput = userValue;
+
+        // --- Save to Cache/LocalStorage ---
+        localStorage.setItem('next1de_social_type', selectedSocial);
+        localStorage.setItem('next1de_social_name', socialNameInput);
 
         // Show Loading
         const loader = document.getElementById('api-loading-social');
@@ -947,7 +971,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         pillCardStack.style.setProperty('max-width', '450px', 'important');
                         pillCardStack.style.setProperty('margin', '0 auto 20px', 'important');
                         pillCardStack.style.setProperty('box-sizing', 'border-box', 'important');
-                        
+
                         const pillEl = pillCardStack.children[0];
                         const cardEl = pillCardStack.children[1];
                         if (pillEl) {
@@ -1002,11 +1026,11 @@ document.addEventListener('DOMContentLoaded', () => {
                                 img.style.display = 'none';
                             }
                         } else if (logoDataUrl && !img.src.includes('qr')) {
-                             img.src = logoDataUrl;
+                            img.src = logoDataUrl;
                         } else {
                             // If it's something else not loaded, hide it
                             if (!img.src.startsWith('data:') && !img.src.includes('qr')) {
-                                 img.style.display = 'none';
+                                img.style.display = 'none';
                             }
                         }
                     });
@@ -1044,7 +1068,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             if (!blob) return;
                             const file = new File([blob], 'NexT1DE-Workshop.png', { type: 'image/png' });
                             const shareHashtags = '#NexT1DE1stTideParty #NexT1DEProjectTH #NexT1DE';
-                            const shareDataWithFiles = { 
+                            const shareDataWithFiles = {
                                 files: [file],
                                 title: 'NexT1DE 1st Tide Party',
                                 text: shareHashtags
@@ -1078,7 +1102,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const shareUrlBtn = document.getElementById('btn-share-url');
     if (shareUrlBtn) {
         shareUrlBtn.addEventListener('click', () => {
-            const shareUrl = 'https://next1deprojectth.github.io/NexT1DE1stTideParty/donate.html';
+            const shareUrl = 'https://next1deprojectth.github.io/NexT1DE1stTideParty/workshop.html';
             const shareData = {
                 title: 'NexT1DE 1st Tide Party',
                 text: 'มาร่วมสนับสนุน NexT1DE 1st Tide Party ไปด้วยกันนะ\nร่วมเป็นส่วนหนึ่งของโปรเจคได้ที่นี่',
