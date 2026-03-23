@@ -502,11 +502,11 @@ document.addEventListener('DOMContentLoaded', () => {
                         document.getElementById('verification-error-text').style.display = 'none';
                         document.getElementById('verification-success-data').style.display = 'block';
                         document.getElementById('slip-verification-buttons').style.display = 'flex';
-                        
+
                         // Hide fee notice when showing verified details
                         const feeNotice = document.getElementById('step2-fee-notice');
                         if (feeNotice) feeNotice.style.display = 'none';
-                        
+
                         slipData = aiData;
 
                         document.getElementById('verify-sender-name').innerText = slipData.sender_name || '-';
@@ -1223,15 +1223,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
             let message = "";
             if (netAmt < 177) {
-                message = `อีกเพียง ฿${(177 - netAmt).toLocaleString()} ก็จะได้รับ Giftaway ชิ้นแรก!`;
+                message = `อีกเพียง ฿${(177 - netAmt).toLocaleString()} ก็จะได้รับ Giveaway ชิ้นแรก!`;
             } else if (netAmt < 477) {
-                message = `สะสมต่ออีก ฿${(477 - netAmt).toLocaleString()} เพื่อรับ Giftaway เพิ่มขึ้น!`;
+                message = `สะสมต่ออีก ฿${(477 - netAmt).toLocaleString()} เพื่อรับ Giveaway เพิ่มขึ้น!`;
             } else if (netAmt < 777) {
-                message = `ใกล้แล้ว! อีก ฿${(777 - netAmt).toLocaleString()} ก็จะได้รับ Giftaway เพิ่มชิ้น`;
+                message = `ใกล้แล้ว! อีก ฿${(777 - netAmt).toLocaleString()} ก็จะได้รับ Giveaway เพิ่มชิ้น`;
             } else if (netAmt < 1277) {
-                message = `เกือบครบแล้ว! อีกแค่ ฿${(1277 - netAmt).toLocaleString()} ก็จะได้รับ Giftaway ครบทุกชิ้น`;
+                message = `เกือบครบแล้ว! อีกแค่ ฿${(1277 - netAmt).toLocaleString()} ก็จะได้รับ Giveaway ครบทุกชิ้น`;
             } else {
-                message = `ยินดีด้วย! คุณได้รับ Giftaway ครบทุกชิ้นแล้ว`;
+                message = `ยินดีด้วย! คุณได้รับ Giveaway ครบทุกชิ้นแล้ว`;
             }
             if (successTitleEl) successTitleEl.innerText = message;
             if (nextGoal) nextGoal.style.display = 'none';
@@ -1334,56 +1334,62 @@ document.addEventListener('DOMContentLoaded', () => {
                             clonedRoot.style.setProperty('opacity', '1', 'important');
                             clonedRoot.style.setProperty('filter', 'none', 'important');
 
-                            // Price - WHITE CARD RESTORED, Friendly Blue color
+                            // Price - Fix html2canvas gradient text issue and let CSS handle the card transparency
                             const cumCard = clonedDoc.querySelector('.success-cumulative-card');
                             if (cumCard) {
-                                cumCard.style.setProperty('background', '#ffffff', 'important'); // RESTORE WHITE BOX
-                                cumCard.style.setProperty('background-image', 'none', 'important');
-                                cumCard.style.setProperty('border-radius', '24px', 'important');
-                                cumCard.style.setProperty('padding', '25px', 'important');
-                                cumCard.style.setProperty('box-shadow', '0 10px 25px rgba(0,0,0,0.05)', 'important');
-                                cumCard.style.setProperty('border', 'none', 'important');
-                                cumCard.style.setProperty('opacity', '1', 'important');
+                                cumCard.style.setProperty('background', 'rgba(255, 255, 255, 0.8)', 'important'); // Semi-transparent fallback for html2canvas
                             }
 
-                            const priceVal = clonedDoc.querySelector('.success-price-value');
+
+
+                            const priceVal = clonedDoc.querySelector('.success-total-amount');
+
                             if (priceVal) {
-                                priceVal.style.setProperty('background', 'linear-gradient(135deg, #286ACD 0%, #A3E4DB 100%)', 'important');
-                                priceVal.style.setProperty('background-image', 'linear-gradient(135deg, #286ACD 0%, #A3E4DB 100%)', 'important');
-                                priceVal.style.setProperty('border-radius', '20px', 'important'); // Rounded corners
-                                priceVal.style.setProperty('padding', '35px 20px', 'important');
-                                priceVal.style.setProperty('-webkit-text-fill-color', '#ffffff', 'important'); // White text
-                                priceVal.style.setProperty('color', '#ffffff', 'important');
-                                priceVal.style.setProperty('font-size', '100px', 'important');
-                                priceVal.style.setProperty('font-weight', '800', 'important');
-                                priceVal.style.setProperty('text-shadow', 'none', 'important');
-                                priceVal.style.setProperty('display', 'block', 'important');
-                                priceVal.style.setProperty('width', '100%', 'important');
-                                priceVal.style.setProperty('margin', '0 auto', 'important');
+
+                                priceVal.style.setProperty('background', 'none', 'important');
+
+                                priceVal.style.setProperty('background-image', 'none', 'important');
+
+                                priceVal.style.setProperty('-webkit-text-fill-color', '#65A7D4', 'important'); // Solid color to emulate gradient
+
+                                priceVal.style.setProperty('color', '#65A7D4', 'important');
+
                                 priceVal.style.setProperty('-webkit-background-clip', 'border-box', 'important');
+
                                 priceVal.style.setProperty('background-clip', 'border-box', 'important');
+
                             }
+
+
 
                             // Titles - Solid color
+
                             clonedRoot.querySelectorAll('.success-project-title').forEach((el) => {
+
                                 el.style.setProperty('background', 'none', 'important');
+
                                 el.style.setProperty('-webkit-text-fill-color', '#286ACD', 'important');
+
                                 el.style.setProperty('color', '#286ACD', 'important');
+
                                 el.style.setProperty('font-size', '34px', 'important');
+
                                 el.style.setProperty('white-space', 'nowrap', 'important');
+
                                 el.style.setProperty('filter', 'none', 'important');
+
                             });
 
-                            // Thank you - Black text
+                            // Thank you - Text color matching UI
                             const thankYou = clonedDoc.querySelector('.success-thank-you');
                             if (thankYou) {
-                                thankYou.style.setProperty('color', '#000000', 'important');
+                                thankYou.style.setProperty('color', '#4A5568', 'important');
                                 thankYou.style.setProperty('font-weight', '700', 'important');
                                 thankYou.style.setProperty('opacity', '1', 'important');
                             }
 
                             // Hashtags - Dark Blue
-                            const hashtags = clonedDoc.querySelector('.success-hashtags');
+                            const hashtags = clonedDoc.getElementById('success-hashtags');
                             if (hashtags) {
                                 hashtags.style.setProperty('color', '#286ACD', 'important');
                                 hashtags.style.setProperty('font-weight', '700', 'important');
