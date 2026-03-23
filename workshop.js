@@ -994,16 +994,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     root.querySelectorAll('img').forEach((img) => {
                         img.style.setProperty('opacity', '1', 'important');
-                        if (logoDataUrl) {
-                            img.removeAttribute('crossorigin');
-                            img.src = logoDataUrl;
-                            img.style.setProperty(
-                                'filter',
-                                'drop-shadow(0 2px 10px rgba(255,255,255,0.55))',
-                                'important'
-                            );
+                        if (logoDataUrl && (img.src.includes('logo') || img.alt === 'NexT1DE')) {
+                            const parent = img.parentElement;
+                            if (parent) {
+                                parent.style.background = `url(${logoDataUrl}) center center / cover no-repeat`;
+                                parent.style.setProperty('background', `url(${logoDataUrl}) center center / cover no-repeat`, 'important');
+                                img.style.display = 'none';
+                            }
+                        } else if (logoDataUrl && !img.src.includes('qr')) {
+                             img.src = logoDataUrl;
                         } else {
-                            img.style.display = 'none';
+                            // If it's something else not loaded, hide it
+                            if (!img.src.startsWith('data:') && !img.src.includes('qr')) {
+                                 img.style.display = 'none';
+                            }
                         }
                     });
 
@@ -1039,10 +1043,15 @@ document.addEventListener('DOMContentLoaded', () => {
                             cleanupHtml2CanvasArtifacts();
                             if (!blob) return;
                             const file = new File([blob], 'NexT1DE-Workshop.png', { type: 'image/png' });
-                            const filesOnly = { files: [file] };
+                            const shareHashtags = '#NexT1DE1stTideParty #NexT1DEProjectTH #NexT1DE';
+                            const shareDataWithFiles = { 
+                                files: [file],
+                                title: 'NexT1DE 1st Tide Party',
+                                text: shareHashtags
+                            };
 
-                            if (navigator.share && (!navigator.canShare || navigator.canShare(filesOnly))) {
-                                navigator.share(filesOnly).catch((e) => console.log('Share failed', e));
+                            if (navigator.share && (!navigator.canShare || navigator.canShare(shareDataWithFiles))) {
+                                navigator.share(shareDataWithFiles).catch((e) => console.log('Share failed', e));
                             } else {
                                 const link = document.createElement('a');
                                 link.href = outCanvas.toDataURL('image/png');
@@ -1069,15 +1078,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const shareUrlBtn = document.getElementById('btn-share-url');
     if (shareUrlBtn) {
         shareUrlBtn.addEventListener('click', () => {
+            const shareUrl = 'https://next1deprojectth.github.io/NexT1DE1stTideParty/donate.html';
             const shareData = {
                 title: 'NexT1DE 1st Tide Party',
-                text: 'มาร่วมเป็นส่วนหนึ่งของ Workshop กับ NexT1DE กันเถอะ!',
-                url: window.location.origin + '/workshop.html'
+                text: 'มาร่วมสนับสนุน NexT1DE 1st Tide Party ไปด้วยกันนะ\nร่วมเป็นส่วนหนึ่งของโปรเจคได้ที่นี่',
+                url: shareUrl
             };
             if (navigator.share) {
                 navigator.share(shareData).catch(console.error);
             } else {
-                navigator.clipboard.writeText(shareData.url).then(() => {
+                // Only copy the URL
+                navigator.clipboard.writeText(shareUrl).then(() => {
                     alert('คัดลอกลิงก์เรียบร้อยแล้ว!');
                 });
             }

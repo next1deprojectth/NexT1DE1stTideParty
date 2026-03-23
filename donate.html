@@ -253,8 +253,12 @@
                         <p style="font-weight:800; font-size:1.1rem; color:#2D3748; margin-bottom:10px;">
                             นามแฝงสำหรับโดเนทครั้งนี้ <span
                                 style="font-size:0.95rem; color:#718096; font-weight:400;">(แสดงในตารางโดเนท)</span></p>
-                        <input type="text" class="form-input" id="nickname-input" placeholder="นามแฝง"
-                            autocomplete="off">
+                        <div style="position: relative; display: flex; align-items: center;">
+                            <input type="text" class="form-input" id="nickname-input" placeholder="นามแฝง"
+                                autocomplete="off" style="padding-right: 40px; flex: 1;">
+                            <button id="btn-clear-nickname" 
+                                style="display: none; position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: #EDF2F7; border: none; border-radius: 50%; width: 20px; height: 20px; min-width: 20px; min-height: 20px; cursor: pointer; color: #718096; font-size: 10px; font-weight: 800; display: flex; align-items: center; justify-content: center; -webkit-tap-highlight-color: transparent; flex-shrink: 0; padding: 0; z-index: 10;">✕</button>
+                        </div>
                     </div>
 
                     <!-- Confirm Button -->

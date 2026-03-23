@@ -62,6 +62,33 @@ document.addEventListener('DOMContentLoaded', () => {
     const receptionSectionWrapper = document.getElementById('reception-section-wrapper');
     const confirmReceptionBox = document.getElementById('confirm-reception-box');
     const receptionInputForm = document.getElementById('reception-input-form');
+    const btnClearNickname = document.getElementById('btn-clear-nickname');
+
+    // === Nickname Logic ===
+    const updateClearButton = () => {
+        if (btnClearNickname && nicknameInput) {
+            btnClearNickname.style.display = nicknameInput.value.length > 0 ? 'flex' : 'none';
+        }
+    };
+
+    if (socialInput && nicknameInput) {
+        socialInput.addEventListener('input', () => {
+            nicknameInput.value = socialInput.value;
+            updateClearButton();
+        });
+    }
+
+    if (nicknameInput) {
+        nicknameInput.addEventListener('input', updateClearButton);
+    }
+
+    if (btnClearNickname && nicknameInput) {
+        btnClearNickname.addEventListener('click', () => {
+            nicknameInput.value = '';
+            nicknameInput.focus();
+            updateClearButton();
+        });
+    }
 
 
     const showLoading = (text = "กำลังประมวลผล...") => {
@@ -152,13 +179,16 @@ document.addEventListener('DOMContentLoaded', () => {
         if (fileInput) fileInput.value = '';
         if (feeNotice) feeNotice.style.display = 'block';
         if (giveawayImg) giveawayImg.style.display = 'block';
-        if (nicknameInput) nicknameInput.value = '';
+        if (nicknameInput && socialInput) {
+            nicknameInput.value = socialInput.value;
+            if (typeof updateClearButton === 'function') updateClearButton();
+        }
         if (accountInfoBoxStep2) accountInfoBoxStep2.style.display = 'block';
         if (uploadZone) uploadZone.style.display = 'block';
         if (checkNotice) checkNotice.style.display = 'none';
 
         slipData = { amount: 0, date: '', bankCode: '' };
-        nickname = '';
+        nickname = socialInput ? socialInput.value : '';
     };
 
     const setStepUI = (step) => {
@@ -1113,17 +1143,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (giftInfo.hasAny) {
             giftWrapper.style.display = 'block';
+
             let message = "";
             if (netAmt < 177) {
-                message = `โดเนทอีก ฿${177 - netAmt} จะได้รับ Giftaway ชิ้นแรก!`;
+                message = `อีกเพียง ฿${(177 - netAmt).toLocaleString()} ก็จะได้รับ Giftaway ชิ้นแรก!`;
             } else if (netAmt < 477) {
-                message = `สะสมอีก ฿${477 - netAmt} ก็จะได้รับ Giveaway เพิ่ม!`;
+                message = `สะสมต่ออีก ฿${(477 - netAmt).toLocaleString()} เพื่อรับ Giftaway เพิ่มขึ้น!`;
             } else if (netAmt < 777) {
-                message = `โดเนทเพิ่มอีก ฿${777 - netAmt} เพื่อรับ Giveaway เพิ่ม!`;
+                message = `ใกล้แล้ว! อีก ฿${(777 - netAmt).toLocaleString()} ก็จะได้รับ Giftaway เพิ่มชิ้น`;
             } else if (netAmt < 1277) {
-                message = `อีก ฿${1277 - netAmt} คุณก็จะได้ Giveaway ครบทุกชิ้นแล้ว! `;
+                message = `เกือบครบแล้ว! อีกแค่ ฿${(1277 - netAmt).toLocaleString()} ก็จะได้รับ Giftaway ครบทุกชิ้น`;
             } else {
-                message = `ยินดีด้วย คุณได้รับ Giveaway ครบทุกชิ้น`;
+                message = `ยินดีด้วย! คุณได้รับ Giftaway ครบทุกชิ้นแล้ว`;
             }
             if (successTitleEl) successTitleEl.innerText = message;
             if (nextGoal) nextGoal.style.display = 'none';
@@ -1285,7 +1316,16 @@ document.addEventListener('DOMContentLoaded', () => {
                             // Logo replacement
                             clonedRoot.querySelectorAll('img').forEach((img) => {
                                 if (img.id === 'success-qr-img') return;
-                                if (logoDataUrl) img.src = logoDataUrl;
+                                if (logoDataUrl && (img.src.includes('logo') || img.alt === 'NexT1DE' || img.src.includes('profile'))) {
+                                    const parent = img.parentElement;
+                                    if (parent) {
+                                        parent.style.background = `url(${logoDataUrl}) center center / cover no-repeat`;
+                                        parent.style.setProperty('background', `url(${logoDataUrl}) center center / cover no-repeat`, 'important');
+                                        img.style.display = 'none';
+                                    }
+                                } else if (logoDataUrl && !img.src.includes('qr')) {
+                                    img.src = logoDataUrl;
+                                }
                             });
                         }
                     }
@@ -1293,20 +1333,20 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (btns) btns.style.display = 'flex';
                     if (typeof hideLoading === 'function') hideLoading();
 
-                        canvas.toBlob((blob) => {
-                            donateShareInProgress = false;
-                            if (!blob) return;
-                            const file = new File([blob], 'NexT1DE-Moment.png', { type: 'image/png' });
-                            const shareHashtags = '#NexT1DE1stTideParty #NexT1DEProjectTH #NexT1DE';
-                            const filesData = { 
-                                files: [file],
-                                title: 'NexT1DE 1st Tide Party',
-                                text: shareHashtags
-                            };
+                    canvas.toBlob((blob) => {
+                        donateShareInProgress = false;
+                        if (!blob) return;
+                        const file = new File([blob], 'NexT1DE-Moment.png', { type: 'image/png' });
+                        const shareHashtags = '#NexT1DE1stTideParty #NexT1DEProjectTH #NexT1DE';
+                        const filesData = {
+                            files: [file],
+                            title: 'NexT1DE 1st Tide Party',
+                            text: shareHashtags
+                        };
 
-                            if (navigator.share && navigator.canShare && navigator.canShare(filesData)) {
-                                navigator.share(filesData).catch(() => { });
-                            } else {
+                        if (navigator.share && navigator.canShare && navigator.canShare(filesData)) {
+                            navigator.share(filesData).catch(() => { });
+                        } else {
                             const link = document.createElement('a');
                             link.href = canvas.toDataURL('image/png');
                             link.download = 'NexT1DE-Moment.png';
