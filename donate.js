@@ -1293,15 +1293,20 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (btns) btns.style.display = 'flex';
                     if (typeof hideLoading === 'function') hideLoading();
 
-                    canvas.toBlob((blob) => {
-                        donateShareInProgress = false;
-                        if (!blob) return;
-                        const file = new File([blob], 'NexT1DE-Moment.png', { type: 'image/png' });
-                        const filesData = { files: [file] };
+                        canvas.toBlob((blob) => {
+                            donateShareInProgress = false;
+                            if (!blob) return;
+                            const file = new File([blob], 'NexT1DE-Moment.png', { type: 'image/png' });
+                            const shareHashtags = '#NexT1DE1stTideParty #NexT1DEProjectTH #NexT1DE';
+                            const filesData = { 
+                                files: [file],
+                                title: 'NexT1DE 1st Tide Party',
+                                text: shareHashtags
+                            };
 
-                        if (navigator.share && navigator.canShare && navigator.canShare(filesData)) {
-                            navigator.share(filesData).catch(() => { });
-                        } else {
+                            if (navigator.share && navigator.canShare && navigator.canShare(filesData)) {
+                                navigator.share(filesData).catch(() => { });
+                            } else {
                             const link = document.createElement('a');
                             link.href = canvas.toDataURL('image/png');
                             link.download = 'NexT1DE-Moment.png';
@@ -1337,15 +1342,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const shareUrlBtn = document.getElementById('btn-share-link-donate');
     if (shareUrlBtn) {
         shareUrlBtn.addEventListener('click', () => {
+            const shareUrl = 'https://next1deprojectth.github.io/NexT1DE1stTideParty/donate.html';
             const shareData = {
                 title: 'NexT1DE 1st Tide Party',
-                text: 'มาร่วมสนับสนุน NexT1DE และ Ohna กันเถอะ!',
-                url: window.location.origin + '/donate.html'
+                text: 'มาร่วมสนับสนุน NexT1DE 1st Tide Party ไปด้วยกันนะ\nร่วมเป็นส่วนหนึ่งของโปรเจคได้ที่นี่',
+                url: shareUrl
             };
             if (navigator.share) {
                 navigator.share(shareData).catch(console.error);
             } else {
-                navigator.clipboard.writeText(shareData.url).then(() => {
+                // Only copy the URL, nothing else
+                navigator.clipboard.writeText(shareUrl).then(() => {
                     alert('คัดลอกลิงก์เรียบร้อยแล้ว!');
                 });
             }
