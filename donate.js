@@ -164,12 +164,12 @@ document.addEventListener('DOMContentLoaded', () => {
         // Custom Input
         customAmountInput.addEventListener('input', (e) => {
             amountButtons.forEach(b => b.classList.remove('active'));
-            
+
             // Allow only numbers and one decimal point
             let val = customAmountInput.value.replace(/[^0-9.]/g, '');
             const dots = val.split('.');
             if (dots.length > 2) val = dots[0] + '.' + dots.slice(1).join('');
-            
+
             // Limit to 2 decimal places if needed (optional but good)
             if (dots.length === 2 && dots[1].length > 2) {
                 val = dots[0] + '.' + dots[1].substring(0, 2);
@@ -187,7 +187,7 @@ document.addEventListener('DOMContentLoaded', () => {
         window.selectMethod = (method) => {
             selectedMethod = method;
             const r = mergedDonationData.receive;
-            
+
             // Shipping Refund Logic
             if (r && r.delivery_type === 'delivery' && method === 'onsite') {
                 isShippingRefunded = true;
@@ -217,7 +217,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Show past reception box
             document.getElementById('past-reception-box').style.display = 'block';
             document.getElementById('reception-methods-selection').style.display = 'none';
-            document.getElementById('past-type-text').innerText = (r.delivery_type === 'onsite' ? 'รับที่งาน' : 'จัดส่งตามที่อยู่');
+            document.getElementById('past-type-text').innerText = (r.delivery_type === 'onsite' ? 'รับที่จามจุรีสแควร์ วันที่ 24-25 เม.ย. 69' : 'จัดส่งตามที่อยู่');
             document.getElementById('past-details').style.display = (r.delivery_type === 'onsite' ? 'none' : 'block');
             document.getElementById('past-ship-name').innerText = r.recipient_name || '-';
             document.getElementById('past-ship-address').innerText = r.shipping_address || '-';
@@ -265,19 +265,19 @@ document.addEventListener('DOMContentLoaded', () => {
             btnVerifyPhone.addEventListener('click', () => {
                 const inputPhone = document.getElementById('verify-phone-input').value.trim();
                 const pastPhone = mergedDonationData.receive ? (mergedDonationData.receive.shipping_phone || '') : '';
-                
+
                 if (inputPhone === pastPhone) {
                     isChangingReception = true;
                     document.getElementById('delivery-verification-form').style.display = 'none';
                     document.getElementById('reception-methods-selection').style.display = 'block';
-                    
+
                     // Pre-fill
                     const r = mergedDonationData.receive;
                     document.getElementById('ship-name').value = r.recipient_name || '';
                     document.getElementById('phone-number').value = r.shipping_phone || '';
                     document.getElementById('shipping-address').value = r.shipping_address || '';
                     document.getElementById('postal-code').value = r.shipping_postal || '';
-                    
+
                     selectMethod('delivery');
                 } else {
                     document.getElementById('verify-phone-error').style.display = 'block';
@@ -299,10 +299,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const updateStep2Total = () => {
         shippingFee = (selectedMethod === 'delivery' ? 50 : 0);
-        
+
         // Shipping Refund Bonus
         const refundBonus = (isShippingRefunded ? 50 : 0);
-        
+
         totalToPay = currentDonationAmount + shippingFee;
         const pastTotal = mergedDonationData.total_amount || 0;
         const totalAccumulated = pastTotal + currentDonationAmount + refundBonus;
@@ -491,7 +491,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (mergedDonationData.donations && mergedDonationData.donations.length > 0) {
             mergedDonationData.donations.forEach(don => {
                 const donDate = don.transaction_date || don.date || don.timestamp || '-';
-                
+
                 // Determine status badge
                 const status = (don.donate_status || 'verified').toLowerCase();
                 let statusText = 'ตรวจผ่านแล้ว';

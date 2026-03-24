@@ -469,7 +469,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const navDonateLink = document.querySelector('.btn-blue');
-    if (navDonateLink && navDonateLink.innerText.includes('แจ้งโดเนท')) {
+    if (navDonateLink && navDonateLink.innerText.includes('โดเนท')) {
         navDonateLink.addEventListener('click', window.handleDonate);
     }
 });
