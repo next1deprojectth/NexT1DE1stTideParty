@@ -439,7 +439,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (typeof API_CONFIG !== 'undefined' && API_CONFIG.IS_WORKSHOP_OPEN === false) {
             window.showComingSoon(
                 "Workshop Coming Soon!",
-                "กิจกรรม Workshop กำลังอยู่ระหว่างการเตรียมความพร้อม อดใจรออีกนิด แล้วมาสนุกด้วยกันเร็วๆ นี้ครับ!"
+                "กิจกรรม Workshop กำลังอยู่ระหว่างการเตรียมความพร้อม อดใจรออีกนิด แล้วมาสนุกด้วยกันเร็วๆ นี้ค่ะ!"
             );
         } else {
             window.location.href = 'workshop.html';
@@ -455,7 +455,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Special handler for CSR link
-    window.handleCSR = function(e) {
+    window.handleCSR = function (e) {
         if (e) e.preventDefault();
         window.showComingSoon(
             "Coming Soon!",
