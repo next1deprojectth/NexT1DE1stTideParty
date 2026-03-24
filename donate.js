@@ -353,19 +353,31 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     btnTotalPaymentStep2.addEventListener('click', () => {
+        const pastTotal = mergedDonationData.total_amount || 0;
+        const refundBonus = (isShippingRefunded ? 50 : 0);
+        const totalAccumulated = pastTotal + currentDonationAmount + refundBonus;
+
         if (currentDonationAmount <= 0) {
             alert('กรุณาระบุยอดโดเนท');
             return;
         }
-        if (currentDonationAmount >= 177 && selectedMethod === 'delivery') {
+        if (totalAccumulated >= 177 && selectedMethod === 'delivery') {
             const name = document.getElementById('ship-name').value.trim();
             const phone = document.getElementById('phone-number').value.trim();
             const addr = document.getElementById('shipping-address').value.trim();
             const post = document.getElementById('postal-code').value.trim();
-            if (!isChangingReception && mergedDonationData.receive && mergedDonationData.receive.delivery_type === 'delivery') {
-                // OK
-            } else if (!name || !phone || !addr || !post) {
+            
+            // Check if it's not a verified past delivery
+            const isVerifiedPastDelivery = !isChangingReception && 
+                                          mergedDonationData.receive && 
+                                          mergedDonationData.receive.delivery_type === 'delivery';
+            
+            if (!isVerifiedPastDelivery && (!name || !phone || !addr || !post)) {
                 alert('กรุณากรอกข้อมูลที่อยู่จัดส่งให้ครบถ้วน');
+                return;
+            }
+            if (!isVerifiedPastDelivery && post.length !== 5) {
+                alert('รหัสไปรษณีย์ต้องมี 5 หลัก');
                 return;
             }
         }
