@@ -92,8 +92,8 @@ body.donate-page-body {
 
 .step-progress-bars {
     display: flex;
-    gap: 12px;
-    max-width: 250px;
+    gap: 8px;
+    max-width: 300px;
     margin: 0 auto 15px;
 }
 
@@ -115,6 +115,10 @@ body.donate-page-body {
 }
 
 .progress-bar-item.step-3-active {
+    background: #FFEDD5;
+}
+
+.progress-bar-item.step-4-active {
     background: #FED1E1;
 }
 
@@ -794,8 +798,137 @@ body.donate-page-body {
     box-shadow: 0 0 0 4px rgba(40, 106, 205, 0.08);
 }
 
-.form-textarea {
-    resize: none;
+/* Amount Selection Step 2 */
+.amount-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.amount-btn {
+    background: white;
+    border: 1.5px solid #E2E8F0;
+    border-radius: 15px;
+    padding: 15px;
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: #4A5568;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.02);
+}
+
+.amount-btn:hover {
+    border-color: #286ACD;
+    background: #F0F7FF;
+}
+
+.amount-btn.active {
+    background: #286ACD;
+    color: white;
+    border-color: #286ACD;
+    box-shadow: 0 8px 15px rgba(40, 106, 205, 0.2);
+}
+
+.amount-btn .amount-label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 500;
+    opacity: 0.8;
+}
+
+.custom-amount-wrapper {
+    margin-top: 15px;
+    position: relative;
+}
+
+.custom-amount-wrapper .form-input {
+    padding-left: 45px;
+    font-weight: 700;
+}
+
+.custom-amount-wrapper::before {
+    content: '฿';
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-weight: 800;
+    color: #4A5568;
+    font-size: 1.1rem;
+    z-index: 5;
+}
+
+/* Step 3 Payment */
+.payment-step-total-card {
+    background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+    color: white;
+    border-radius: 20px;
+    padding: 25px;
+    text-align: center;
+    margin-bottom: 20px;
+    box-shadow: 0 10px 30px rgba(59, 130, 246, 0.3);
+}
+
+.payment-step-total-card h3 {
+    margin: 0;
+    font-size: 0.9rem;
+    opacity: 0.9;
+    font-weight: 400;
+}
+
+#payment-step-total {
+    font-size: 2.5rem;
+    font-weight: 800;
+}
+
+.payment-step-total-card p {
+    margin: 5px 0 0;
+    font-size: 0.8rem;
+    opacity: 0.8;
+}
+
+/* Step 4 Summary UI */
+.summary-items-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 25px;
+}
+
+.summary-item-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 10px;
+    border-bottom: 1px dashed #E2E8F0;
+}
+
+.summary-item-label {
+    color: #718096;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.summary-item-value {
+    color: #2D3748;
+    font-weight: 700;
+    font-size: 0.95rem;
+}
+
+#summary-current-amount {
+    color: #286ACD;
+    font-size: 1.1rem;
+}
+
+.fee-badge {
+    background: #FFF5F5;
+    color: #E53E3E;
+    padding: 2px 8px;
+    border-radius: 5px;
+    font-size: 0.75rem;
+    font-weight: 700;
 }
 
 /* Giveaway Methods */
@@ -1436,4 +1569,174 @@ body.donate-page-body {
     .verified-value {
         font-size: 0.9rem;
     }
+}
+
+/* --- Step 2 Amount Selection --- */
+.amount-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.amount-btn {
+    background: white;
+    border: 1.5px solid #E2E8F0;
+    border-radius: 12px;
+    padding: 15px 10px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #4A5568;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+}
+
+.amount-btn span.currency {
+    font-size: 0.8rem;
+    font-weight: 600;
+    opacity: 0.6;
+}
+
+.amount-btn:hover {
+    border-color: #286ACD;
+    background: #F0F7FF;
+}
+
+.amount-btn.active {
+    background: linear-gradient(135deg, #286ACD 0%, #1A4D94 100%);
+    border-color: #286ACD;
+    color: white;
+    box-shadow: 0 4px 15px rgba(40, 106, 205, 0.25);
+}
+
+.amount-btn.active span.currency {
+    color: white;
+    opacity: 0.8;
+}
+
+/* Custom Input inside Step 2 */
+#custom-amount-input {
+    margin-bottom: 20px;
+}
+
+/* --- Reception Methods Step 3 (was Step 2) --- */
+.reception-methods-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.delivery-method-card {
+    background: white;
+    border: 2px solid #F1F5F9;
+    border-radius: 18px;
+    padding: 20px 15px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.delivery-method-card.active {
+    border-color: #286ACD;
+    background: #F0F7FF;
+}
+
+.method-icon-circle {
+    width: 48px;
+    height: 48px;
+    background: #F1F5F9;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s;
+}
+
+.delivery-method-card.active .method-icon-circle {
+    background: #286ACD;
+}
+
+.delivery-method-card.active .icon-svg {
+    stroke: white;
+}
+
+/* --- Step 4 History Items --- */
+.history-item {
+    background: #F8FAFC;
+    border-radius: 16px;
+    padding: 15px;
+    margin-bottom: 12px;
+    border: 1px solid #E2E8F0;
+}
+
+.history-label {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #2D3748;
+}
+
+.history-amount {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: #286ACD;
+}
+
+.history-date {
+    font-size: 0.8rem;
+    color: #718096;
+    margin-top: 4px;
+}
+
+/* --- Summary UI Improvements --- */
+.summary-container {
+    background: white;
+    border-radius: 20px;
+    padding: 20px;
+    border: 1px solid #E2E8F0;
+    margin-top: 15px;
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.summary-label {
+    color: #718096;
+    font-weight: 500;
+}
+
+.summary-value {
+    color: #2D3748;
+    font-weight: 700;
+    text-align: right;
+}
+
+.summary-total {
+    border-top: 1.5px dashed #E2E8F0;
+    padding-top: 12px;
+    margin-top: 12px;
+}
+
+.summary-total .summary-label {
+    color: #2D3748;
+    font-weight: 800;
+    font-size: 1.1rem;
+}
+
+.summary-total .summary-value {
+    color: #E53E3E;
+    font-size: 1.25rem;
+    font-weight: 800;
 }
