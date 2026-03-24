@@ -656,24 +656,29 @@ button:active {
 .table-container table {
     width: 100%;
     border-collapse: collapse;
+    table-layout: fixed;
 }
 
 .table-container th:nth-child(1),
 .table-container td:nth-child(1) {
-    width: 40%;
-    text-align: center;
+    width: 48%;
+    text-align: left;
+    padding-left: 5px;
+    word-break: break-all;
+    overflow-wrap: anywhere;
 }
 
 .table-container th:nth-child(2),
 .table-container td:nth-child(2) {
-    width: 30%;
+    width: 22%;
     text-align: center;
 }
 
 .table-container th:nth-child(3),
 .table-container td:nth-child(3) {
     width: 30%;
-    text-align: center;
+    text-align: right;
+    padding-right: 5px;
 }
 
 .table-container td {
@@ -702,13 +707,13 @@ button:active {
 }
 
 .table-container .amount {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
     color: #2563EB;
     font-weight: 800;
-    gap: 0px;
+}
+
+.table-container .price-text {
+    display: block;
+    width: 100%;
 }
 
 .table-container .date {
