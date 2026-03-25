@@ -1,7 +1,8 @@
-/* --- Admin Dashboard Logic (Modern Refined) --- */
+/* --- Admin Dashboard Logic (Advanced Thai Version) --- */
 
 let allUsers = [];
 let filteredUsers = [];
+let summaryData = null;
 
 document.addEventListener('DOMContentLoaded', () => {
     fetchData();
@@ -9,11 +10,13 @@ document.addEventListener('DOMContentLoaded', () => {
     // Setup Filters
     const searchInp = document.getElementById('search-input');
     const shipFilt = document.getElementById('filter-shipping');
+    const setFilt = document.getElementById('filter-set');
 
     const handleFilter = () => { applyFilters(); };
 
     searchInp.addEventListener('input', handleFilter);
     shipFilt.addEventListener('change', handleFilter);
+    setFilt.addEventListener('change', handleFilter);
 });
 
 async function fetchData() {
@@ -21,37 +24,150 @@ async function fetchData() {
     try {
         const url = `${API_CONFIG.BASE_URL}?action=getAdminSummary`;
         const response = await fetch(url);
-        const data = await response.json();
+        
+        if (!response.ok) {
+            throw new Error(`ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้ (HTTP ${response.status})`);
+        }
+        
+        const text = await response.text();
+        let data;
+        try {
+            data = JSON.parse(text);
+        } catch (e) {
+            throw new Error('ข้อมูลจากเซิร์ฟเวอร์ผิดรูปแบบ (ไม่ใช่ JSON)');
+        }
 
         if (data.status === 'ok') {
-            allUsers = data.users;
+            allUsers = data.users || [];
+            allUsers.forEach(u => u.giveaway_set = calculateUserSet(u));
+            
+            summaryData = data.summary;
+            renderDashboard(allUsers, summaryData);
             applyFilters(); 
         } else {
-            showToast('Error: ' + data.message);
+            showToast('ข้อผิดพลาด: ' + (data.message || 'ไม่ทราบสาเหตุ'));
         }
     } catch (err) {
-        console.error('Fetch error:', err);
-        showToast('ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้');
+        showToast('เกิดข้อผิดพลาด: ' + err.message);
     } finally {
         showLoading(false);
     }
 }
 
+function calculateUserSet(user) {
+    if (!user.giftaway) return 0;
+    const tier = user.giftaway.tier_min || 0;
+    if (tier >= 1277) return 4;
+    if (tier >= 777) return 3;
+    if (tier >= 477) return 2;
+    if (tier >= 177) return 1;
+    return 0;
+}
+
+function renderDashboard(users, summary) {
+    const dashboard = document.getElementById('stats-dashboard');
+    if (!dashboard || !summary) return;
+    dashboard.style.display = 'flex';
+
+    // 1. Finance Mini Row
+    const financeContainer = document.getElementById('finance-stats');
+    financeContainer.innerHTML = `
+        <div class="finance-item">
+            <div class="finance-label">ยอดโดเนท (Raw)</div>
+            <div class="finance-value">฿${(summary.total_raw_donate || 0).toLocaleString()}</div>
+        </div>
+        <div class="finance-item">
+            <div class="finance-label">ยอดโดเนท (Net)</div>
+            <div class="finance-value">฿${(summary.total_net_donate || 0).toLocaleString()}</div>
+        </div>
+        <div class="finance-item">
+            <div class="finance-label">ผู้ใช้</div>
+            <div class="finance-value">${(summary.total_users || 0).toLocaleString()} <span style="font-size: 0.6rem;">คน</span></div>
+        </div>
+        <div class="finance-item">
+            <div class="finance-label">Workshop</div>
+            <div class="finance-value">${(summary.total_workshop_users || 0).toLocaleString()} <span style="font-size: 0.6rem;">คน</span></div>
+        </div>
+    `;
+
+    // 2. Giveaway Sets (Stacked Bar)
+    const setCounts = { 4: 0, 3: 0, 2: 0, 1: 0, 0: 0 };
+    const itemCounts = {};
+    users.forEach(u => {
+        setCounts[u.giveaway_set]++;
+        if (u.giftaway && u.giftaway.items) {
+            u.giftaway.items.forEach(item => {
+                itemCounts[item] = (itemCounts[item] || 0) + 1;
+            });
+        }
+    });
+
+    const totalUsers = users.length || 1;
+    const setConfig = [
+        { id: 4, label: 'เซต 4', color: '#818CF8' },
+        { id: 3, label: 'เซต 3', color: '#A5B4FC' },
+        { id: 2, label: 'เซต 2', color: '#C7D2FE' },
+        { id: 1, label: 'เซต 1', color: '#E0E7FF' },
+        { id: 0, label: 'ไม่ได้รับ', color: '#F1F5F9' }
+    ];
+
+    const stackedBar = document.getElementById('sets-stacked-bar');
+    stackedBar.innerHTML = setConfig.map(s => {
+        const percent = (setCounts[s.id] / totalUsers * 100).toFixed(1);
+        if (percent <= 0) return '';
+        return `<div class="bar-segment" style="width: ${percent}%; background: ${s.color};" title="${s.label}: ${setCounts[s.id]} คน (${percent}%)"></div>`;
+    }).join('');
+
+    const legend = document.getElementById('sets-legend');
+    legend.innerHTML = setConfig.map(s => `
+        <div class="legend-item">
+            <div class="legend-dot" style="background: ${s.color};"></div>
+            <span>${s.label}:</span>
+            <span class="legend-count">${setCounts[s.id]}</span>
+        </div>
+    `).join('');
+
+    // 3. Items Mini Bar Chart
+    const itemContainer = document.getElementById('item-stats');
+    const itemsSorted = Object.entries(itemCounts).sort((a,b) => b[1] - a[1]);
+    const maxCount = itemsSorted.length > 0 ? itemsSorted[0][1] : 1;
+    
+    itemContainer.innerHTML = itemsSorted.map(([name, count]) => {
+        const percent = (count / maxCount * 100).toFixed(1);
+        return `
+            <div class="item-bar-row">
+                <div class="item-name-mini" title="${name}">${name}</div>
+                <div class="item-bar-bg">
+                    <div class="item-bar-fill" style="width: ${percent}%;"></div>
+                </div>
+                <div class="item-count-mini">${count}</div>
+            </div>
+        `;
+    }).join('');
+}
+
 function applyFilters() {
     const term = document.getElementById('search-input').value.toLowerCase().trim();
     const shipping = document.getElementById('filter-shipping').value;
+    const setFilter = document.getElementById('filter-set').value;
 
     filteredUsers = allUsers.filter(user => {
         // Search Term Filter
-        const matchTerm = user.social_name.toLowerCase().includes(term) ||
-                          user.user_id.toLowerCase().includes(term);
+        const matchTerm = (user.social_name || '').toLowerCase().includes(term) ||
+                          (user.user_id || '').toLowerCase().includes(term);
         if (!matchTerm) return false;
 
         // Shipping Filter
         if (shipping !== 'all') {
-            const isDelivery = user.shipping.delivery_type === 'delivery';
-            if (shipping === 'delivery' && !isDelivery) return false;
-            if (shipping === 'onsite' && isDelivery) return false;
+            const deliveryType = user.shipping ? user.shipping.delivery_type : 'not_set';
+            if (shipping === 'delivery' && deliveryType !== 'delivery') return false;
+            if (shipping === 'onsite' && deliveryType !== 'onsite') return false;
+        }
+
+        // Giveaway Set Filter
+        if (setFilter !== 'all') {
+            const setVal = parseInt(setFilter);
+            if (user.giveaway_set !== setVal) return false;
         }
 
         return true;
@@ -70,17 +186,22 @@ function renderUsers(users) {
         return;
     }
 
-    const sorted = [...users].sort((a, b) => a.social_name.localeCompare(b.social_name));
+    const sorted = [...users].sort((a, b) => (a.social_name || '').localeCompare(b.social_name || ''));
 
     sorted.forEach(user => {
         const tr = document.createElement('tr');
 
         // Color Mapping
-        const socialColors = { 'X': '#000000', 'TikTok': '#ff0050', 'IG': 'linear-gradient(45deg, #f09433, #dc2743, #bc1888)', 'Line': '#00b900' };
+        const socialColors = { 
+            'x': '#000000', 'X': '#000000', 
+            'tiktok': '#ff0050', 'TikTok': '#ff0050', 
+            'ig': 'linear-gradient(45deg, #f09433, #dc2743, #bc1888)', 'IG': 'linear-gradient(45deg, #f09433, #dc2743, #bc1888)', 
+            'line': '#00b900', 'Line': '#00b900' 
+        };
         const sColor = socialColors[user.social_type] || '#64748B';
 
-        // Column 2: Giveaway
-        const gifts = user.giftaway.items || [];
+        // Giveaway items
+        const gifts = user.giftaway ? (user.giftaway.items || []) : [];
         const giftHtml = gifts.length > 0 
             ? gifts.map(g => `<div class="gift-item">${g}</div>`).join('') 
             : '<span style="color:#CBD5E1; font-size:0.75rem;">ไม่มีรายการ</span>';
@@ -100,11 +221,21 @@ function renderUsers(users) {
             `;
         }
 
-        const isDelivery = user.shipping.delivery_type === 'delivery';
-        const pillHtml = `<span class="shipping-pill ${isDelivery ? 'pill-delivery' : 'pill-onsite'}">${isDelivery ? 'จัดส่ง' : 'รับหน้างาน'}</span>`;
+        const deliveryType = user.shipping ? user.shipping.delivery_type : 'not_set';
+        const isDelivery = deliveryType === 'delivery';
+        const isOnsite = deliveryType === 'onsite';
+        
+        let pillHtml = '';
+        if (isDelivery) {
+            pillHtml = `<span class="shipping-pill pill-delivery">จัดส่ง</span>`;
+        } else if (isOnsite) {
+            pillHtml = `<span class="shipping-pill pill-onsite">รับหน้างาน</span>`;
+        } else {
+            pillHtml = `<span class="shipping-pill pill-none">ไม่ได้ระบุ</span>`;
+        }
 
         let addressHtml = '-';
-        if (isDelivery) {
+        if (isDelivery && user.shipping) {
             const s = user.shipping;
             addressHtml = `
                 <div class="addr-group">
@@ -119,24 +250,26 @@ function renderUsers(users) {
                     </button>
                 </div>
             `;
-        } else {
+        } else if (isOnsite) {
             addressHtml = `<div style="color:#166534; font-weight:800; font-size:0.8rem;">รับหน้างาน (จามจุรีสแควร์)</div>`;
+        } else {
+            addressHtml = `<div style="color:#64748B; font-weight:600; font-size:0.8rem;">ยังไม่ได้เลือกวิธีรับของ</div>`;
         }
 
         tr.innerHTML = `
             <td>
                 <div class="user-row-header">
-                    <div class="social-badge" style="background:${sColor}">${user.social_type.substring(0, 1)}</div>
+                    <div class="social-badge" style="background:${sColor}">${(user.social_type || '?').substring(0, 1).toUpperCase()}</div>
                     <div class="user-main-info">
-                        <span class="name">${user.social_name}</span>
-                        <span class="uid">${user.user_id}</span>
-                        <a href="profile.html?socialName=${encodeURIComponent(user.social_name)}&socialType=${encodeURIComponent(user.social_type)}" target="_blank" class="profile-link-btn">Profile</a>
+                        <span class="name">${user.social_name || 'ไม่พบนามแฝง'}</span>
+                        <span class="uid">${user.user_id || '-'}</span>
+                        <a href="profile.html?socialName=${encodeURIComponent(user.social_name || '')}&socialType=${encodeURIComponent(user.social_type || 'x')}" target="_blank" class="profile-link-btn">ดูข้อมูลเพิ่มเติม</a>
                     </div>
                 </div>
             </td>
             <td><div class="gift-list">${giftHtml}</div></td>
             <td><div class="workshop-col-info">${workshopHtml}</div></td>
-            <td style="font-weight: 800; color: var(--text-main);">฿${user.donate.net_total.toLocaleString()}</td>
+            <td style="font-weight: 800; color: var(--text-main);">฿${(user.donate ? user.donate.net_total : 0).toLocaleString()}</td>
             <td>${pillHtml}</td>
             <td>${addressHtml}</td>
         `;
@@ -148,16 +281,20 @@ function renderUsers(users) {
 
 function copyAddress(userId) {
     const user = allUsers.find(u => u.user_id === userId);
-    if (!user) return;
+    if (!user || !user.shipping) return;
     const s = user.shipping;
-    const text = `${s.recipient_name}\n${s.shipping_phone}\n${s.shipping_address} ${s.shipping_postal}`;
+    const text = `${s.recipient_name || ''}\n${s.shipping_phone || ''}\n${s.shipping_address || ''} ${s.shipping_postal || ''}`;
     navigator.clipboard.writeText(text).then(() => showToast('คัดลอกที่อยู่สำเร็จ'));
 }
 
 function showLoading(active) {
-    const loader = document.getElementById('loader-modal');
-    if (active) loader.classList.add('active');
-    else loader.classList.remove('active');
+    // Disabled as per user request to not show loading message/screen
+    /*
+    const modal = document.getElementById('loader-modal');
+    if (modal) {
+        modal.style.display = active ? 'flex' : 'none';
+    }
+    */
 }
 
 function showToast(msg) {

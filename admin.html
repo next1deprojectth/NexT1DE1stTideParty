@@ -14,38 +14,74 @@
 
 <body>
 
-    <!-- Loader Modal -->
-    <div id="loader-modal" class="loader-modal">
-        <div class="small-spinner"></div>
-        <p style="font-weight: 800; font-size: 0.85rem; color: var(--text-muted);">กำลังโหลดข้อมูล...</p>
-    </div>
+    <div class="admin-container-lite">
 
-    <div class="admin-container">
-
-        <!-- Unified Navbar -->
-        <nav class="unified-nav">
-            <a href="dashboard.html" class="nav-back-btn">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
-            </a>
-            <div class="nav-title">Giveaway และ Workshop</div>
-            <div class="nav-right-slot"></div>
-        </nav>
-
-        <!-- Sticky Container for Filters & Tabs -->
-        <div class="filter-row-sticky">
-            <div class="status-filters-modern">
-                <input type="text" id="search-input" class="search-input-modern" placeholder="ค้นหาชื่อ / UID...">
-                <select id="filter-shipping" class="filter-select-modern">
-                    <option value="all">วิธีรับทั้งหมด</option>
-                    <option value="delivery">เฉพาะจัดส่ง</option>
-                    <option value="onsite">รับหน้างาน</option>
-                </select>
+        <!-- Ultra-Compact Header & Filters -->
+        <header class="compact-header">
+            <div class="header-main">
+                <a href="dashboard.html" class="btn-back-icon" title="กลับหน้าหลัก">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                </a>
+                <div class="header-title-wrapper">
+                    <span class="header-subtitle">Admin Panel</span>
+                    <h1 class="header-title-compact">Giveaway & Workshop</h1>
+                </div>
             </div>
-        </div>
+            <div class="header-controls">
+                <div class="search-box-mini">
+                    <input type="text" id="search-input" placeholder="ค้นหาชื่อ/UID...">
+                </div>
+                <div class="filters-mini-group">
+                    <select id="filter-shipping">
+                        <option value="all">วิธีรับทั้งหมด</option>
+                        <option value="delivery">จัดส่ง</option>
+                        <option value="onsite">หน้างาน</option>
+                    </select>
+                    <select id="filter-set">
+                        <option value="all">เซตทั้งหมด</option>
+                        <option value="4">เซต 4</option>
+                        <option value="3">เซต 3</option>
+                        <option value="2">เซต 2</option>
+                        <option value="1">เซต 1</option>
+                        <option value="0">ไม่ได้รับ</option>
+                    </select>
+                </div>
+            </div>
+        </header>
 
+        <!-- Visual Stats Dashboard (Ultra Compact) -->
+        <section id="stats-dashboard" class="visual-stats-dashboard" style="display: none;">
 
-        <div id="tab-info-bar" class="tab-info-bar">
-            พบรายชื่อทั้งหมด 0 คน
+            <!-- Overall Stats Row -->
+            <div id="finance-stats" class="finance-row-compact">
+                <!-- Injected by JS: Raw, Net, Users, Workshop -->
+            </div>
+
+            <div class="visual-stats-grid">
+                <!-- Sets Distribution (Stacked Bar) -->
+                <div class="visual-card">
+                    <div class="visual-card-title">สัดส่วนผู้ได้รับ Giveaway Sets</div>
+                    <div id="sets-stacked-bar" class="stacked-bar-wrapper">
+                        <!-- Injected by JS -->
+                    </div>
+                    <div id="sets-legend" class="sets-legend">
+                        <!-- Injected by JS -->
+                    </div>
+                </div>
+
+                <!-- Items Breakdown (Mini Bars) -->
+                <div class="visual-card">
+                    <div class="visual-card-title">Giveaway</div>
+                    <div id="item-stats" class="items-mini-bars">
+                        <!-- Injected by JS -->
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <div id="tab-info-bar" class="tab-info-bar-mini">
+            พบรายชื่อ 0 คน
         </div>
 
         <!-- Scrollable Data Area -->
