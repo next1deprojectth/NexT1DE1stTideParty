@@ -438,8 +438,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e) e.preventDefault();
         if (typeof API_CONFIG !== 'undefined' && API_CONFIG.IS_WORKSHOP_OPEN === false) {
             window.showComingSoon(
-                "Workshop Coming Soon!",
-                "กิจกรรม Workshop กำลังอยู่ระหว่างการเตรียมความพร้อม อดใจรออีกนิด แล้วมาสนุกด้วยกันเร็วๆ นี้ค่ะ!"
+                "Workshop: Coming Soon",
+                "สิทธิพิเศษสำหรับผู้สนับสนุนโปรเจกต์ <br><span style='font-size: 0.85rem; font-weight: 600; color: #718096;'>(ยังไม่เปิดให้ลงทะเบียนในขณะนี้)</span>",
+                "• ยอดโดเนทสะสมครบ <b>1,277 บาท</b> ขึ้นไป <br>รับสิทธิ์เข้า Workshop <b>ฟรี!</b> โดยไม่มีค่าใช้จ่ายเพิ่มเติม <br><br>• สำหรับการลงทะเบียนรูปแบบปกติ <br>จะมีค่าใช้จ่ายแยกต่างหากจากยอดโดเนทค่ะ"
             );
         } else {
             window.location.href = 'workshop.html';
@@ -457,10 +458,14 @@ document.addEventListener('DOMContentLoaded', () => {
     // Special handler for CSR link
     window.handleCSR = function (e) {
         if (e) e.preventDefault();
-        window.showComingSoon(
-            "Coming Soon!",
-            "รายละเอียดโครงการ CSR ของ NexT1DE Project Thailand อดใจรออีกนิด เร็วๆ นี้แน่นอน!"
-        );
+        if (typeof API_CONFIG !== 'undefined' && API_CONFIG.IS_CSR_OPEN === true) {
+            window.location.href = 'https://www.ccfthai.or.th/microsite/CLF/FY26/SPC/?mkt=4628';
+        } else {
+            window.showComingSoon(
+                "Coming Soon!",
+                "รายละเอียดโครงการ CSR ของ NexT1DE Project Thailand อดใจรออีกนิด เร็วๆ นี้แน่นอน!"
+            );
+        }
     };
 
     const navCSRLink = document.querySelector('.btn-pink');
@@ -475,21 +480,36 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // --- Dynamic Modal Controls ---
-window.showComingSoon = function (title, desc) {
+window.showComingSoon = function (title, desc, note) {
     const modal = document.getElementById('coming-soon-modal');
     const card = document.getElementById('coming-soon-card');
     const titleEl = document.getElementById('cs-title');
     const descEl = document.getElementById('cs-desc');
+    const noteEl = document.getElementById('cs-note');
+    const noteContainer = document.getElementById('cs-note-container');
+    const iconContainer = document.getElementById('cs-icon-container');
+    const iconEl = document.getElementById('cs-icon');
 
     if (title && titleEl) titleEl.innerText = title;
-    if (desc && descEl) descEl.innerHTML = desc; // Use innerHTML to support <br>
+    if (desc && descEl) descEl.innerHTML = desc;
+
+    if (note && noteEl && noteContainer) {
+        noteEl.innerHTML = note;
+        noteContainer.style.display = 'block';
+        if (iconEl) iconEl.innerText = '🎁';
+        if (iconContainer) iconContainer.style.background = 'linear-gradient(135deg, #FF9966 0%, #FF5E62 100%)';
+    } else if (noteContainer) {
+        noteContainer.style.display = 'none';
+        if (iconEl) iconEl.innerText = '⏳';
+        if (iconContainer) iconContainer.style.background = 'linear-gradient(135deg, #FFD166 0%, #FF9F1C 100%)';
+    }
 
     if (modal && card) {
         modal.style.display = 'flex';
         // Trigger reflow for animation
         void modal.offsetWidth;
         modal.style.opacity = '1';
-        card.style.transform = 'scale(1)';
+        card.style.transform = 'translateY(0) scale(1)';
     }
 };
 
