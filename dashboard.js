@@ -36,6 +36,13 @@ async function fetchStatistics() {
 }
 
 function updateUI(stats) {
+    // 0. ยอดเงินรวมทั้งหมด (Grand Total)
+    const grandTotal = stats.total_donate_net.approved + stats.total_workshop_net.approved + stats.total_shipping_price.approved;
+    animateValue('grand-total-amount', grandTotal, true);
+    animateValue('breakdown-donate', stats.total_donate_net.approved, true);
+    animateValue('breakdown-workshop', stats.total_workshop_net.approved, true);
+    animateValue('breakdown-shipping', stats.total_shipping_price.approved, true);
+
     // 1. ยอดเงินสุทธิ (Pending, Approved, Rejected)
     animateValue('donate-net-pending', stats.total_donate_net.pending, true);
     animateValue('donate-net-approved', stats.total_donate_net.approved, true);
