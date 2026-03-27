@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Gallery - NexT1DE 1st Tide Party</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <!-- Google Fonts for selection -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Itim&family=Kanit:wght@300;400;500&family=Mali:wght@300;400;500&family=Sriracha&display=swap"
+        rel="stylesheet">
+    <link rel="icon" type="image/png" href="images/logo-project.png">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="gallery-upload.css">
+    <!-- Cropper.js -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
+</head>
+
+<body>
+    <!-- Background Image -->
+    <div class="page-background"></div>
+
+    <!-- Navbar -->
+    <nav class="navbar glass">
+        <div class="nav-container">
+            <div class="logo">
+                <a href="index.html" style="display: flex; align-items: center; gap: 12px; text-decoration: none;">
+                    <img src="images/nt1-logo 2.png" alt="Logo">
+                    <img src="images/logo-project.png" alt="Logo">
+                </a>
+            </div>
+            <div class="nav-actions">
+                <a href="index.html" class="btn-blue"
+                    style="text-decoration: none; border-radius: 10px;">กลับหน้าหลัก</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-container">
+        <section class="upload-section">
+            <div id="upload-form-container" class="upload-card glass">
+                <div class="upload-grid">
+                    <!-- Form Section -->
+                    <div class="form-section">
+                        <h2 class="gradient-text">สร้างโพลารารอยด์ของคุณ</h2>
+                        <p class="section-desc">อัปโหลดรูปภาพและใส่ข้อความเพื่อสร้างความทรงจำร่วมกัน</p>
+
+                        <div class="input-group">
+                            <label for="owner-name">ชื่อเจ้าของภาพ (สูงสุด 30 ตัวอักษร)</label>
+                            <input type="text" id="owner-name" placeholder="ระบุชื่อของคุณ" maxlength="30">
+                            <span class="char-count" id="name-count">0/30</span>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="image-desc">รายละเอียดภาพ (สูงสุด 50 ตัวอักษร)</label>
+                            <textarea id="image-desc" placeholder="บอกเล่าเรื่องราวในภาพ" maxlength="50"
+                                rows="2"></textarea>
+                            <span class="char-count" id="desc-count">0/50</span>
+                        </div>
+
+                        <div class="input-group">
+                            <label>เลือกฟอนต์สำหรับข้อความ</label>
+                            <div class="font-selector" id="font-selector">
+                                <button class="font-option active" data-font="'Noto Sans Thai', sans-serif"
+                                    style="font-family: 'Noto Sans Thai';">Noto Sans</button>
+                                <button class="font-option" data-font="'Itim', cursive"
+                                    style="font-family: 'Itim';">Itim</button>
+                                <button class="font-option" data-font="'Kanit', sans-serif"
+                                    style="font-family: 'Kanit';">Kanit</button>
+                                <button class="font-option" data-font="'Mali', cursive"
+                                    style="font-family: 'Mali';">Mali</button>
+                                <button class="font-option" data-font="'Sriracha', cursive"
+                                    style="font-family: 'Sriracha';">Sriracha</button>
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <label>รูปภาพ (แนะนำสัดส่วน 1:1)</label>
+                            <div class="upload-area" id="upload-area"
+                                onclick="document.getElementById('file-input').click()">
+                                <p>คลิกเพื่อเลือกรูปภาพ</p>
+                                <input type="file" id="file-input" accept="image/*" style="display: none;">
+                            </div>
+                        </div>
+
+                        <button id="btn-submit" class="btn-hero-primary"
+                            style="margin-top: 20px; width: 100%; border-radius: 12px; font-weight: 600;"
+                            disabled>ยืนยันและส่งภาพ</button>
+                    </div>
+
+                    <!-- Preview Section -->
+                    <div class="preview-section">
+                        <div class="polaroid-wrapper">
+                            <div class="polaroid" id="polaroid-preview">
+                                <div class="polaroid-img-container">
+                                    <img id="preview-img" src="images/gallery_mock.jpg" alt="Preview">
+                                </div>
+                                <div class="polaroid-text">
+                                    <p id="preview-desc-text">รายละเอียดภาพของคุณ</p>
+                                    <p id="preview-owner-text">ชื่อเจ้าของภาพ</p>
+                                </div>
+                            </div>
+                            <p class="preview-hint">ตัวอย่างภาพที่คุณจะได้รับ</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Success Summary Section (Initially Hidden) -->
+            <div id="success-container" class="upload-card glass" style="display: none; text-align: center;">
+                <h2 class="gradient-text">ส่งข้อมูลสำเร็จแล้ว!</h2>
+                <p class="section-desc" style="margin-bottom: 20px;">ขอบคุณที่ส่งภาพเข้ามาร่วมกันสร้างความทรงจำในงานนี้
+                </p>
+
+                <div class="success-img-wrapper" style="margin-bottom: 30px;">
+                    <img id="final-polaroid-img" src="" alt="Final Polaroid"
+                        style="max-width: 100%; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.15);">
+                </div>
+
+                <div class="success-actions">
+                    <a href="index.html" class="btn-blue"
+                        style="text-decoration: none; padding: 12px 30px; border-radius: 12px;">กลับหน้าหลัก</a>
+                    <button onclick="location.reload()" class="btn-secondary"
+                        style="margin-left: 10px; padding: 12px 30px; border-radius: 12px;">ส่งภาพใหม่</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Cropping Modal -->
+    <div id="crop-modal" class="modal">
+        <div class="modal-content glass">
+            <h3>ปรับแต่งรูปภาพ (1:1)</h3>
+            <div class="cropper-container">
+                <img id="cropper-img" src="" alt="To crop">
+            </div>
+            <div class="modal-actions">
+                <button id="btn-cancel-crop" class="btn-secondary">ยกเลิก</button>
+                <button id="btn-confirm-crop" class="btn-blue">ตกลง</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="modal" style="display: none;">
+        <div class="loading-spinner"></div>
+        <p style="color: white; margin-top: 15px;">กำลังบันทึกภาพ...</p>
+    </div>
+
+    <script src="config.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="gallery-upload.js"></script>
+</body>
+
+</html>
