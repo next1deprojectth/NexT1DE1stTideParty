@@ -147,9 +147,9 @@ document.addEventListener('DOMContentLoaded', () => {
             polaroidPreview.classList.add('no-shadow');
 
             // 2. Capture the polaroid element
-            // Increase scale for high quality
+            // Increase scale to 4 for very high quality
             const canvas = await html2canvas(polaroidPreview, {
-                scale: 3, // Higher resolution for printing
+                scale: 4, 
                 useCORS: true,
                 backgroundColor: "#ffffff",
                 logging: false,
@@ -157,14 +157,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     const clonedPolaroid = clonedDoc.getElementById('polaroid-preview');
                     if (clonedPolaroid) {
                         clonedPolaroid.style.boxShadow = 'none';
-                        clonedPolaroid.style.borderRadius = '0'; // Ensure no rounded corners for JPEG
+                        clonedPolaroid.style.borderRadius = '0';
                     }
                 }
             });
 
             polaroidPreview.classList.remove('no-shadow');
 
-            const finalImageData = canvas.toDataURL('image/jpeg', 0.95);
+            const finalImageData = canvas.toDataURL('image/jpeg', 1.0);
 
             // Extract base64 and mimeType for the new API
             const [prefix, base64Data] = finalImageData.split(',');
