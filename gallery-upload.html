@@ -23,14 +23,10 @@
     <nav class="navbar glass">
         <div class="nav-container">
             <div class="logo">
-                <a href="index.html" style="display: flex; align-items: center; gap: 12px; text-decoration: none;">
+                <a href="index.html" class="home-link" title="กลับหน้าหลัก">
                     <img src="images/nt1-logo 2.png" alt="Logo">
                     <img src="images/logo-project.png" alt="Logo">
                 </a>
-            </div>
-            <div class="nav-actions">
-                <a href="index.html" class="btn-blue"
-                    style="text-decoration: none; border-radius: 10px;">กลับหน้าหลัก</a>
             </div>
         </div>
     </nav>
@@ -42,7 +38,7 @@
                     <!-- Form Section -->
                     <div class="form-section">
                         <h1 class="gallery-gradient-text">NexT1DE ในสายตาคุณ</h1>
-                        <p class="section-desc">เลือกรูปที่คุณถ่าย NexT1DE ที่คุณประทับใจที่สุด ใน 1 ปีที่ผ่านมา (3
+                        <p class="section-desc">เลือกรูป NexT1DE ที่คุณถ่ายและประทับใจที่สุด ใน 1 ปีที่ผ่านมา (3
                             รูป/คน)</p>
 
                         <!-- Upload Quota Badge -->
@@ -58,43 +54,27 @@
                         </div>
 
                         <div class="input-group">
-                            <label for="image-desc">รายละเอียดภาพ (สูงสุด 50 ตัวอักษร)</label>
+                            <label for="image-desc">คำบรรยายภาพ (สูงสุด 50 ตัวอักษร)</label>
                             <textarea id="image-desc" placeholder="บอกเล่าเรื่องราวในภาพ" maxlength="50"
                                 rows="2"></textarea>
                             <span class="char-count" id="desc-count">0/50</span>
                         </div>
 
+                        <!-- Submit Button relocated to form bottom -->
+                        <button id="btn-submit" class="btn-submit-full" disabled>ส่งภาพ</button>
 
-
-                        <div class="input-group">
-                            <label>รูปภาพ (แนะนำสัดส่วน 4:6 แนวตั้ง)</label>
-                            <div class="upload-area" id="upload-area"
-                                onclick="document.getElementById('file-input').click()">
-                                <p id="upload-area-text">คลิกเพื่อเลือกรูปภาพ</p>
-                                <input type="file" id="file-input" accept="image/*" style="display: none;">
-                            </div>
-                        </div>
-
-                        <button id="btn-submit" class="btn-hero-primary"
-                            style="margin-top: 16px; width: 100%; border-radius: 12px; font-weight: 600; padding: 12px 24px; font-size: 1rem;"
-                            disabled>ยืนยันและส่งภาพ</button>
                     </div>
 
                     <!-- Preview Section -->
                     <div class="preview-section">
                         <div class="polaroid-wrapper">
-                            <div class="polaroid" id="polaroid-preview">
-                                <div class="polaroid-img-container">
-                                    <img id="preview-img" src="images/gallery_mock.jpg" alt="Preview">
-                                </div>
-                                <div class="polaroid-text">
-                                    <p id="preview-desc-text">รายละเอียดภาพของคุณ</p>
-                                    <p id="preview-owner-text">~ ไม่เปิดเผยตัวตน ~</p>
-                                </div>
+                            <!-- Interactive Preview Wrapper -->
+                            <div class="polaroid-interactive-preview" id="polaroid-container"
+                                onclick="document.getElementById('file-input').click()">
+                                <img id="generated-polaroid-view" src="" alt="Polaroid Preview">
+                                <input type="file" id="file-input" accept="image/*" style="display: none;">
                             </div>
-                            <button class="zoom-btn-wrapper" id="btn-zoom-preview"
-                                title="ดูตัวอย่างภาพขนาดใหญ่">Preview</button>
-                            <p class="preview-hint">ตัวอย่างภาพของคุณที่จะนำไปแสดง</p>
+
                         </div>
                     </div>
                 </div>
