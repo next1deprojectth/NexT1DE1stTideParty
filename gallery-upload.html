@@ -37,24 +37,21 @@
                 <div class="upload-grid">
                     <!-- Form Section -->
                     <div class="form-section">
-                        <h1 class="gallery-gradient-text">NexT1DE ในสายตาคุณ</h1>
+                        <div style="flex-direction: row;">
+                            <h1 class="gallery-gradient-text">NexT1DE ในสายตาคุณ</h1>
+                        </div>
+
                         <p class="section-desc">เลือกรูป NexT1DE ที่คุณถ่ายและประทับใจที่สุด ใน 1 ปีที่ผ่านมา (3
                             รูป/คน)</p>
 
-                        <!-- Upload Quota Badge -->
-                        <div id="quota-badge" class="quota-badge">
-                            <span id="quota-text">คุณเหลือสิทธิ์ส่งรูปอีก <strong id="quota-remaining">3</strong>
-                                ครั้ง</span>
-                        </div>
-
                         <div class="input-group">
-                            <label for="owner-name">ชื่อเจ้าของภาพ (สูงสุด 30 ตัวอักษรและไม่จำเป็นต้องระบุ)</label>
+                            <label for="owner-name">ชื่อเจ้าของภาพ (ไม่เกิน 30 ตัวอักษรและไม่จำเป็นต้องระบุ)</label>
                             <input type="text" id="owner-name" placeholder="ระบุชื่อของคุณ (ไม่จำเป็น)" maxlength="30">
                             <span class="char-count" id="name-count">0/30</span>
                         </div>
 
                         <div class="input-group">
-                            <label for="image-desc">คำบรรยายภาพ (สูงสุด 50 ตัวอักษร)</label>
+                            <label for="image-desc">คำบรรยายภาพ (ไม่เกิน 50 ตัวอักษร/2 บรรทัด)</label>
                             <textarea id="image-desc" placeholder="บอกเล่าเรื่องราวในภาพ" maxlength="50"
                                 rows="2"></textarea>
                             <span class="char-count" id="desc-count">0/50</span>
@@ -110,8 +107,8 @@
     <!-- Cropping Modal -->
     <div id="crop-modal" class="modal">
         <div class="modal-content glass">
-            <h3>ปรับแต่งรูปภาพ (4:6)</h3>
-            <div class="cropper-container">
+            <h3>ปรับแต่งรูปภาพ (สัดส่วน 3:4)</h3>
+            <div class="img-container">
                 <img id="cropper-img" src="" alt="To crop">
             </div>
             <div class="modal-actions">

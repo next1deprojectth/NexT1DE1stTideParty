@@ -1,7 +1,18 @@
+/* --- Custom Fonts --- */
+@font-face {
+    font-family: 'CS Prajad';
+    src: url('fonts/CS-Prajad.woff2') format('woff2'),
+         url('fonts/CS-Prajad.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
 :root {
     --deep-navy: #0A1628;
     --mariner-blue: #286ACD;
     --water-leaf-mint: #A3E4DB;
+    --water-green: #00b698;
     --light-pink: #FED1E1;
     --dark-pink: #F871B4;
     --white: #FFFFFF;
@@ -297,6 +308,12 @@ button:active {
     background-color: var(--mariner-blue);
     color: white;
     box-shadow: 0 10px 20px rgba(40, 106, 205, 0.25);
+}
+
+.btn-hero-secondary2 {
+    background-color: var(--water-green);
+    color: white;
+    box-shadow: 0 10px 20px rgba(45, 243, 217, 0.25);
 }
 
 .btn-hero-red-peach {
@@ -1241,6 +1258,7 @@ button:active {
         order: 3;
         width: 100%;
         margin-top: 10px;
+        flex-direction: column;
     }
 
     .main-container {
@@ -1507,6 +1525,7 @@ button:active {
     color: #4A5568 !important;
     padding: 12px 5px !important;
 }
+
 /* Force smallest table headers */
 .table-container table thead tr th {
     font-size: 0.7rem !important;

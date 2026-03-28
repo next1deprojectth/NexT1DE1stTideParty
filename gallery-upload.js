@@ -35,15 +35,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     function updateQuotaUI() {
         const remaining = getRemainingUploads();
-        const quotaRemaining = document.getElementById('quota-remaining');
-        if (quotaRemaining) quotaRemaining.textContent = remaining;
-
-        const quotaBadge = document.getElementById('quota-badge');
-        const quotaText = document.getElementById('quota-text');
-        if (quotaBadge && remaining === 0) {
-            quotaBadge.classList.add('quota-exhausted');
-            if (quotaText) {
-                quotaText.innerHTML = '❌ คุณใช้สิทธิ์ส่งรูปครบ <strong>' + MAX_UPLOADS + '</strong> ครั้งแล้ว';
+        
+        const btnSubmit = document.getElementById('btn-submit');
+        if (btnSubmit) {
+            if (remaining === 0) {
+                btnSubmit.innerHTML = `❌ คุณใช้สิทธิ์ส่งรูปครบ ${MAX_UPLOADS} ครั้งแล้ว`;
+            } else {
+                btnSubmit.innerHTML = `ส่งภาพ (เหลือสิทธิ์อีก ${remaining} ครั้ง)`;
             }
         }
     }
@@ -188,14 +186,20 @@ document.addEventListener('DOMContentLoaded', () => {
         cropper = new Cropper(cropperImg, {
             aspectRatio: 3 / 4, // Inside image part is 3:4
             viewMode: 1,
+            dragMode: 'move', // Allow moving the image directly
             autoCropArea: 1,
+            restore: false,
+            guides: true,
+            center: true,
+            highlight: false,
+            cropBoxMovable: false, // Fixed crop box
+            cropBoxResizable: false, // Fixed crop box size
+            toggleDragModeOnDblclick: false, // Prevent accidental tool toggle
         });
     }
 
     btnConfirmCrop.addEventListener('click', () => {
         const hiResCanvas = cropper.getCroppedCanvas({
-            width: 1080,
-            height: 1440,
             imageSmoothingQuality: 'high',
         });
         selectedImageBase64 = hiResCanvas.toDataURL('image/png', 1.0);
