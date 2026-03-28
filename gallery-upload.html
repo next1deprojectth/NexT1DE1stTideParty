@@ -5,11 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Upload Gallery - NexT1DE 1st Tide Party</title>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet">
-    <!-- Google Fonts for selection -->
     <link
-        href="https://fonts.googleapis.com/css2?family=Itim&family=Kanit:wght@300;400;500&family=Mali:wght@300;400;500&family=Sriracha&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&family=Sriracha&display=swap"
         rel="stylesheet">
     <link rel="icon" type="image/png" href="images/logo-project.png">
     <link rel="stylesheet" href="style.css">
@@ -44,12 +41,19 @@
                 <div class="upload-grid">
                     <!-- Form Section -->
                     <div class="form-section">
-                        <h2 class="gradient-text">สร้างโพลารารอยด์ของคุณ</h2>
-                        <p class="section-desc">อัปโหลดรูปภาพและใส่ข้อความเพื่อสร้างความทรงจำร่วมกัน</p>
+                        <h1 class="gallery-gradient-text">NexT1DE ในสายตาคุณ</h1>
+                        <p class="section-desc">เลือกรูปที่คุณถ่าย NexT1DE ที่คุณประทับใจที่สุด ใน 1 ปีที่ผ่านมา (3
+                            รูป/คน)</p>
+
+                        <!-- Upload Quota Badge -->
+                        <div id="quota-badge" class="quota-badge">
+                            <span id="quota-text">คุณเหลือสิทธิ์ส่งรูปอีก <strong id="quota-remaining">3</strong>
+                                ครั้ง</span>
+                        </div>
 
                         <div class="input-group">
-                            <label for="owner-name">ชื่อเจ้าของภาพ (สูงสุด 30 ตัวอักษร)</label>
-                            <input type="text" id="owner-name" placeholder="ระบุชื่อของคุณ" maxlength="30">
+                            <label for="owner-name">ชื่อเจ้าของภาพ (สูงสุด 30 ตัวอักษรและไม่จำเป็นต้องระบุ)</label>
+                            <input type="text" id="owner-name" placeholder="ระบุชื่อของคุณ (ไม่จำเป็น)" maxlength="30">
                             <span class="char-count" id="name-count">0/30</span>
                         </div>
 
@@ -60,33 +64,19 @@
                             <span class="char-count" id="desc-count">0/50</span>
                         </div>
 
-                        <div class="input-group">
-                            <label>เลือกฟอนต์สำหรับข้อความ</label>
-                            <div class="font-selector" id="font-selector">
-                                <button class="font-option active" data-font="'Noto Sans Thai', sans-serif"
-                                    style="font-family: 'Noto Sans Thai';">Noto Sans</button>
-                                <button class="font-option" data-font="'Itim', cursive"
-                                    style="font-family: 'Itim';">Itim</button>
-                                <button class="font-option" data-font="'Kanit', sans-serif"
-                                    style="font-family: 'Kanit';">Kanit</button>
-                                <button class="font-option" data-font="'Mali', cursive"
-                                    style="font-family: 'Mali';">Mali</button>
-                                <button class="font-option" data-font="'Sriracha', cursive"
-                                    style="font-family: 'Sriracha';">Sriracha</button>
-                            </div>
-                        </div>
+
 
                         <div class="input-group">
-                            <label>รูปภาพ (แนะนำสัดส่วน 1:1)</label>
+                            <label>รูปภาพ (แนะนำสัดส่วน 4:6 แนวตั้ง)</label>
                             <div class="upload-area" id="upload-area"
                                 onclick="document.getElementById('file-input').click()">
-                                <p>คลิกเพื่อเลือกรูปภาพ</p>
+                                <p id="upload-area-text">คลิกเพื่อเลือกรูปภาพ</p>
                                 <input type="file" id="file-input" accept="image/*" style="display: none;">
                             </div>
                         </div>
 
                         <button id="btn-submit" class="btn-hero-primary"
-                            style="margin-top: 20px; width: 100%; border-radius: 12px; font-weight: 600;"
+                            style="margin-top: 16px; width: 100%; border-radius: 12px; font-weight: 600; padding: 12px 24px; font-size: 1rem;"
                             disabled>ยืนยันและส่งภาพ</button>
                     </div>
 
@@ -99,10 +89,12 @@
                                 </div>
                                 <div class="polaroid-text">
                                     <p id="preview-desc-text">รายละเอียดภาพของคุณ</p>
-                                    <p id="preview-owner-text">ชื่อเจ้าของภาพ</p>
+                                    <p id="preview-owner-text">~ ไม่เปิดเผยตัวตน ~</p>
                                 </div>
                             </div>
-                            <p class="preview-hint">ตัวอย่างภาพของคุณที่จะแสดงในวันงาน</p>
+                            <button class="zoom-btn-wrapper" id="btn-zoom-preview"
+                                title="ดูตัวอย่างภาพขนาดใหญ่">Preview</button>
+                            <p class="preview-hint">ตัวอย่างภาพของคุณที่จะนำไปแสดง</p>
                         </div>
                     </div>
                 </div>
@@ -111,8 +103,14 @@
             <!-- Success Summary Section (Initially Hidden) -->
             <div id="success-container" class="upload-card glass" style="display: none; text-align: center;">
                 <h2 class="gradient-text">ส่งข้อมูลสำเร็จแล้ว!</h2>
-                <p class="section-desc" style="margin-bottom: 20px;">ขอบคุณที่ส่งภาพเข้ามาร่วมกันสร้างความทรงจำในงานนี้
+                <p class="section-desc" style="margin-bottom: 10px;">ขอบคุณที่ส่งภาพเข้ามาร่วมกันสร้างความทรงจำในงานนี้
                 </p>
+
+                <!-- Remaining quota after success -->
+                <div id="success-quota-badge" class="quota-badge quota-badge-success">
+                    <span id="success-quota-text">คุณเหลือสิทธิ์ส่งรูปอีก <strong
+                            id="success-quota-remaining">2</strong> ครั้ง</span>
+                </div>
 
                 <div class="success-img-wrapper" style="margin-bottom: 30px;">
                     <img id="final-polaroid-img" src="" alt="Final Polaroid"
@@ -122,7 +120,7 @@
                 <div class="success-actions">
                     <a href="index.html" class="btn-blue"
                         style="text-decoration: none; padding: 12px 30px; border-radius: 12px;">กลับหน้าหลัก</a>
-                    <button onclick="location.reload()" class="btn-secondary"
+                    <button id="btn-upload-again" onclick="location.reload()" class="btn-secondary"
                         style="margin-left: 10px; padding: 12px 30px; border-radius: 12px;">ส่งภาพใหม่</button>
                 </div>
             </div>
@@ -132,7 +130,7 @@
     <!-- Cropping Modal -->
     <div id="crop-modal" class="modal">
         <div class="modal-content glass">
-            <h3>ปรับแต่งรูปภาพ (1:1)</h3>
+            <h3>ปรับแต่งรูปภาพ (4:6)</h3>
             <div class="cropper-container">
                 <img id="cropper-img" src="" alt="To crop">
             </div>
@@ -140,6 +138,14 @@
                 <button id="btn-cancel-crop" class="btn-secondary">ยกเลิก</button>
                 <button id="btn-confirm-crop" class="btn-blue">ตกลง</button>
             </div>
+        </div>
+    </div>
+
+    <!-- Zoom Preview Modal -->
+    <div id="zoom-modal" class="modal">
+        <div class="zoom-modal-content" id="zoom-modal-content">
+            <button class="zoom-close-btn" id="btn-zoom-close">&times;</button>
+            <img id="zoom-modal-img" src="" alt="Zoomed Preview">
         </div>
     </div>
 
