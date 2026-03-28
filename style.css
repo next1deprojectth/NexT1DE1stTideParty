@@ -1,20 +1,11 @@
 /* --- Custom Fonts --- */
 @font-face {
     font-family: 'CS Prajad';
-    src: url('fonts/CSPraJad%20v2.otf') format('opentype');
-    font-weight: normal;
-    font-style: normal;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: 'CS Prajad Bold';
     src: url('fonts/CSPraJad-bold%20v2.otf') format('opentype');
-    font-weight: normal;
+    font-weight: bold;
     font-style: normal;
     font-display: swap;
 }
-
 
 :root {
     --deep-navy: #0A1628;

@@ -93,7 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const descText = imageDescInput.value.trim();
         const ownerName = ownerNameInput.value.trim();
         const ownerDisplay = ownerName ? `~ ${ownerName} ~` : '~ ไม่เปิดเผยตัวตน ~';
-        const fontName = 'CS Prajad Bold';
+        const fontName = 'CS Prajad';
 
         ctx.textAlign = 'center';
         ctx.textBaseline = 'top';
@@ -106,11 +106,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!descText) {
             // Prompt text when empty
             ctx.fillStyle = '#CBD5E0';
-            ctx.font = `normal ${descFontSize}px "${fontName}"`;
+            ctx.font = `bold ${descFontSize}px ${fontName}`;
             ctx.fillText('คำบรรยายภาพ (สูงสุด 2 บรรทัด)', TOTAL_W / 2, descZoneCenterY - (descFontSize / 2));
         } else {
             ctx.fillStyle = '#000000';
-            ctx.font = `normal ${descFontSize}px "${fontName}"`;
+            ctx.font = `bold ${descFontSize}px ${fontName}`;
 
             // Logic: Split by \n, take first 2. If no \n, just draw 1 line (user controlled)
             const manualLines = imageDescInput.value.split('\n').filter(l => l.length > 0).slice(0, 2);
@@ -126,7 +126,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Owner Name - Fixed at bottom
         ctx.fillStyle = '#000000';
-        ctx.font = `normal 45px "${fontName}"`;
+        ctx.font = `bold 45px ${fontName}`;
         ctx.fillText(ownerDisplay, TOTAL_W / 2, TOTAL_H - 100);
 
         // 4. Update Preview Result
