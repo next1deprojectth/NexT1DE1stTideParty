@@ -91,6 +91,7 @@
     }
 
     .form-section {
+        align-self: center;
         /* background: #f8fafc; */
     }
 
@@ -379,7 +380,7 @@
 .main-container {
     /* margin-top: 90px !important; */
     /* Gap under navbar for desktop */
-    padding-top: 0 !important;
+    padding-top: 10px !important;
 }
 
 .navbar.scrolled~.main-container .preview-section {
