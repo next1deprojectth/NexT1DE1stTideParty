@@ -124,7 +124,7 @@
 .section-desc {
     color: #718096;
     margin-bottom: 12px;
-    font-size: 0.85rem;
+    font-size: 0.7rem;
 }
 
 /* Form Styles */
@@ -476,7 +476,44 @@
     max-width: 500px;
     width: 100%;
     text-align: center;
+    max-height: 90vh;
+    overflow-y: auto;
 }
+
+/* Review Modal Adjustments */
+#review-modal .modal-content {
+    padding: 20px;
+}
+
+#review-modal h3 {
+    font-size: 1.1rem;
+}
+
+#review-modal .section-desc {
+    font-size: 0.8rem;
+    margin-bottom: 15px;
+}
+
+#review-modal .modal-terms-container {
+    padding: 10px;
+    margin-bottom: 15px;
+}
+
+#review-modal .modal-terms-title {
+    font-size: 0.75rem;
+}
+
+#review-modal .modal-terms-list li {
+    font-size: 0.7rem;
+    line-height: 1.3;
+}
+
+#review-modal .btn-blue,
+#review-modal .btn-secondary {
+    font-size: 0.9rem !important;
+    padding: 10px !important;
+}
+
 
 .img-container {
     width: 100%;
@@ -706,7 +743,7 @@ button:disabled {
 .intro-terms-box {
     text-align: left;
     background: rgba(255, 255, 255, 0.7);
-    padding: 30px;
+    padding: 10px;
     border-radius: 20px;
     border: 1px solid rgba(226, 232, 240, 1);
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
