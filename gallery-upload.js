@@ -253,13 +253,29 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(triggerInitialRenders, 500);
     setTimeout(triggerInitialRenders, 1500); // 1.5s as ultimate fallback
 
-    // --- Submit Logic ---
-    btnSubmit.addEventListener('click', async () => {
+    // --- Submit Logic Flow ---
+    const reviewModal = document.getElementById('review-modal');
+    const reviewModalImg = document.getElementById('review-modal-img');
+    const btnConfirmSubmit = document.getElementById('btn-confirm-submit');
+    const btnCancelReview = document.getElementById('btn-cancel-review');
+
+    btnSubmit.addEventListener('click', () => {
         if (getRemainingUploads() <= 0) {
             alert('คุณใช้สิทธิ์ส่งรูปครบ ' + MAX_UPLOADS + ' ครั้งแล้ว');
             return;
         }
+        
+        // Show review modal
+        reviewModalImg.src = document.getElementById('generated-polaroid-view').src;
+        reviewModal.classList.add('active');
+    });
 
+    btnCancelReview.addEventListener('click', () => {
+        reviewModal.classList.remove('active');
+    });
+
+    btnConfirmSubmit.addEventListener('click', async () => {
+        reviewModal.classList.remove('active');
         const loadingOverlay = document.getElementById('loading-overlay');
         loadingOverlay.style.display = 'flex';
 

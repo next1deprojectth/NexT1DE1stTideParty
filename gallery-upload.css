@@ -132,7 +132,7 @@
 .section-desc {
     color: #718096;
     margin-bottom: 12px;
-    font-size: 0.95rem;
+    font-size: 0.85rem;
 }
 
 /* Form Styles */
@@ -146,7 +146,7 @@
     font-weight: 600;
     margin-bottom: 8px;
     color: #4A5568;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
 }
 
 .input-group input,
@@ -156,7 +156,7 @@
     border-radius: 12px;
     border: 1px solid #E2E8F0;
     background: white;
-    font-size: 1rem;
+    font-size: 0.9rem;
     color: #2D3748;
     transition: all 0.2s;
 }
@@ -393,7 +393,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 70%;
+    width: 50%;
 }
 
 .polaroid-interactive-preview {
