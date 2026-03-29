@@ -439,8 +439,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (typeof API_CONFIG !== 'undefined' && API_CONFIG.IS_WORKSHOP_OPEN === false) {
             window.showComingSoon(
                 "Workshop: Coming Soon",
-                "สิทธิพิเศษสำหรับผู้สนับสนุนโปรเจกต์ <br><span style='font-size: 0.85rem; font-weight: 600; color: #718096;'>(ยังไม่เปิดให้ลงทะเบียนในขณะนี้)</span>",
-                "• ยอดโดเนทสะสมครบ <b>1,277 บาท</b> ขึ้นไป <br>รับสิทธิ์เข้า Workshop <b>ฟรี!</b> โดยไม่มีค่าใช้จ่ายเพิ่มเติม <br><br>• สำหรับการลงทะเบียนรูปแบบปกติ <br>จะมีค่าใช้จ่ายแยกต่างหากจากยอดโดเนทค่ะ"
+                "<span style='font-size: 0.85rem; font-weight: 600; color: #718096;'>(ยังไม่เปิดให้ลงทะเบียนในขณะนี้)</span>",
+                "• ยอดโดเนทสะสมครบ <b>1,277 บาท</b> ขึ้นไป <br>รับสิทธิ์เข้า Workshop <b>ฟรีทันที! <br>ไม่จำเป็นต้องลงทะเบียนเพิ่มเติม <br><br>• การลงทะเบียนรูปแบบปกติ <br>จะมีค่าใช้จ่ายแยกต่างหากจากยอดโดเนท"
             );
         } else {
             window.location.href = 'workshop.html';
