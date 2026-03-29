@@ -589,3 +589,160 @@ button:disabled {
     background: #f0f0f0;
     transform: scale(1.1);
 }
+
+/* Terms & Conditions Styles */
+.terms-container {
+    margin-top: 25px;
+    padding: 15px;
+    background: rgba(247, 250, 252, 0.8);
+    border-radius: 12px;
+    border: 1px solid #E2E8F0;
+}
+
+.terms-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #4A5568;
+    margin-bottom: 8px;
+}
+
+.terms-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.terms-list li {
+    font-size: 0.75rem;
+    color: #718096;
+    margin-bottom: 5px;
+    padding-left: 15px;
+    position: relative;
+    line-height: 1.4;
+}
+
+.terms-list li::before {
+    content: "•";
+    position: absolute;
+    left: 0;
+    color: #2b6cb0;
+    font-weight: bold;
+}
+
+/* Modal Specific Terms */
+.modal-terms-container {
+    text-align: left;
+    background: #f8fafc;
+    padding: 12px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    border-left: 3px solid #2b6cb0;
+}
+
+.modal-terms-title {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #2D3748;
+    margin-bottom: 6px;
+}
+
+.modal-terms-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.modal-terms-list li {
+    font-size: 0.75rem;
+    color: #4A5568;
+    margin-bottom: 3px;
+    padding-left: 12px;
+    position: relative;
+}
+
+.modal-terms-list li::before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    color: #38A169;
+    font-size: 0.7rem;
+}
+
+/* Confirmation Checkbox */
+.confirm-checkbox-container {
+    margin-bottom: 20px;
+    text-align: left;
+    padding: 5px;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.checkbox-label input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    accent-color: #2b6cb0;
+}
+
+.checkbox-text {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #2D3748;
+}
+
+/* Intro Section Styling */
+#intro-section {
+    max-width: 600px;
+    margin: 0 auto;
+    animation: fadeInIntro 0.5s ease-out;
+}
+
+.intro-terms-box {
+    text-align: left;
+    background: rgba(255, 255, 255, 0.7);
+    padding: 30px;
+    border-radius: 20px;
+    border: 1px solid rgba(226, 232, 240, 1);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+}
+
+.intro-terms-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.intro-terms-list li {
+    font-size: 0.95rem;
+    color: #4A5568;
+    margin-bottom: 15px;
+    padding-left: 30px;
+    position: relative;
+    line-height: 1.6;
+}
+
+.intro-terms-list li::before {
+    content: "✦";
+    position: absolute;
+    left: 0;
+    color: #2b6cb0;
+    font-weight: bold;
+}
+
+@keyframes fadeInIntro {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

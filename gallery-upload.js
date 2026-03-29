@@ -17,6 +17,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnConfirmCrop = document.getElementById('btn-confirm-crop');
     const btnCancelCrop = document.getElementById('btn-cancel-crop');
 
+    // Intro Selectors
+    const introSection = document.getElementById('intro-section');
+    const uploadFormContainer = document.getElementById('upload-form-container');
+    const btnAcknowledge = document.getElementById('btn-acknowledge');
+
     // Data State
     let selectedImageBase64 = null;
     let cropper = null;
@@ -33,9 +38,18 @@ document.addEventListener('DOMContentLoaded', () => {
     function getRemainingUploads() {
         return Math.max(0, MAX_UPLOADS - getUploadCount());
     }
+
+    // --- Intro Logic ---
+    if (btnAcknowledge && introSection && uploadFormContainer) {
+        btnAcknowledge.addEventListener('click', () => {
+            introSection.style.display = 'none';
+            uploadFormContainer.style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    }
     function updateQuotaUI() {
         const remaining = getRemainingUploads();
-        
+
         const btnSubmit = document.getElementById('btn-submit');
         if (btnSubmit) {
             if (remaining === 0) {
@@ -259,12 +273,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnConfirmSubmit = document.getElementById('btn-confirm-submit');
     const btnCancelReview = document.getElementById('btn-cancel-review');
 
+
     btnSubmit.addEventListener('click', () => {
         if (getRemainingUploads() <= 0) {
             alert('คุณใช้สิทธิ์ส่งรูปครบ ' + MAX_UPLOADS + ' ครั้งแล้ว');
             return;
         }
-        
+
         // Show review modal
         reviewModalImg.src = document.getElementById('generated-polaroid-view').src;
         reviewModal.classList.add('active');

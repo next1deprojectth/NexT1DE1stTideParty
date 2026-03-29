@@ -38,7 +38,32 @@
 
     <main class="main-container">
         <section class="upload-section">
-            <div id="upload-form-container" class="upload-card glass">
+            <!-- Intro Section (Initial State) -->
+            <div id="intro-section" class="upload-card glass">
+                <div style="text-align: center; margin-bottom: 30px;">
+                    <h1 class="gradient-text" style="font-size: 1.8rem; margin-bottom: 10px;">NexT1DE ในสายตาคุณ</h1>
+                    <p class="section-desc">ร่วมสร้างความทรงจำผ่านภาพถ่ายที่คุณประทับใจ ใน 1 ปีที่ผ่านมา</p>
+                </div>
+
+                <div class="intro-terms-box">
+                    <h3
+                        style="color: #2D3748; margin-bottom: 15px; font-size: 1rem; border-bottom: 2px solid #2b6cb0; display: inline-block; padding-bottom: 4px;">
+                        ข้อกำหนดในการส่งภาพ</h3>
+                    <ul class="intro-terms-list">
+                        <li>ผลงานภาพถ่ายเป็นภาพที่ถ่ายด้วยตนเอง หรือได้รับอนุญาตจากเจ้าของภาพแล้วเท่านั้น</li>
+                        <li>งดใช้ภาพตัดต่อ หรือภาพที่อาจก่อให้เกิดความเข้าใจคลาดเคลื่อน</li>
+                        <li>งดส่งภาพนอกตารางงานหรือพื้นที่ที่มีข้อห้ามในการถ่ายภาพ</li>
+                        <li>ทางทีมขอสงวนสิทธิ์ในการพิจารณาคัดเลือกภาพตามความเหมาะสม</li>
+                    </ul>
+                </div>
+
+                <div style="margin-top: 40px; text-align: center;">
+                    <button id="btn-acknowledge" class="btn-submit-full"
+                        style="max-width: 300px; margin: 0 auto;">รับทราบเงื่อนไขและเริ่มส่งภาพ</button>
+                </div>
+            </div>
+
+            <div id="upload-form-container" class="upload-card glass" style="display: none;">
                 <div class="upload-grid">
                     <!-- Form Section -->
                     <div class="form-section">
@@ -60,6 +85,17 @@
                             <textarea id="image-desc" placeholder="บอกเล่าเรื่องราวในภาพ" maxlength="50"
                                 rows="2"></textarea>
                             <span class="char-count" id="desc-count">0/50</span>
+                        </div>
+
+                        <div class="terms-container">
+                            <p class="terms-title">ข้อกำหนดในการส่งภาพ</p>
+                            <ul class="terms-list">
+                                <li>ผลงานภาพถ่ายเป็นภาพที่ถ่ายด้วยตนเอง หรือได้รับอนุญาตจากเจ้าของภาพแล้วเท่านั้น
+                                </li>
+                                <li>งดใช้ภาพตัดต่อ หรือภาพที่อาจก่อให้เกิดความเข้าใจคลาดเคลื่อน</li>
+                                <li>งดส่งภาพนอกตารางงานหรือพื้นที่ที่มีข้อห้ามในการถ่ายภาพ</li>
+                                <li>ทางทีมขอสงวนสิทธิ์ในการพิจารณาคัดเลือกภาพตามความเหมาะสม</li>
+                            </ul>
                         </div>
 
                         <!-- Submit Button relocated to form bottom -->
@@ -130,10 +166,22 @@
             <p style="font-size: 0.85rem; color: #4A5568; margin-bottom: 20px;">
                 รูปนี้จะถูกนำไปแสดง Gallery วันที่ 25 - 26 เม.ย. 69
             </p>
-            <div class="polaroid-wrapper" style="width: 100%; max-width: 250px; margin: 0 auto 25px auto;">
+            <div class="polaroid-wrapper" style="width: 100%; max-width: 250px; margin: 0 auto 15px auto;">
                 <img id="review-modal-img" src="" alt="Review Polaroid"
                     style="width: 100%; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.15);">
             </div>
+
+            <div class="modal-terms-container">
+                <p class="modal-terms-title">ข้อกำหนดในการส่งภาพ</p>
+                <ul class="modal-terms-list">
+                    <li>ผลงานภาพถ่ายเป็นภาพที่ถ่ายด้วยตนเอง หรือได้รับอนุญาตจากเจ้าของภาพแล้วเท่านั้น
+                    </li>
+                    <li>งดใช้ภาพตัดต่อ หรือภาพที่อาจก่อให้เกิดความเข้าใจคลาดเคลื่อน</li>
+                    <li>งดส่งภาพนอกตารางงานหรือพื้นที่ที่มีข้อห้ามในการถ่ายภาพ</li>
+                    <li>ทางทีมขอสงวนสิทธิ์ในการพิจารณาคัดเลือกภาพตามความเหมาะสม</li>
+                </ul>
+            </div>
+
             <div class="modal-actions" style="flex-direction: column; gap: 10px;">
                 <button id="btn-confirm-submit" class="btn-blue"
                     style="width: 100%; font-size: 1rem; padding: 12px; border-radius: 12px; font-weight: bold; background: var(--gradient-3); border: none;">ตรวจสอบแล้วและยืนยันส่งรูป</button>
