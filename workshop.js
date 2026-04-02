@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Endpoints ---
     const RECEIVER_NAME_TARGET = "ธัญดา";
-    const WEBHOOK_URL = "https://next1de.app.n8n.cloud/webhook/6e4a539b-5580-40f9-a85f-47a488a2e842";
+    const WEBHOOK_URL = "https://bbthanyada.app.n8n.cloud/webhook/6e4a539b-5580-40f9-a85f-47a488a2e842";
     const API_ENDPOINT = API_CONFIG.BASE_URL;
     const GET_API_URL = `${API_ENDPOINT}?action=getWorkshop`;
     const SAVE_API_URL = API_ENDPOINT;
@@ -199,12 +199,32 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (isEditMode) {
                     document.getElementById('edit-error-modal').style.display = 'flex';
                 } else {
-                    alert('ไม่พบข้อมูล หรือเกิดข้อผิดพลาดในการโหลด');
+                    // Fallback for new registration if lookup fails/errors
+                    apiData = { status: 'new', rights: { total: 0, from_direct: 0 }, receive: null };
+                    totalRights = 0;
+                    fromDirect = 0;
+                    hasPastDelivery = false;
+                    deliveryMethod = 'onsite';
+                    itemCount = 1;
+                    initStep2();
+                    goToStep(2);
                 }
             }
         } catch (error) {
             console.error(error);
-            alert('เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์');
+            if (isEditMode) {
+                alert('เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์');
+            } else {
+                // Fallback for new registration on connection/server error
+                apiData = { status: 'new', rights: { total: 0, from_direct: 0 }, receive: null };
+                totalRights = 0;
+                fromDirect = 0;
+                hasPastDelivery = false;
+                deliveryMethod = 'onsite';
+                itemCount = 1;
+                initStep2();
+                goToStep(2);
+            }
         } finally {
             loader.style.display = 'none';
             btnNextStep1.style.display = 'block';
@@ -702,13 +722,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
         } catch (error) {
             console.error('AI Verify Error:', error);
-            showVerifyError("เกิดข้อผิดพลาดทางเทคนิคในการตรวจสอบสลิป");
+            showVerifyError("เกิดข้อผิดพลาดทางเทคนิคในการตรวจสอบสลิป", true);
         } finally {
             document.getElementById('api-loading').style.display = 'none';
         }
     }
 
-    function showVerifyError(msg) {
+    function showVerifyError(msg, isTechnical = false) {
         document.getElementById('verification-result-box').style.display = 'block';
 
         const verifySuccessDiv = document.getElementById('verify-success');
@@ -718,6 +738,9 @@ document.addEventListener('DOMContentLoaded', () => {
             verifyErrorDiv.style.display = 'block';
             const msgEl = document.getElementById('verify-error-msg');
             if (msgEl) msgEl.innerText = msg;
+
+            const manualBox = document.getElementById('manual-verify-box');
+            if (manualBox) manualBox.style.display = isTechnical ? 'block' : 'none';
         }
 
         document.getElementById('btn-submit-final').style.display = 'none';
@@ -735,10 +758,25 @@ document.addEventListener('DOMContentLoaded', () => {
         if (verifyErrorDiv) verifyErrorDiv.style.display = 'none';
 
         document.getElementById('verify-sender-name').innerText = slipData.sender_name || '-';
-        document.getElementById('verify-amount').innerText = `฿ ${slipData.amount.toLocaleString()}`;
+        document.getElementById('verify-amount').innerText = `฿ ${(slipData.amount || 0).toLocaleString()}`;
         document.getElementById('verify-date').innerText = slipData.date || '-';
 
         document.getElementById('btn-submit-final').style.display = 'block';
+    }
+
+    const btnManualVerify = document.getElementById('btn-manual-verify');
+    if (btnManualVerify) {
+        btnManualVerify.addEventListener('click', () => {
+            // Set dummy data for manual proceed
+            slipData = {
+                is_slip: true,
+                amount: expectedTotal,
+                sender_name: "ต้องการการตรวจสอบด้วยตนเอง (ระบบขัดข้อง)",
+                date: new Date().toLocaleString('th-TH'),
+                ref_number: "MANUAL-" + Date.now()
+            };
+            showVerifySuccess();
+        });
     }
 
     const btnSubmit = document.getElementById('btn-submit-final');

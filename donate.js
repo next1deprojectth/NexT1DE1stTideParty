@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const RECEIVER_NAME_TARGET = "ธัญดา";
-    const WEBHOOK_URL = "https://next1de.app.n8n.cloud/webhook/6e4a539b-5580-40f9-a85f-47a488a2e842";
+    const WEBHOOK_URL = "https://bbthanyada.app.n8n.cloud/webhook/6e4a539b-5580-40f9-a85f-47a488a2e842";
     const API_ENDPOINT = API_CONFIG.BASE_URL;
     const GET_API_URL = API_ENDPOINT;
     const SAVE_API_URL = API_ENDPOINT;
@@ -366,12 +366,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const phone = document.getElementById('phone-number').value.trim();
             const addr = document.getElementById('shipping-address').value.trim();
             const post = document.getElementById('postal-code').value.trim();
-            
+
             // Check if it's not a verified past delivery
-            const isVerifiedPastDelivery = !isChangingReception && 
-                                          mergedDonationData.receive && 
-                                          mergedDonationData.receive.delivery_type === 'delivery';
-            
+            const isVerifiedPastDelivery = !isChangingReception &&
+                mergedDonationData.receive &&
+                mergedDonationData.receive.delivery_type === 'delivery';
+
             if (!isVerifiedPastDelivery && (!name || !phone || !addr || !post)) {
                 alert('กรุณากรอกข้อมูลที่อยู่จัดส่งให้ครบถ้วน');
                 return;
