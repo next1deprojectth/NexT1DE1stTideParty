@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Messages to NexT1DE 🌊</title>
+<link href="https://fonts.googleapis.com/css2?family=Mali:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Mali', 'Sarabun', sans-serif;
+  overflow: hidden;
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(180deg, #071e57 0%, #0d3a8e 25%, #1565c0 50%, #1e88e5 70%, #64b5f6 100%);
+}
+
+/* ─── HEADER ─── */
+.page-header {
+  position: fixed; top: 0; left: 0; right: 0;
+  z-index: 200;
+  text-align: center;
+  padding: 16px 20px 0;
+  pointer-events: none;
+}
+.page-header h1 {
+  font-size: 1.8rem; font-weight: 700; color: #fff;
+  text-shadow: 0 2px 12px rgba(0,0,0,0.4);
+}
+.page-header h1 span { color: #ffd1e8; }
+.page-header p { font-size: 0.95rem; color: rgba(255,255,255,0.8); margin-top: 2px; }
+
+/* ─── WAVE OVERLAYS (sinusoidal SVG layers across full screen) ─── */
+.wave-layer {
+  position: fixed; left: -50%; width: 200%; pointer-events: none; z-index: 1;
+  fill-opacity: 0.12;
+}
+.wave-layer.wl1 { top: 12%; animation: wdrift1 7s linear infinite; fill: #90caf9; height: 120px; }
+.wave-layer.wl2 { top: 26%; animation: wdrift2 9s linear infinite; fill: #64b5f6; height: 110px; }
+.wave-layer.wl3 { top: 41%; animation: wdrift1 11s linear infinite reverse; fill: #42a5f5; height: 120px; }
+.wave-layer.wl4 { top: 56%; animation: wdrift2 8s linear infinite; fill: #2196f3; height: 110px; }
+.wave-layer.wl5 { top: 70%; animation: wdrift1 10s linear infinite reverse; fill: #1e88e5; height: 120px; }
+.wave-layer.wl6 { top: 82%; animation: wdrift2 6s linear infinite; fill: #1565c0; height: 110px; }
+
+@keyframes wdrift1 { from { transform: translateX(0); } to { transform: translateX(50%); } }
+@keyframes wdrift2 { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+/* ─── LANES ─── each lane is a horizontal strip for cards to flow through */
+#stage {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  z-index: 10; pointer-events: none;
+  overflow: hidden;
+}
+
+/* ─── CARD ─── */
+.card {
+  position: absolute;
+  pointer-events: auto;
+  will-change: transform;
+  /* JS drives the animation via requestAnimationFrame */
+}
+
+.card-inner {
+  background: rgba(255,255,255,0.82);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.65);
+  border-radius: 22px;
+  padding: 14px 28px 14px 28px;
+  width: 260px;
+  position: relative;
+  box-shadow: 0 6px 20px rgba(0,50,120,0.18);
+  text-align: center;
+  transition: background 0.2s, box-shadow 0.2s;
+}
+
+.card:hover .card-inner {
+  background: rgba(255,255,255,0.97);
+  box-shadow: 0 10px 30px rgba(0,50,120,0.28);
+}
+
+.qm { /* quote mark */
+  position: absolute; font-size: 3rem; font-family: Georgia, serif;
+  line-height: 1; color: #81d4fa; opacity: 0.55; user-select: none;
+}
+.qm.l { top: 50%; left: 6px; transform: translateY(-50%); }
+.qm.r { top: 50%; right: 6px; transform: translateY(-50%); }
+
+.c-text {
+  font-size: 0.88rem; font-weight: 600; font-style: italic;
+  color: #1a365d; line-height: 1.45; margin: 0 8px 8px;
+  word-break: break-word; display: -webkit-box;
+  -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden;
+}
+
+.c-name {
+  font-size: 0.75rem; color: #718096; font-weight: 700;
+  background: rgba(129,212,250,0.2);
+  border: 1px dashed #81d4fa;
+  border-radius: 16px; padding: 2px 12px; display: inline-block;
+}
+
+/* ─── BUBBLES ─── */
+.bubble {
+  position: fixed; bottom: -40px; border-radius: 50%;
+  background: rgba(255,255,255,0.22);
+  animation: brise linear infinite;
+  pointer-events: none; z-index: 2;
+}
+@keyframes brise {
+  0%  { transform: translateY(0) scale(1);   opacity: 0; }
+  8%  { opacity: 0.8; }
+  90% { opacity: 0.4; }
+  100%{ transform: translateY(-110vh) scale(0.4); opacity: 0; }
+}
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <h1>Messages from <span>Ohna</span> 🌊</h1>
+  <p>ข้อความรักจากโอนา ส่งถึง NexT1DE</p>
+</div>
+
+<!-- Wave overlays across whole screen -->
+<svg class="wave-layer wl1" viewBox="0 0 1000 100" preserveAspectRatio="none">
+  <path d="M0,50 C125,10 250,90 375,50 C500,10 625,90 750,50 C875,10 937,70 1000,50 L1000,100 L0,100Z"/>
+</svg>
+<svg class="wave-layer wl2" viewBox="0 0 1000 100" preserveAspectRatio="none">
+  <path d="M0,40 C140,80 280,10 420,50 C560,90 700,10 840,50 C920,75 970,30 1000,50 L1000,100 L0,100Z"/>
+</svg>
+<svg class="wave-layer wl3" viewBox="0 0 1000 100" preserveAspectRatio="none">
+  <path d="M0,55 C100,15 200,85 300,55 C400,25 500,85 600,55 C700,25 800,85 900,55 C950,35 980,65 1000,55 L1000,100 L0,100Z"/>
+</svg>
+<svg class="wave-layer wl4" viewBox="0 0 1000 100" preserveAspectRatio="none">
+  <path d="M0,45 C150,85 300,15 450,55 C600,85 750,15 900,50 C940,62 970,38 1000,45 L1000,100 L0,100Z"/>
+</svg>
+<svg class="wave-layer wl5" viewBox="0 0 1000 100" preserveAspectRatio="none">
+  <path d="M0,50 C125,10 250,90 375,50 C500,10 625,90 750,50 C875,10 937,70 1000,50 L1000,100 L0,100Z"/>
+</svg>
+<svg class="wave-layer wl6" viewBox="0 0 1000 100" preserveAspectRatio="none">
+  <path d="M0,40 C140,80 280,10 420,50 C560,90 700,10 840,50 C920,75 970,30 1000,50 L1000,100 L0,100Z"/>
+</svg>
+
+<div id="stage"></div>
+
+<script>
+const QUOTES = [
+  { name:"โอนาท่านหนึ่ง", quote:"Ohna still here นะคะ อยู่กับเด็กๆไปนานๆน้าาา" },
+  { name:"WMine96", quote:"ขอให้น้องคลื่นโด่งดังไปทั่วโลก" },
+  { name:"TaiiaT_2211", quote:"คิดถึงอีกแล้ว" },
+  { name:"ทีมเฮียดรณ์รักน้องคลื่น", quote:"ครบรอบ 1 ปีแล้ว เด็กๆเก่งกันมาก ขอให้เติบโตอย่างแข็งแกร่ง ปังๆ 🌊 ทีมเฮียดรณ์ 🐉🩵💛" },
+  { name:"RaBBiT_MiLkY", quote:"ขอให้น้องคลื่นมีงานเยอะๆ ประสบความสำเร็จทุกคนเลยคับ" },
+  { name:"Wenwen0609", quote:"Wish NexT1DE always HAPPY" },
+  { name:"IAmMe", quote:"ขอบคุณที่จัดงานเพื่อน้องคลื่นนะคะ" },
+  { name:"lalalinnnkk", quote:"ขอให้NT1ถูกค้นพบเยอะๆ🌊🫶" },
+  { name:"Omttar🦖", quote:"Wish NexT1DE go higher 🌊" },
+  { name:"bbchouc16", quote:"🌊🦖" },
+  { name:"WaN 🧸", quote:"🌊 Happy Anniversary 🥳" },
+  { name:"zhouaom", quote:"ขอให้ NexT1DE และ Ohna ทุกคนมีความสุข" },
+  { name:"support 🩵 HIA DORN", quote:"ขอให้ NexT1DE มีคนรัก&เอ็นดู เฮงๆ ปังๆ ขอให้โอนาสุขภาพแข็งแรง อยู่ซัพพอร์ตด้วยกันไปนานๆ❤️" },
+  { name:"ชานมน้องหมี", quote:"หม่าม๊าหัวใจน้องคลื่น 💖" },
+  { name:"Bunnie", quote:"ความสุขของพี่🫶🏻" },
+  { name:"Jin_Tawan", quote:"อยู่เป็นความสุขให้กันและกันไปนานๆนะเด็กๆ 💙🌊" },
+  { name:"Thima_c", quote:"เติบโตไปด้วยกันน๊าาา" },
+  { name:"ssirinya", quote:"NT1🩷" },
+  { name:"bbchouc16", quote:"Reackless!🌊" },
+  { name:"CPCUNG", quote:"น้องคลื่นเก่งมากกกก" },
+  { name:"แม่น้องฉง06", quote:"น้องคลื่นเก่งมากกก^^" },
+  { name:"ppreawara", quote:"โปรดกลับมาโชว์เพลงใหม่ที่ประเทศของฉัน" },
+  { name:"Sunshine🩷", quote:"หมวยสวยมาดด ฉงเกอผมฟ้าเท่สุดๆ" },
+  { name:"chiki", quote:"น้องคลื่นปังๆ" },
+  { name:"Jy-O", quote:"Happy Anniversary! Always support and Love NT1 🩵" },
+  { name:"@shinobuhime", quote:"Luv & appreciate things we have been doing for each other! 😘🌊💙💚🩷" },
+  { name:"แม่หนูจี๊ด", quote:"น้องคลื่นสู้ๆ เจอกันที่ไทยน้า ครบรอบ1ปี" },
+  { name:"Abaek1012", quote:"เมื่อไรจะมาไทยคิดถึงแล้ว" },
+  { name:"BB ~ 🧸", quote:"รักน้องฉง น้องคลื่น ขอให้มีstageปังๆอีกเยอะๆ 🥰" },
+  { name:"ChiniizyGN", quote:"น้องคลื่น 1 ขวบแล้ว ขอให้ยิ่งปัง ยิ่งดังทั่วเอเชีย 😉" },
+  { name:"มัมหมีน้องไทโอ🌻", quote:"May your talent reach more and more people 🌊" },
+  { name:"Sunshine🩷", quote:"รักก้อนคลื่นมาดๆ รักก้อนคลื่น 7 ก้อน🩵🤍" },
+  { name:"Wordsmithsix🧸🦋", quote:"ได้ไซน์แล้วครับ เจ้าแม่บ้านโปรเจกต์ศักดิ์สิทธิ์มาก 😭🙏🤍" },
+  { name:"aliceixiong", quote:"ลุคใหม่หมี(แพนด้า)🐼" },
+  { name:"yimku60", quote:"เป็นกำลังใจให้น้องคลื่นนะคะ ปังปังนะคะ 🌊🫶✌" },
+  { name:"Anna", quote:"เพลงใหม่แซ่บมากกก 🐶🧸" },
+  { name:"ShionTamizuki", quote:"Always luv u guys naa✨🌊" },
+  { name:"babu🦖🏀", quote:"น้องคลื่นจะ 1 ขวบแล้ว ไปกันต่อ!" },
+  { name:"ไอจี๊ดตัวแสบ🦄", quote:"โอนามาซัพพอร์ตไอคลื่นกันเยอะๆนะคะ✨️" },
+  { name:"หม่ามี้ฉงรักน้องคลื่น🩷🌊", quote:"ขอให้น้องคลื่นกลับมาหา Ohna ที่ไทยไวๆนะคะ🩷" },
+  { name:"SomeoneSomewhere", quote:"กินอิ่ม นอนหลับ มีความสุข มีพลังในการใช้ชีวิตนะ ภูมิใจในตัวลูกๆเสมอ" },
+  { name:"Namaiki_girl", quote:"ปีหน้าลุยเลยนะครับ ลูกคลื่น ♥️" },
+  { name:"ส้มอุนหม่ามี้", quote:"Love NexT1DE ที่สุด" },
+  { name:"ออแอนอแอน", quote:"ขอให้ NT1 ประสบความสำเร็จ ได้ไปออนสเตจเยอะๆ 🩵" },
+  { name:"H'🧸", quote:"พรุ่งนี้ขอได้ไซน์ ขอให้ได้ไซน์ ไม่งั้นไม่เริ่ด 🍀" },
+  { name:"ผู้ปกครองเหมียวดรณ์😽", quote:"ไอเยิฟฟน้องคลื่น ขอให้เด็กๆมีความสุขในทุกๆวัน🫶🏻🌊" },
+  { name:"chodanon", quote:"พรุ่งนี้ขอให้ได้ไซน์ ถ้าได้ไซน์จะโดอีก 100บาท 🫰🏻" },
+  { name:"Phoenixvsdrago1", quote:"ขอให้เติบโตอย่างแข็งแกร่ง งานไหลมาเทมา มีคนรักเยอะๆ🩵🌊" },
+  { name:"TaiiaT_2211", quote:"ใกล้ได้เจอกันแล้วน๊าาาา นับถอยหลังแล้ว 🩵" },
+  { name:"BokBear🧸🎀🍼", quote:"นบโปะหม่ำ ๆ นุ้งหมีกู๊ดบอย 🧸🍼" },
+  { name:"wordsmithsix🧸🦋", quote:"ขอให้น้องคลื่นถูกค้นพบยิ่งกว่านี้🤍" },
+  { name:"bkph8", quote:"fighting ka!" },
+  { name:"support🩵HiaDORN", quote:"ขอให้น้องคลื่นสุขภาพแข็งแรง มีความสุข ยิ้มได้ทุกๆวัน❤️" },
+  { name:"DornTheRabbit", quote:"ดีใจที่อยู่ด้วยกันจนถึงวันนี้ แล้วมาฉลองปีหน้ากันอีกนะ🥰" },
+  { name:"ต้าวคลื่นจิ๋ว", quote:"ขอให้น้องคลื่นและโอนาเริ่ดๆปังๆไปนานๆค่าาา" },
+  { name:"นางมารร้าย", quote:"รักทุกคนน้า" },
+  { name:"โอนาท่านหนึ่ง", quote:"รักน้องคลื่นน้าา อยู่ด้วยกันไปนานๆเลยย🍏🌊" },
+  { name:"นางมารร้าย", quote:"ขอให้เป็นน้องคลื่นที่สดใส" },
+  { name:"Pondadys", quote:"รักจ้า" },
+  { name:"หมีน้อยน่ารัก❤️🐻🧸", quote:"คิดถึง NexT1DE" },
+  { name:"หมีน้อยน่ารัก❤️🐻🧸", quote:"รักน้องคลื่น" },
+  { name:"รักน้องคลื่น", quote:"น้องคลื่นน่ารัก โอนาก็น่ารัก รักนะจุ๊บๆ" }
+];
+
+/* ─────────────────────────────────────────────
+   LANE SYSTEM  – divide screen into N horizontal
+   lanes; each card stays within its lane row
+   so cards never vertically overlap.
+───────────────────────────────────────────── */
+const CARD_W = 260;   // matches CSS
+const CARD_H = 130;   // approx card height
+const LANE_GAP = 16;  // px gap between lanes
+
+const stage = document.getElementById('stage');
+
+// Build lane descriptors after fonts load (gives accurate vh)
+let lanes = [];
+
+function buildLanes() {
+  const vh = window.innerHeight;
+  const headerH = 80; // reserve for header
+  const usableH = vh - headerH;
+  const laneH = CARD_H + LANE_GAP;
+  const count = Math.floor(usableH / laneH);
+  lanes = [];
+  for (let i = 0; i < count; i++) {
+    const centerY = headerH + i * laneH + CARD_H / 2;
+    lanes.push({
+      centerY,
+      // alternate direction per lane
+      ltr: i % 2 === 0,
+      // sine wave params for this lane
+      amplitude: 20 + Math.random() * 20,   // 20–40px vertical wave
+      freq:      0.3 + Math.random() * 0.4, // radians per 100px
+      phase:     Math.random() * Math.PI * 2
+    });
+  }
+}
+
+/* ─── Queue & active cards per lane ─── */
+function shuffle(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+let quotePool = shuffle([...QUOTES]);
+let qIdx = 0;
+function nextQuote() {
+  if (qIdx >= quotePool.length) { qIdx = 0; quotePool = shuffle([...QUOTES]); }
+  return quotePool[qIdx++];
+}
+
+/* Active cards: { el, x, lane index } */
+const activeCards = [];
+
+function spawnCardInLane(laneIdx, preplace) {
+  const lane = lanes[laneIdx];
+  const q = nextQuote();
+  const vw = window.innerWidth;
+
+  const el = document.createElement('div');
+  el.className = 'card';
+  el.innerHTML = `
+    <div class="card-inner">
+      <span class="qm l">"</span>
+      <p class="c-text">${q.quote.replace(/\n/g,'<br>')}</p>
+      <span class="qm r">"</span>
+      <div class="c-name">จาก ${q.name}</div>
+    </div>`;
+  stage.appendChild(el);
+
+  // speed: px per second – faster than before
+  const speed = 80 + Math.random() * 60; // 80–140 px/s
+
+  // Starting X position
+  let startX;
+  if (preplace) {
+    // Place anywhere along the journey
+    startX = lane.ltr
+      ? -CARD_W + Math.random() * (vw + CARD_W)
+      : vw + Math.random() * vw;
+  } else {
+    startX = lane.ltr ? -CARD_W - 10 : vw + 10;
+  }
+
+  const card = { el, x: startX, laneIdx, speed, active: true };
+  activeCards.push(card);
+}
+
+/* ─── Animation loop ─── */
+let lastT = null;
+function tick(ts) {
+  if (!lastT) lastT = ts;
+  const dt = Math.min((ts - lastT) / 1000, 0.05); // seconds, capped at 50ms
+  lastT = ts;
+
+  const vw = window.innerWidth;
+
+  for (let i = activeCards.length - 1; i >= 0; i--) {
+    const c = activeCards[i];
+    if (!c.active) { activeCards.splice(i, 1); continue; }
+
+    const lane = lanes[c.laneIdx];
+    c.x += lane.ltr ? c.speed * dt : -c.speed * dt;
+
+    // Check if offscreen → remove
+    const offRight = lane.ltr  && c.x > vw + 10;
+    const offLeft  = !lane.ltr && c.x < -CARD_W - 10;
+    if (offRight || offLeft) {
+      c.el.remove();
+      activeCards.splice(i, 1);
+      // re‑spawn a new card in this lane shortly
+      setTimeout(() => spawnCardInLane(c.laneIdx, false), 500 + Math.random() * 1000);
+      continue;
+    }
+
+    // Sinusoidal Y (wave motion)
+    const waveY = lane.amplitude * Math.sin(lane.freq * c.x / 100 + lane.phase);
+    const y = lane.centerY - CARD_H / 2 + waveY;
+
+    c.el.style.transform = `translate(${c.x}px, ${y}px)`;
+  }
+
+  requestAnimationFrame(tick);
+}
+
+/* ─── Bubbles ─── */
+function spawnBubbles() {
+  for (let i = 0; i < 28; i++) {
+    const b = document.createElement('div');
+    b.className = 'bubble';
+    const sz = 4 + Math.random() * 16;
+    b.style.cssText = `width:${sz}px;height:${sz}px;left:${Math.random()*100}%;` +
+      `animation-duration:${5+Math.random()*7}s;animation-delay:-${Math.random()*12}s;`;
+    document.body.appendChild(b);
+  }
+}
+
+/* ─── Init ─── */
+window.addEventListener('load', () => {
+  buildLanes();
+  spawnBubbles();
+
+  // Pre-place one card per lane to fill screen immediately
+  lanes.forEach((_, i) => spawnCardInLane(i, true));
+
+  requestAnimationFrame(tick);
+});
+
+window.addEventListener('resize', () => {
+  buildLanes();
+});
+</script>
+</body>
+</html>
