@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     // --- Constants ---
-    const MAX_UPLOADS = 7;
+    const MAX_UPLOADS = 8;
     const STORAGE_KEY = 'gallery_upload_count';
 
     // --- State & Selectors ---
