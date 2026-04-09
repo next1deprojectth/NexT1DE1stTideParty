@@ -65,6 +65,36 @@
                 </div>
             </div>
 
+            <!-- Layout Selection Step (New) -->
+            <div id="layout-selection-section" class="upload-card glass" style="display: none;">
+                <div style="text-align: center; margin-bottom: 30px;">
+                    <h1 class="gradient-text" style="font-size: 1.8rem; margin-bottom: 10px;">เลือกรูปแบบภาพของคุณ</h1>
+                    <p class="section-desc" style="font-size: 1rem;">คุณต้องการส่งภาพแบบรูปเดียว หรือ 2 รูปวางซ้อนกัน?
+                    </p>
+                </div>
+
+                <div class="layout-selector-group"
+                    style="background: transparent; border: none; padding: 0; margin-bottom: 0;">
+                    <div class="layout-options" style="max-width: 500px; margin: 0 auto;">
+                        <div class="layout-option active" id="layout-single-step">
+                            <div class="layout-icon single-icon"></div>
+                            <span>รูปเดี่ยว (3:4)</span>
+                        </div>
+                        <div class="layout-option" id="layout-stacked-step">
+                            <div class="layout-icon stacked-icon"></div>
+                            <span>2 รูป (แนวนอน)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 40px; text-align: center;">
+                    <button id="btn-go-to-form" class="btn-submit-full"
+                        style="max-width: 300px; margin: 0 auto;">ใช้รูปแบบนี้และดำเนินการต่อ</button>
+                    <p style="margin-top: 15px; font-size: 0.8rem; color: #718096;">*
+                        คุณสามารถย้อนกลับมาเปลี่ยนรูปแบบได้ในภายหลัง</p>
+                </div>
+            </div>
+
             <div id="upload-form-container" class="upload-card glass" style="display: none;">
                 <div class="upload-grid">
                     <!-- Form Section -->
@@ -76,6 +106,10 @@
                         <p class="section-desc">
                             เลือกรูป NexT1DE ที่คุณถ่ายหรือประทับใจที่สุด ใน 1 ปีที่ผ่านมา (8 รูป/คน)
                         </p>
+
+                        <button type="button" id="btn-back-to-layout" class="btn-back-step">
+                            <span style="font-size: 1.2rem;">←</span> เปลี่ยนรูปแบบภาพ (Layout)
+                        </button>
 
                         <div class="input-group">
                             <label for="owner-name">ชื่อเจ้าของภาพ (ไม่เกิน 30 ตัวอักษรและไม่จำเป็นต้องระบุ)</label>
@@ -110,14 +144,59 @@
                     <div class="preview-section">
                         <div class="polaroid-wrapper">
                             <!-- Interactive Preview Wrapper -->
-                            <div class="polaroid-interactive-preview" id="polaroid-container"
-                                onclick="document.getElementById('file-input').click()">
+                            <div class="polaroid-interactive-preview" id="polaroid-container">
                                 <img id="generated-polaroid-view" src="" alt="Polaroid Preview">
+
+                                <!-- Single Mode Overlay -->
+                                <div class="upload-overlay single-overlay" id="overlay-single">
+                                    <!-- <span>คลิกเพื่อเลือกรูปภาพ</span> -->
+                                </div>
+
+                                <!-- Stacked Mode Overlays -->
+                                <div class="upload-overlay-stacked" id="overlay-stacked" style="display: none;">
+                                    <div class="stack-slot top-slot" id="slot-top">
+                                        <!-- <span>รูปบน</span> -->
+                                    </div>
+                                    <div class="stack-slot bottom-slot" id="slot-bottom">
+                                        <!-- <span>รูปล่าง</span> -->
+                                    </div>
+                                </div>
+
                                 <input type="file" id="file-input" accept="image/*" style="display: none;">
                             </div>
 
                         </div>
                     </div>
+                </div>
+            </div>
+
+            <!-- Review Step (New) -->
+            <div id="review-form-container" class="upload-card glass" style="display: none; text-align: center;">
+                <h1 class="gradient-text" style="font-size: 1.8rem; margin-bottom: 20px;">ตรวจสอบภาพก่อนส่ง</h1>
+                <p class="section-desc" style="font-size: 1rem; margin-bottom: 25px;">
+                    ตรวจสอบความถูกต้องของภาพและคำบรรยายอีกครั้งก่อนยืนยันส่งข้อมูล</p>
+
+                <div class="polaroid-wrapper" style="width: 100%; max-width: 320px; margin: 0 auto 30px auto;">
+                    <img id="review-final-img" src="" alt="Review Polaroid"
+                        style="width: 100%; border-radius: 12px; box-shadow: 0 15px 45px rgba(0,0,0,0.2);">
+                </div>
+
+                <div class="modal-terms-container" style="max-width: 500px; margin: 0 auto 30px auto;">
+                    <p class="modal-terms-title">ข้อกำหนดในการส่งภาพ</p>
+                    <ul class="modal-terms-list">
+                        <li>ผลงานภาพถ่ายเป็นภาพที่ถ่ายด้วยตนเอง หรือได้รับอนุญาตจากเจ้าของภาพแล้วเท่านั้น</li>
+                        <li>งดใช้ภาพตัดต่อ หรือภาพที่อาจก่อให้เกิดความเข้าใจคลาดเคลื่อน</li>
+                        <li>งดส่งภาพนอกตารางงานหรือพื้นที่ที่มีข้อห้ามในการถ่ายภาพ</li>
+                        <li>ทางทีมขอสงวนสิทธิ์ในการพิจารณาคัดเลือกภาพตามความเหมาะสม</li>
+                    </ul>
+                </div>
+
+                <div class="success-actions"
+                    style="flex-direction: column; gap: 12px; align-items: center; display: flex;">
+                    <button id="btn-confirm-submit" class="btn-submit-full"
+                        style="max-width: 350px; margin-top: 0;">ตรวจสอบแล้วและยืนยันส่งรูป</button>
+                    <button id="btn-cancel-review" class="btn-secondary"
+                        style="width: 100%; max-width: 350px; padding: 14px; border-radius: 12px;">กลับไปแก้ไข</button>
                 </div>
             </div>
 
@@ -161,37 +240,7 @@
         </div>
     </div>
 
-    <!-- Review Submission Modal -->
-    <div id="review-modal" class="modal">
-        <div class="modal-content glass">
-            <h3 style="margin-bottom: 5px;">ตรวจสอบภาพก่อนส่ง</h3>
-            <p class="section-desc" style="color: #4A5568; margin-bottom: 15px;">
-                หลังจากผ่านการตรวจสอบ รูปนี้จะถูกนำไปแสดง Gallery
-            </p>
-            <div class="polaroid-wrapper" style="width: 100%; max-width: 200px; margin: 0 auto 15px auto;">
-                <img id="review-modal-img" src="" alt="Review Polaroid"
-                    style="width: 100%; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.15);">
-            </div>
-
-            <div class="modal-terms-container">
-                <p class="modal-terms-title">ข้อกำหนดในการส่งภาพ</p>
-                <ul class="modal-terms-list">
-                    <li>ผลงานภาพถ่ายเป็นภาพที่ถ่ายด้วยตนเอง หรือได้รับอนุญาตจากเจ้าของภาพแล้วเท่านั้น
-                    </li>
-                    <li>งดใช้ภาพตัดต่อ หรือภาพที่อาจก่อให้เกิดความเข้าใจคลาดเคลื่อน</li>
-                    <li>งดส่งภาพนอกตารางงานหรือพื้นที่ที่มีข้อห้ามในการถ่ายภาพ</li>
-                    <li>ทางทีมขอสงวนสิทธิ์ในการพิจารณาคัดเลือกภาพตามความเหมาะสม</li>
-                </ul>
-            </div>
-
-            <div class="modal-actions" style="flex-direction: column; gap: 8px;">
-                <button id="btn-confirm-submit" class="btn-blue"
-                    style="width: 100%; border-radius: 12px; font-weight: bold; background: var(--gradient-3); border: none;">ตรวจสอบแล้วและยืนยันส่งรูป</button>
-                <button id="btn-cancel-review" class="btn-secondary"
-                    style="width: 100%; border-radius: 12px; background: transparent; color: #718096; border: 1px solid #E2E8F0;">กลับไปแก้ไข</button>
-            </div>
-        </div>
-    </div>
+    <!-- Review Submission Modal (REMOVED - MOVED TO SECTION) -->
 
     <!-- Zoom Preview Modal -->
     <div id="zoom-modal" class="modal">
