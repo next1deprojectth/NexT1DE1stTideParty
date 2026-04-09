@@ -1190,6 +1190,20 @@ button:active {
         margin-top: 100px;
     }
 
+    /* Wrap all major sections and ensure they fill the width consistently */
+    .hero-section,
+    .stats-container-row,
+    .content-row,
+    .donate-row,
+    .quote-marquee-container,
+    .poster-section {
+        width: 100% !important;
+        box-sizing: border-box !important;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
     .hero-grid,
     .stats-row,
     .content-row,
@@ -1237,6 +1251,7 @@ button:active {
         grid-template-areas: none;
         gap: 30px;
         text-align: center;
+        width: 100%;
     }
 
     .hero-text {
@@ -1274,14 +1289,7 @@ button:active {
         /* Center items */
     }
 
-    .hero-section,
-    .stats-container-row,
-    .content-row,
-    .donate-row {
-        width: 100% !important;
-        box-sizing: border-box !important;
-    }
-
+    /* Normalize ALL inner cards to have the same spacing and width */
     .hero-card,
     .stats-card,
     .latest-donations-card,
@@ -1292,10 +1300,24 @@ button:active {
         max-width: 100% !important;
         /* Ensure it never exceeds parent */
         margin: 0 0 15px 0 !important;
-        padding: 15px 12px !important;
-        /* Even less padding */
+        padding: 20px 15px !important;
+        /* Balanced padding */
         box-sizing: border-box !important;
         border-radius: 18px !important;
+    }
+
+    /* Standardize Navbar on Mobile */
+    .navbar {
+        width: calc(100% - 30px) !important; /* Match main content width padding */
+        left: 50% !important;
+        transform: translateX(-50%) translateY(10px) !important;
+        border-radius: 20px !important;
+    }
+
+    .navbar.scrolled {
+        width: 100% !important;
+        transform: translateX(-50%) translateY(0) !important;
+        border-radius: 0 !important;
     }
 
     .hero-text .event-info-container {
@@ -1306,6 +1328,26 @@ button:active {
         flex-direction: column;
         gap: 20px;
         align-items: center;
+    }
+
+    /* Table Footer & Pagination Fix */
+    .table-footer {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        gap: 15px !important;
+    }
+
+    .pagination {
+        width: 100% !important;
+        justify-content: center !important;
+        flex-wrap: wrap !important;
+        gap: 8px !important;
+    }
+
+    .total-items {
+        order: -1 !important; /* Show count above pagination on mobile */
+        justify-self: center !important;
     }
 }
 
@@ -1326,7 +1368,8 @@ button:active {
 
     .btn-pink2,
     .btn-blue2 {
-        width: 300px;
+        width: 100%;
+        max-width: 320px;
         padding: 8px 15px;
         font-size: 0.9rem;
     }
