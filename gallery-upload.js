@@ -1,6 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
     // --- Constants ---
-    const MAX_UPLOADS = 3;
     const STORAGE_KEY = 'gallery_upload_count';
 
     // --- State & Selectors ---
@@ -33,10 +32,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     function setUploadCount(count) {
         localStorage.setItem(STORAGE_KEY, count);
-        updateQuotaUI();
-    }
-    function getRemainingUploads() {
-        return Math.max(0, MAX_UPLOADS - getUploadCount());
     }
 
     // --- Intro Logic ---
@@ -48,15 +43,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     function updateQuotaUI() {
-        const remaining = getRemainingUploads();
-
         const btnSubmit = document.getElementById('btn-submit');
         if (btnSubmit) {
-            if (remaining === 0) {
-                btnSubmit.innerHTML = `❌ คุณใช้สิทธิ์ส่งรูปครบ ${MAX_UPLOADS} ครั้งแล้ว`;
-            } else {
-                btnSubmit.innerHTML = `ส่งภาพ (เหลือสิทธิ์อีก ${remaining} ครั้ง)`;
-            }
+            btnSubmit.innerHTML = `ส่งภาพ`;
         }
     }
 
@@ -225,11 +214,10 @@ document.addEventListener('DOMContentLoaded', () => {
     function validateForm() {
         const isDescValid = imageDescInput.value.trim().length > 0;
         const isImageValid = !!selectedImageBase64;
-        const hasQuota = getRemainingUploads() > 0;
 
         const btnSubmitNavbar = document.getElementById('btn-submit');
         if (btnSubmitNavbar) {
-            btnSubmitNavbar.disabled = !(isDescValid && isImageValid && hasQuota);
+            btnSubmitNavbar.disabled = !(isDescValid && isImageValid);
         }
     }
 
@@ -275,10 +263,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     btnSubmit.addEventListener('click', () => {
-        if (getRemainingUploads() <= 0) {
-            alert('คุณใช้สิทธิ์ส่งรูปครบ ' + MAX_UPLOADS + ' ครั้งแล้ว');
-            return;
-        }
 
         // Show review modal
         reviewModalImg.src = document.getElementById('generated-polaroid-view').src;
@@ -321,18 +305,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 const successContainer = document.getElementById('success-container');
                 document.getElementById('final-polaroid-img').src = finalImageData;
                 successContainer.style.display = 'block';
-
-                const remaining = getRemainingUploads();
-                const successQuotaRemaining = document.getElementById('success-quota-remaining');
-                if (successQuotaRemaining) successQuotaRemaining.textContent = remaining;
-
-                if (remaining === 0) {
-                    document.getElementById('success-quota-badge').classList.add('quota-exhausted');
-                    document.getElementById('success-quota-text').innerHTML =
-                        '❌ คุณใช้สิทธิ์ส่งรูปครบ <strong>' + MAX_UPLOADS + '</strong> ครั้งแล้ว';
-                    const btnUploadAgain = document.getElementById('btn-upload-again');
-                    if (btnUploadAgain) btnUploadAgain.style.display = 'none';
-                }
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             } else {
                 throw new Error(result.message || 'Server error');
