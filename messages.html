@@ -1,367 +1,661 @@
 <!DOCTYPE html>
 <html lang="th">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Messages to NexT1DE 🌊</title>
-<link href="https://fonts.googleapis.com/css2?family=Mali:wght@400;600;700&display=swap" rel="stylesheet">
-<style>
-* { margin: 0; padding: 0; box-sizing: border-box; }
-
-body {
-  font-family: 'Mali', 'Sarabun', sans-serif;
-  overflow: hidden;
-  width: 100vw;
-  height: 100vh;
-  background: linear-gradient(180deg, #071e57 0%, #0d3a8e 25%, #1565c0 50%, #1e88e5 70%, #64b5f6 100%);
-}
-
-/* ─── HEADER ─── */
-.page-header {
-  position: fixed; top: 0; left: 0; right: 0;
-  z-index: 200;
-  text-align: center;
-  padding: 16px 20px 0;
-  pointer-events: none;
-}
-.page-header h1 {
-  font-size: 1.8rem; font-weight: 700; color: #fff;
-  text-shadow: 0 2px 12px rgba(0,0,0,0.4);
-}
-.page-header h1 span { color: #ffd1e8; }
-.page-header p { font-size: 0.95rem; color: rgba(255,255,255,0.8); margin-top: 2px; }
-
-/* ─── WAVE OVERLAYS (sinusoidal SVG layers across full screen) ─── */
-.wave-layer {
-  position: fixed; left: -50%; width: 200%; pointer-events: none; z-index: 1;
-  fill-opacity: 0.12;
-}
-.wave-layer.wl1 { top: 12%; animation: wdrift1 7s linear infinite; fill: #90caf9; height: 120px; }
-.wave-layer.wl2 { top: 26%; animation: wdrift2 9s linear infinite; fill: #64b5f6; height: 110px; }
-.wave-layer.wl3 { top: 41%; animation: wdrift1 11s linear infinite reverse; fill: #42a5f5; height: 120px; }
-.wave-layer.wl4 { top: 56%; animation: wdrift2 8s linear infinite; fill: #2196f3; height: 110px; }
-.wave-layer.wl5 { top: 70%; animation: wdrift1 10s linear infinite reverse; fill: #1e88e5; height: 120px; }
-.wave-layer.wl6 { top: 82%; animation: wdrift2 6s linear infinite; fill: #1565c0; height: 110px; }
-
-@keyframes wdrift1 { from { transform: translateX(0); } to { transform: translateX(50%); } }
-@keyframes wdrift2 { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-
-/* ─── LANES ─── each lane is a horizontal strip for cards to flow through */
-#stage {
-  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-  z-index: 10; pointer-events: none;
-  overflow: hidden;
-}
-
-/* ─── CARD ─── */
-.card {
-  position: absolute;
-  pointer-events: auto;
-  will-change: transform;
-  /* JS drives the animation via requestAnimationFrame */
-}
-
-.card-inner {
-  background: rgba(255,255,255,0.82);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255,255,255,0.65);
-  border-radius: 22px;
-  padding: 14px 28px 14px 28px;
-  width: 260px;
-  position: relative;
-  box-shadow: 0 6px 20px rgba(0,50,120,0.18);
-  text-align: center;
-  transition: background 0.2s, box-shadow 0.2s;
-}
-
-.card:hover .card-inner {
-  background: rgba(255,255,255,0.97);
-  box-shadow: 0 10px 30px rgba(0,50,120,0.28);
-}
-
-.qm { /* quote mark */
-  position: absolute; font-size: 3rem; font-family: Georgia, serif;
-  line-height: 1; color: #81d4fa; opacity: 0.55; user-select: none;
-}
-.qm.l { top: 50%; left: 6px; transform: translateY(-50%); }
-.qm.r { top: 50%; right: 6px; transform: translateY(-50%); }
-
-.c-text {
-  font-size: 0.88rem; font-weight: 600; font-style: italic;
-  color: #1a365d; line-height: 1.45; margin: 0 8px 8px;
-  word-break: break-word; display: -webkit-box;
-  -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden;
-}
-
-.c-name {
-  font-size: 0.75rem; color: #718096; font-weight: 700;
-  background: rgba(129,212,250,0.2);
-  border: 1px dashed #81d4fa;
-  border-radius: 16px; padding: 2px 12px; display: inline-block;
-}
-
-/* ─── BUBBLES ─── */
-.bubble {
-  position: fixed; bottom: -40px; border-radius: 50%;
-  background: rgba(255,255,255,0.22);
-  animation: brise linear infinite;
-  pointer-events: none; z-index: 2;
-}
-@keyframes brise {
-  0%  { transform: translateY(0) scale(1);   opacity: 0; }
-  8%  { opacity: 0.8; }
-  90% { opacity: 0.4; }
-  100%{ transform: translateY(-110vh) scale(0.4); opacity: 0; }
-}
-</style>
-</head>
-<body>
-
-<div class="page-header">
-  <h1>Messages from <span>Ohna</span> 🌊</h1>
-  <p>ข้อความรักจากโอนา ส่งถึง NexT1DE</p>
-</div>
-
-<!-- Wave overlays across whole screen -->
-<svg class="wave-layer wl1" viewBox="0 0 1000 100" preserveAspectRatio="none">
-  <path d="M0,50 C125,10 250,90 375,50 C500,10 625,90 750,50 C875,10 937,70 1000,50 L1000,100 L0,100Z"/>
-</svg>
-<svg class="wave-layer wl2" viewBox="0 0 1000 100" preserveAspectRatio="none">
-  <path d="M0,40 C140,80 280,10 420,50 C560,90 700,10 840,50 C920,75 970,30 1000,50 L1000,100 L0,100Z"/>
-</svg>
-<svg class="wave-layer wl3" viewBox="0 0 1000 100" preserveAspectRatio="none">
-  <path d="M0,55 C100,15 200,85 300,55 C400,25 500,85 600,55 C700,25 800,85 900,55 C950,35 980,65 1000,55 L1000,100 L0,100Z"/>
-</svg>
-<svg class="wave-layer wl4" viewBox="0 0 1000 100" preserveAspectRatio="none">
-  <path d="M0,45 C150,85 300,15 450,55 C600,85 750,15 900,50 C940,62 970,38 1000,45 L1000,100 L0,100Z"/>
-</svg>
-<svg class="wave-layer wl5" viewBox="0 0 1000 100" preserveAspectRatio="none">
-  <path d="M0,50 C125,10 250,90 375,50 C500,10 625,90 750,50 C875,10 937,70 1000,50 L1000,100 L0,100Z"/>
-</svg>
-<svg class="wave-layer wl6" viewBox="0 0 1000 100" preserveAspectRatio="none">
-  <path d="M0,40 C140,80 280,10 420,50 C560,90 700,10 840,50 C920,75 970,30 1000,50 L1000,100 L0,100Z"/>
-</svg>
-
-<div id="stage"></div>
-
-<script>
-const QUOTES = [
-  { name:"โอนาท่านหนึ่ง", quote:"Ohna still here นะคะ อยู่กับเด็กๆไปนานๆน้าาา" },
-  { name:"WMine96", quote:"ขอให้น้องคลื่นโด่งดังไปทั่วโลก" },
-  { name:"TaiiaT_2211", quote:"คิดถึงอีกแล้ว" },
-  { name:"ทีมเฮียดรณ์รักน้องคลื่น", quote:"ครบรอบ 1 ปีแล้ว เด็กๆเก่งกันมาก ขอให้เติบโตอย่างแข็งแกร่ง ปังๆ 🌊 ทีมเฮียดรณ์ 🐉🩵💛" },
-  { name:"RaBBiT_MiLkY", quote:"ขอให้น้องคลื่นมีงานเยอะๆ ประสบความสำเร็จทุกคนเลยคับ" },
-  { name:"Wenwen0609", quote:"Wish NexT1DE always HAPPY" },
-  { name:"IAmMe", quote:"ขอบคุณที่จัดงานเพื่อน้องคลื่นนะคะ" },
-  { name:"lalalinnnkk", quote:"ขอให้NT1ถูกค้นพบเยอะๆ🌊🫶" },
-  { name:"Omttar🦖", quote:"Wish NexT1DE go higher 🌊" },
-  { name:"bbchouc16", quote:"🌊🦖" },
-  { name:"WaN 🧸", quote:"🌊 Happy Anniversary 🥳" },
-  { name:"zhouaom", quote:"ขอให้ NexT1DE และ Ohna ทุกคนมีความสุข" },
-  { name:"support 🩵 HIA DORN", quote:"ขอให้ NexT1DE มีคนรัก&เอ็นดู เฮงๆ ปังๆ ขอให้โอนาสุขภาพแข็งแรง อยู่ซัพพอร์ตด้วยกันไปนานๆ❤️" },
-  { name:"ชานมน้องหมี", quote:"หม่าม๊าหัวใจน้องคลื่น 💖" },
-  { name:"Bunnie", quote:"ความสุขของพี่🫶🏻" },
-  { name:"Jin_Tawan", quote:"อยู่เป็นความสุขให้กันและกันไปนานๆนะเด็กๆ 💙🌊" },
-  { name:"Thima_c", quote:"เติบโตไปด้วยกันน๊าาา" },
-  { name:"ssirinya", quote:"NT1🩷" },
-  { name:"bbchouc16", quote:"Reackless!🌊" },
-  { name:"CPCUNG", quote:"น้องคลื่นเก่งมากกกก" },
-  { name:"แม่น้องฉง06", quote:"น้องคลื่นเก่งมากกก^^" },
-  { name:"ppreawara", quote:"โปรดกลับมาโชว์เพลงใหม่ที่ประเทศของฉัน" },
-  { name:"Sunshine🩷", quote:"หมวยสวยมาดด ฉงเกอผมฟ้าเท่สุดๆ" },
-  { name:"chiki", quote:"น้องคลื่นปังๆ" },
-  { name:"Jy-O", quote:"Happy Anniversary! Always support and Love NT1 🩵" },
-  { name:"@shinobuhime", quote:"Luv & appreciate things we have been doing for each other! 😘🌊💙💚🩷" },
-  { name:"แม่หนูจี๊ด", quote:"น้องคลื่นสู้ๆ เจอกันที่ไทยน้า ครบรอบ1ปี" },
-  { name:"Abaek1012", quote:"เมื่อไรจะมาไทยคิดถึงแล้ว" },
-  { name:"BB ~ 🧸", quote:"รักน้องฉง น้องคลื่น ขอให้มีstageปังๆอีกเยอะๆ 🥰" },
-  { name:"ChiniizyGN", quote:"น้องคลื่น 1 ขวบแล้ว ขอให้ยิ่งปัง ยิ่งดังทั่วเอเชีย 😉" },
-  { name:"มัมหมีน้องไทโอ🌻", quote:"May your talent reach more and more people 🌊" },
-  { name:"Sunshine🩷", quote:"รักก้อนคลื่นมาดๆ รักก้อนคลื่น 7 ก้อน🩵🤍" },
-  { name:"Wordsmithsix🧸🦋", quote:"ได้ไซน์แล้วครับ เจ้าแม่บ้านโปรเจกต์ศักดิ์สิทธิ์มาก 😭🙏🤍" },
-  { name:"aliceixiong", quote:"ลุคใหม่หมี(แพนด้า)🐼" },
-  { name:"yimku60", quote:"เป็นกำลังใจให้น้องคลื่นนะคะ ปังปังนะคะ 🌊🫶✌" },
-  { name:"Anna", quote:"เพลงใหม่แซ่บมากกก 🐶🧸" },
-  { name:"ShionTamizuki", quote:"Always luv u guys naa✨🌊" },
-  { name:"babu🦖🏀", quote:"น้องคลื่นจะ 1 ขวบแล้ว ไปกันต่อ!" },
-  { name:"ไอจี๊ดตัวแสบ🦄", quote:"โอนามาซัพพอร์ตไอคลื่นกันเยอะๆนะคะ✨️" },
-  { name:"หม่ามี้ฉงรักน้องคลื่น🩷🌊", quote:"ขอให้น้องคลื่นกลับมาหา Ohna ที่ไทยไวๆนะคะ🩷" },
-  { name:"SomeoneSomewhere", quote:"กินอิ่ม นอนหลับ มีความสุข มีพลังในการใช้ชีวิตนะ ภูมิใจในตัวลูกๆเสมอ" },
-  { name:"Namaiki_girl", quote:"ปีหน้าลุยเลยนะครับ ลูกคลื่น ♥️" },
-  { name:"ส้มอุนหม่ามี้", quote:"Love NexT1DE ที่สุด" },
-  { name:"ออแอนอแอน", quote:"ขอให้ NT1 ประสบความสำเร็จ ได้ไปออนสเตจเยอะๆ 🩵" },
-  { name:"H'🧸", quote:"พรุ่งนี้ขอได้ไซน์ ขอให้ได้ไซน์ ไม่งั้นไม่เริ่ด 🍀" },
-  { name:"ผู้ปกครองเหมียวดรณ์😽", quote:"ไอเยิฟฟน้องคลื่น ขอให้เด็กๆมีความสุขในทุกๆวัน🫶🏻🌊" },
-  { name:"chodanon", quote:"พรุ่งนี้ขอให้ได้ไซน์ ถ้าได้ไซน์จะโดอีก 100บาท 🫰🏻" },
-  { name:"Phoenixvsdrago1", quote:"ขอให้เติบโตอย่างแข็งแกร่ง งานไหลมาเทมา มีคนรักเยอะๆ🩵🌊" },
-  { name:"TaiiaT_2211", quote:"ใกล้ได้เจอกันแล้วน๊าาาา นับถอยหลังแล้ว 🩵" },
-  { name:"BokBear🧸🎀🍼", quote:"นบโปะหม่ำ ๆ นุ้งหมีกู๊ดบอย 🧸🍼" },
-  { name:"wordsmithsix🧸🦋", quote:"ขอให้น้องคลื่นถูกค้นพบยิ่งกว่านี้🤍" },
-  { name:"bkph8", quote:"fighting ka!" },
-  { name:"support🩵HiaDORN", quote:"ขอให้น้องคลื่นสุขภาพแข็งแรง มีความสุข ยิ้มได้ทุกๆวัน❤️" },
-  { name:"DornTheRabbit", quote:"ดีใจที่อยู่ด้วยกันจนถึงวันนี้ แล้วมาฉลองปีหน้ากันอีกนะ🥰" },
-  { name:"ต้าวคลื่นจิ๋ว", quote:"ขอให้น้องคลื่นและโอนาเริ่ดๆปังๆไปนานๆค่าาา" },
-  { name:"นางมารร้าย", quote:"รักทุกคนน้า" },
-  { name:"โอนาท่านหนึ่ง", quote:"รักน้องคลื่นน้าา อยู่ด้วยกันไปนานๆเลยย🍏🌊" },
-  { name:"นางมารร้าย", quote:"ขอให้เป็นน้องคลื่นที่สดใส" },
-  { name:"Pondadys", quote:"รักจ้า" },
-  { name:"หมีน้อยน่ารัก❤️🐻🧸", quote:"คิดถึง NexT1DE" },
-  { name:"หมีน้อยน่ารัก❤️🐻🧸", quote:"รักน้องคลื่น" },
-  { name:"รักน้องคลื่น", quote:"น้องคลื่นน่ารัก โอนาก็น่ารัก รักนะจุ๊บๆ" }
-];
-
-/* ─────────────────────────────────────────────
-   LANE SYSTEM  – divide screen into N horizontal
-   lanes; each card stays within its lane row
-   so cards never vertically overlap.
-───────────────────────────────────────────── */
-const CARD_W = 260;   // matches CSS
-const CARD_H = 130;   // approx card height
-const LANE_GAP = 16;  // px gap between lanes
-
-const stage = document.getElementById('stage');
-
-// Build lane descriptors after fonts load (gives accurate vh)
-let lanes = [];
-
-function buildLanes() {
-  const vh = window.innerHeight;
-  const headerH = 80; // reserve for header
-  const usableH = vh - headerH;
-  const laneH = CARD_H + LANE_GAP;
-  const count = Math.floor(usableH / laneH);
-  lanes = [];
-  for (let i = 0; i < count; i++) {
-    const centerY = headerH + i * laneH + CARD_H / 2;
-    lanes.push({
-      centerY,
-      // alternate direction per lane
-      ltr: i % 2 === 0,
-      // sine wave params for this lane
-      amplitude: 20 + Math.random() * 20,   // 20–40px vertical wave
-      freq:      0.3 + Math.random() * 0.4, // radians per 100px
-      phase:     Math.random() * Math.PI * 2
-    });
-  }
-}
-
-/* ─── Queue & active cards per lane ─── */
-function shuffle(arr) {
-  for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [arr[i], arr[j]] = [arr[j], arr[i]];
-  }
-  return arr;
-}
-
-let quotePool = shuffle([...QUOTES]);
-let qIdx = 0;
-function nextQuote() {
-  if (qIdx >= quotePool.length) { qIdx = 0; quotePool = shuffle([...QUOTES]); }
-  return quotePool[qIdx++];
-}
-
-/* Active cards: { el, x, lane index } */
-const activeCards = [];
-
-function spawnCardInLane(laneIdx, preplace) {
-  const lane = lanes[laneIdx];
-  const q = nextQuote();
-  const vw = window.innerWidth;
-
-  const el = document.createElement('div');
-  el.className = 'card';
-  el.innerHTML = `
-    <div class="card-inner">
-      <span class="qm l">"</span>
-      <p class="c-text">${q.quote.replace(/\n/g,'<br>')}</p>
-      <span class="qm r">"</span>
-      <div class="c-name">จาก ${q.name}</div>
-    </div>`;
-  stage.appendChild(el);
-
-  // speed: px per second – faster than before
-  const speed = 80 + Math.random() * 60; // 80–140 px/s
-
-  // Starting X position
-  let startX;
-  if (preplace) {
-    // Place anywhere along the journey
-    startX = lane.ltr
-      ? -CARD_W + Math.random() * (vw + CARD_W)
-      : vw + Math.random() * vw;
-  } else {
-    startX = lane.ltr ? -CARD_W - 10 : vw + 10;
-  }
-
-  const card = { el, x: startX, laneIdx, speed, active: true };
-  activeCards.push(card);
-}
-
-/* ─── Animation loop ─── */
-let lastT = null;
-function tick(ts) {
-  if (!lastT) lastT = ts;
-  const dt = Math.min((ts - lastT) / 1000, 0.05); // seconds, capped at 50ms
-  lastT = ts;
-
-  const vw = window.innerWidth;
-
-  for (let i = activeCards.length - 1; i >= 0; i--) {
-    const c = activeCards[i];
-    if (!c.active) { activeCards.splice(i, 1); continue; }
-
-    const lane = lanes[c.laneIdx];
-    c.x += lane.ltr ? c.speed * dt : -c.speed * dt;
-
-    // Check if offscreen → remove
-    const offRight = lane.ltr  && c.x > vw + 10;
-    const offLeft  = !lane.ltr && c.x < -CARD_W - 10;
-    if (offRight || offLeft) {
-      c.el.remove();
-      activeCards.splice(i, 1);
-      // re‑spawn a new card in this lane shortly
-      setTimeout(() => spawnCardInLane(c.laneIdx, false), 500 + Math.random() * 1000);
-      continue;
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Messages to NexT1DE 🌊</title>
+  <link href="https://fonts.googleapis.com/css2?family=Mali:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
 
-    // Sinusoidal Y (wave motion)
-    const waveY = lane.amplitude * Math.sin(lane.freq * c.x / 100 + lane.phase);
-    const y = lane.centerY - CARD_H / 2 + waveY;
+    body {
+      font-family: 'Mali', 'Sarabun', sans-serif;
+      background: #f0f2f5;
+      padding: 40px 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
 
-    c.el.style.transform = `translate(${c.x}px, ${y}px)`;
-  }
+    /* ─── SEA VIEWPORT CONTAINER ─── */
+    .sea-viewport {
+      position: relative;
+      width: 100%;
+      max-width: 1400px;
+      height: 750px;
+      margin: 0 auto;
+      background: linear-gradient(90deg, #286ACD 0%, #A3E4DB 50%, #FED1E1 100%);
+      overflow: hidden;
+      border-radius: 30px;
+      box-shadow: 0 25px 60px rgba(0, 30, 80, 0.15);
+      border: 8px solid #fff;
+    }
 
-  requestAnimationFrame(tick);
-}
+    /* ─── HEADER ─── */
+    .page-header {
+      text-align: center;
+      margin-bottom: 24px;
+      pointer-events: none;
+    }
 
-/* ─── Bubbles ─── */
-function spawnBubbles() {
-  for (let i = 0; i < 28; i++) {
-    const b = document.createElement('div');
-    b.className = 'bubble';
-    const sz = 4 + Math.random() * 16;
-    b.style.cssText = `width:${sz}px;height:${sz}px;left:${Math.random()*100}%;` +
-      `animation-duration:${5+Math.random()*7}s;animation-delay:-${Math.random()*12}s;`;
-    document.body.appendChild(b);
-  }
-}
+    .page-header h1 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #fff;
+      text-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+    }
 
-/* ─── Init ─── */
-window.addEventListener('load', () => {
-  buildLanes();
-  spawnBubbles();
+    .page-header h1 span {
+      color: #ffd1e8;
+    }
 
-  // Pre-place one card per lane to fill screen immediately
-  lanes.forEach((_, i) => spawnCardInLane(i, true));
+    .page-header p {
+      font-size: 0.95rem;
+      color: rgba(255, 255, 255, 0.8);
+      margin-top: 2px;
+    }
 
-  requestAnimationFrame(tick);
-});
+    /* ─── WAVE OVERLAYS (Vertical wave crests moving horizontally) ─── */
+    .wave-layer {
+      position: absolute;
+      top: 0;
+      height: 100%;
+      width: 800px;
+      pointer-events: none;
+      z-index: 1;
+      background-repeat: repeat-y;
+      background-size: 800px 1000px;
+      will-change: transform;
+    }
 
-window.addEventListener('resize', () => {
-  buildLanes();
-});
-</script>
+    .wave-layer.wl1 {
+      left: 0;
+      animation: wpush1 12s linear infinite;
+      opacity: 0.12;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 800 1000' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M400 0 C 350 150 450 350 400 500 C 350 650 450 850 400 1000 L 800 1000 L 800 0 Z' fill='%23FED1E1'/%3E%3C/svg%3E");
+    }
+
+    .wave-layer.wl2 {
+      left: 0;
+      animation: wpush2 15s linear infinite;
+      opacity: 0.18;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 800 1000' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M400 0 C 320 120 480 380 400 500 C 320 620 480 880 400 1000 L 800 1000 L 800 0 Z' fill='%23A3E4DB'/%3E%3C/svg%3E");
+    }
+
+    .wave-layer.wl3 {
+      left: 0;
+      animation: wpush1 18s linear infinite reverse;
+      opacity: 0.12;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 800 1000' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M400 0 C 360 180 440 320 400 500 C 360 680 440 820 400 1000 L 800 1000 L 800 0 Z' fill='%23286ACD'/%3E%3C/svg%3E");
+    }
+
+    @keyframes wpush1 {
+      0% {
+        transform: translateX(-800px);
+      }
+
+      100% {
+        transform: translateX(100vw);
+      }
+    }
+
+    @keyframes wpush2 {
+      0% {
+        transform: translateX(-1000px);
+      }
+
+      100% {
+        transform: translateX(100vw);
+      }
+    }
+
+    /* ─── SHORELINE ─── */
+    .shoreline {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 140px;
+      height: 100%;
+      background: linear-gradient(to right,
+          rgba(243, 229, 171, 0.4) 0%,
+          rgba(253, 245, 230, 0.85) 40%,
+          #f5deb3 100%);
+      z-index: 5;
+      pointer-events: none;
+      box-shadow: -15px 0 40px rgba(0, 0, 0, 0.05);
+    }
+
+    .shoreline::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 10px;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.3);
+      filter: blur(8px);
+    }
+
+    /* ─── LANES ─── each lane is a horizontal strip for cards to flow through */
+    #stage {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 10;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .card {
+      position: absolute;
+      pointer-events: auto;
+      will-change: transform;
+      z-index: 20;
+      transition: opacity 0.8s ease;
+    }
+
+    .card.fading {
+      opacity: 0;
+    }
+
+    /* STYLE: CLASSIC (Type A) */
+    .bottle.type-classic {
+      display: flex;
+      align-items: center;
+      width: 280px;
+    }
+
+    .type-classic .neck {
+      width: 44px;
+      height: 30px;
+      border-right: none;
+      border-radius: 8px 0 0 8px;
+    }
+
+    .type-classic .cork {
+      position: absolute;
+      left: -10px;
+      top: 4px;
+      width: 14px;
+      height: 22px;
+      background: #a67c52;
+      border-radius: 3px;
+    }
+
+    .type-classic .body {
+      flex: 1;
+      height: 120px;
+      border-radius: 12px 60px 60px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* STYLE: JAR (Type B) */
+    .bottle.type-jar {
+      width: 200px;
+      flex-direction: column;
+      align-items: center;
+      display: flex;
+    }
+
+    .type-jar .neck {
+      width: 60px;
+      height: 26px;
+      border-bottom: none;
+      border-radius: 12px 12px 0 0;
+    }
+
+    .type-jar .cork {
+      position: absolute;
+      top: -10px;
+      left: 10px;
+      right: 10px;
+      height: 14px;
+      background: #8d6e63;
+      border-radius: 4px;
+    }
+
+    .type-jar .body {
+      width: 220px;
+      height: 180px;
+      border-radius: 20px 20px 70px 70px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transform: translateY(-3px);
+    }
+
+    .type-jar .paper {
+      width: 82%;
+      padding: 22px 18px;
+    }
+
+    /* STYLE: SLIM (Type C) */
+    .bottle.type-slim {
+      display: flex;
+      align-items: center;
+      width: 330px;
+    }
+
+    .type-slim .neck {
+      width: 65px;
+      height: 24px;
+      border-right: none;
+      border-radius: 6px 0 0 6px;
+    }
+
+    .type-slim .body {
+      flex: 1;
+      height: 85px;
+      border-radius: 10px 50px 50px 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .type-slim .paper {
+      width: 90%;
+      padding: 12px 24px;
+    }
+
+    /* Shared Glass Look */
+    .glass {
+      background: rgba(255, 255, 255, 0.18);
+      backdrop-filter: blur(10px);
+      border: 1.5px solid rgba(255, 255, 255, 0.35);
+      position: relative;
+      overflow: hidden;
+      filter: drop-shadow(0 8px 25px rgba(0, 30, 80, 0.15));
+    }
+
+    .glass::before {
+      /* Reflection */
+      content: "";
+      position: absolute;
+      top: 10%;
+      left: 10%;
+      width: 80%;
+      height: 5px;
+      background: rgba(255, 255, 255, 0.25);
+      border-radius: 10px;
+    }
+
+    .paper-inner {
+      background: linear-gradient(135deg, #fffcf0 0%, #f7f3e1 100%);
+      padding: 14px 22px;
+      box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+      transform: rotate(-0.5deg);
+      width: 90%;
+      text-align: center;
+      position: relative;
+      /* Ragged edge effect using clip-path */
+      clip-path: polygon(0% 3%, 10% 0%, 20% 4%, 30% 1%, 40% 3%, 50% 0%, 60% 4%, 70% 2%, 80% 4%, 90% 1%, 100% 3%,
+          98% 10%, 100% 20%, 97% 30%, 100% 40%, 98% 50%, 100% 60%, 97% 70%, 100% 80%, 98% 90%, 100% 97%,
+          90% 100%, 80% 96%, 70% 99%, 60% 97%, 50% 100%, 40% 96%, 30% 99%, 20% 97%, 10% 100%, 0% 97%,
+          2% 90%, 0% 80%, 3% 70%, 0% 60%, 2% 50%, 0% 40%, 3% 30%, 0% 20%, 2% 10%);
+    }
+
+    .c-text {
+      font-size: 0.8rem;
+      font-weight: 700;
+      font-style: italic;
+      color: #2d3748;
+      line-height: 1.45;
+      margin-bottom: 8px;
+      word-break: break-word;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .c-name {
+      font-size: 0.6rem;
+      color: #718096;
+      font-weight: 800;
+      border-top: 1px dashed rgba(43, 106, 176, 0.15);
+      padding-top: 5px;
+      display: inline-block;
+      font-family: 'Mali', sans-serif;
+      opacity: 0.85;
+    }
+
+    /* ─── BUBBLES ─── */
+    .bubble {
+      position: absolute;
+      bottom: -40px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.22);
+      animation: brise linear infinite;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    @keyframes brise {
+      0% {
+        transform: translateY(0) scale(1);
+        opacity: 0;
+      }
+
+      8% {
+        opacity: 0.8;
+      }
+
+      90% {
+        opacity: 0.4;
+      }
+
+      100% {
+        transform: translateY(-110vh) scale(0.4);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="page-header">
+    <h1>Messages to <span>NexT1DE</span> 🌊</h1>
+    <p>ร่วมส่งพลังและความรักครบรอบ 1 ปี</p>
+  </header>
+
+  <div class="sea-viewport" id="seaViewport">
+    <!-- Wave overlays (Reduced for performance) -->
+    <div class="wave-layer wl1"></div>
+    <div class="wave-layer wl2"></div>
+    <div class="wave-layer wl3"></div>
+
+    <div class="shoreline"></div>
+    <div id="stage"></div>
+  </div>
+
+  <script>
+    const QUOTES = [
+      { name: "โอนาท่านหนึ่ง", quote: "Ohna still here นะคะ อยู่กับเด็กๆไปนานๆน้าาา" },
+      { name: "WMine96", quote: "ขอให้น้องคลื่นโด่งดังไปทั่วโลก" },
+      { name: "TaiiaT_2211", quote: "คิดถึงอีกแล้ว" },
+      { name: "ทีมเฮียดรณ์รักน้องคลื่น", quote: "ครบรอบ 1 ปีแล้ว เด็กๆเก่งกันมาก ขอให้เติบโตอย่างแข็งแกร่ง ปังๆ 🌊 ทีมเฮียดรณ์ 🐉🩵💛" },
+      { name: "RaBBiT_MiLkY", quote: "ขอให้น้องคลื่นมีงานเยอะๆ ประสบความสำเร็จทุกคนเลยคับ" },
+      { name: "Wenwen0609", quote: "Wish NexT1DE always HAPPY" },
+      { name: "IAmMe", quote: "ขอบคุณที่จัดงานเพื่อน้องคลื่นนะคะ" },
+      { name: "lalalinnnkk", quote: "ขอให้NT1ถูกค้นพบเยอะๆ🌊🫶" },
+      { name: "Omttar🦖", quote: "Wish NexT1DE go higher 🌊" },
+      { name: "bbchouc16", quote: "🌊🦖" },
+      { name: "WaN 🧸", quote: "🌊 Happy Anniversary 🥳" },
+      { name: "zhouaom", quote: "ขอให้ NexT1DE และ Ohna ทุกคนมีความสุข" },
+      { name: "support 🩵 HIA DORN", quote: "ขอให้ NexT1DE มีคนรัก&เอ็นดู เฮงๆ ปังๆ ขอให้โอนาสุขภาพแข็งแรง อยู่ซัพพอร์ตด้วยกันไปนานๆ❤️" },
+      { name: "ชานมน้องหมี", quote: "หม่าม๊าหัวใจน้องคลื่น 💖" },
+      { name: "Bunnie", quote: "ความสุขของพี่🫶🏻" },
+      { name: "Jin_Tawan", quote: "อยู่เป็นความสุขให้กันและกันไปนานๆนะเด็กๆ 💙🌊" },
+      { name: "Thima_c", quote: "เติบโตไปด้วยกันน๊าาา" },
+      { name: "ssirinya", quote: "NT1🩷" },
+      { name: "bbchouc16", quote: "Reackless!🌊" },
+      { name: "CPCUNG", quote: "น้องคลื่นเก่งมากกกก" },
+      { name: "แม่น้องฉง06", quote: "น้องคลื่นเก่งมากกก^^" },
+      { name: "ppreawara", quote: "โปรดกลับมาโชว์เพลงใหม่ที่ประเทศของฉัน" },
+      { name: "Sunshine🩷", quote: "หมวยสวยมาดด ฉงเกอผมฟ้าเท่สุดๆ" },
+      { name: "chiki", quote: "น้องคลื่นปังๆ" },
+      { name: "Jy-O", quote: "Happy Anniversary! Always support and Love NT1 🩵" },
+      { name: "@shinobuhime", quote: "Luv & appreciate things we have been doing for each other! 😘🌊💙💚🩷" },
+      { name: "แม่หนูจี๊ด", quote: "น้องคลื่นสู้ๆ เจอกันที่ไทยน้า ครบรอบ1ปี" },
+      { name: "Abaek1012", quote: "เมื่อไรจะมาไทยคิดถึงแล้ว" },
+      { name: "BB ~ 🧸", quote: "รักน้องฉง น้องคลื่น ขอให้มีstageปังๆอีกเยอะๆ 🥰" },
+      { name: "ChiniizyGN", quote: "น้องคลื่น 1 ขวบแล้ว ขอให้ยิ่งปัง ยิ่งดังทั่วเอเชีย 😉" },
+      { name: "มัมหมีน้องไทโอ🌻", quote: "May your talent reach more and more people 🌊" },
+      { name: "Sunshine🩷", quote: "รักก้อนคลื่นมาดๆ รักก้อนคลื่น 7 ก้อน🩵🤍" },
+      { name: "Wordsmithsix🧸🦋", quote: "ได้ไซน์แล้วครับ เจ้าแม่บ้านโปรเจกต์ศักดิ์สิทธิ์มาก 😭🙏🤍" },
+      { name: "aliceixiong", quote: "ลุคใหม่หมี(แพนด้า)🐼" },
+      { name: "yimku60", quote: "เป็นกำลังใจให้น้องคลื่นนะคะ ปังปังนะคะ 🌊🫶✌" },
+      { name: "Anna", quote: "เพลงใหม่แซ่บมากกก 🐶🧸" },
+      { name: "ShionTamizuki", quote: "Always luv u guys naa✨🌊" },
+      { name: "babu🦖🏀", quote: "น้องคลื่นจะ 1 ขวบแล้ว ไปกันต่อ!" },
+      { name: "ไอจี๊ดตัวแสบ🦄", quote: "โอนามาซัพพอร์ตไอคลื่นกันเยอะๆนะคะ✨️" },
+      { name: "หม่ามี้ฉงรักน้องคลื่น🩷🌊", quote: "ขอให้น้องคลื่นกลับมาหา Ohna ที่ไทยไวๆนะคะ🩷" },
+      { name: "SomeoneSomewhere", quote: "กินอิ่ม นอนหลับ มีความสุข มีพลังในการใช้ชีวิตนะ ภูมิใจในตัวลูกๆเสมอ" },
+      { name: "Namaiki_girl", quote: "ปีหน้าลุยเลยนะครับ ลูกคลื่น ♥️" },
+      { name: "ส้มอุนหม่ามี้", quote: "Love NexT1DE ที่สุด" },
+      { name: "ออแอนอแอน", quote: "ขอให้ NT1 ประสบความสำเร็จ ได้ไปออนสเตจเยอะๆ 🩵" },
+      { name: "H'🧸", quote: "พรุ่งนี้ขอได้ไซน์ ขอให้ได้ไซน์ ไม่งั้นไม่เริ่ด 🍀" },
+      { name: "ผู้ปกครองเหมียวดรณ์😽", quote: "ไอเยิฟฟน้องคลื่น ขอให้เด็กๆมีความสุขในทุกๆวัน🫶🏻🌊" },
+      { name: "chodanon", quote: "พรุ่งนี้ขอให้ได้ไซน์ ถ้าได้ไซน์จะโดอีก 100บาท 🫰🏻" },
+      { name: "Phoenixvsdrago1", quote: "ขอให้เติบโตอย่างแข็งแกร่ง งานไหลมาเทมา มีคนรักเยอะๆ🩵🌊" },
+      { name: "TaiiaT_2211", quote: "ใกล้ได้เจอกันแล้วน๊าาาา นับถอยหลังแล้ว 🩵" },
+      { name: "BokBear🧸🎀🍼", quote: "นบโปะหม่ำ ๆ นุ้งหมีกู๊ดบอย 🧸🍼" },
+      { name: "wordsmithsix🧸🦋", quote: "ขอให้น้องคลื่นถูกค้นพบยิ่งกว่านี้🤍" },
+      { name: "bkph8", quote: "fighting ka!" },
+      { name: "support🩵HiaDORN", quote: "ขอให้น้องคลื่นสุขภาพแข็งแรง มีความสุข ยิ้มได้ทุกๆวัน❤️" },
+      { name: "DornTheRabbit", quote: "ดีใจที่อยู่ด้วยกันจนถึงวันนี้ แล้วมาฉลองปีหน้ากันอีกนะ🥰" },
+      { name: "ต้าวคลื่นจิ๋ว", quote: "ขอให้น้องคลื่นและโอนาเริ่ดๆปังๆไปนานๆค่าาา" },
+      { name: "นางมารร้าย", quote: "รักทุกคนน้า" },
+      { name: "โอนาท่านหนึ่ง", quote: "รักน้องคลื่นน้าา อยู่ด้วยกันไปนานๆเลยย🍏🌊" },
+      { name: "นางมารร้าย", quote: "ขอให้เป็นน้องคลื่นที่สดใส" },
+      { name: "Pondadys", quote: "รักจ้า" },
+      { name: "หมีน้อยน่ารัก❤️🐻🧸", quote: "คิดถึง NexT1DE" },
+      { name: "หมีน้อยน่ารัก❤️🐻🧸", quote: "รักน้องคลื่น" },
+      { name: "รักน้องคลื่น", quote: "น้องคลื่นน่ารัก โอนาก็น่ารัก รักนะจุ๊บๆ" }
+    ];
+
+    /* ─────────────────────────────────────────────
+       LANE SYSTEM  – divide screen into N horizontal
+       lanes; each card stays within its lane row
+       so cards never vertically overlap.
+    ───────────────────────────────────────────── */
+    const CARD_W = 260;   // matches CSS
+    const CARD_H = 130;   // approx card height
+    const LANE_GAP = 16;  // px gap between lanes
+
+    const stage = document.getElementById('stage');
+
+    // Build lane descriptors after fonts load (gives accurate vh)
+    let lanes = [];
+
+    function buildLanes() {
+      const vh = stage ? stage.offsetHeight : 550;
+      const headerH = 20; // smaller buffer inside the viewport
+      const usableH = vh - headerH;
+      const laneH = CARD_H + LANE_GAP;
+      const count = Math.floor(usableH / laneH);
+      lanes = [];
+      for (let i = 0; i < count; i++) {
+        const centerY = headerH + i * laneH + CARD_H / 2;
+        lanes.push({
+          centerY,
+          ltr: true,
+          amplitude: 8 + Math.random() * 8, // even steadier for performance
+          freq: 0.2 + Math.random() * 0.3,
+          phase: Math.random() * Math.PI * 2,
+          lastX: -1000 // anti-collision tracking
+        });
+      }
+    }
+
+    /* ─── Queue & active cards per lane ─── */
+    function shuffle(arr) {
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    let quotePool = shuffle([...QUOTES]);
+    let qIdx = 0;
+    function nextQuote() {
+      if (qIdx >= quotePool.length) { qIdx = 0; quotePool = shuffle([...QUOTES]); }
+      return quotePool[qIdx++];
+    }
+
+    /* Active cards: { el, x, lane index, settled } */
+    const activeCards = [];
+    const settledCards = [];
+    const MAX_SETTLED = 40;
+
+    function spawnCardInLane(laneIdx, preplace) {
+      const lane = lanes[laneIdx];
+      const stageW = stage.offsetWidth;
+
+      // Anti-collision: Avoid spawning if lane entrance is busy
+      if (!preplace) {
+        const entryX = -CARD_W - 40;
+        const minGap = 350; // Minimum gap to prevent overlap
+        if (lane.lastX < entryX + minGap) {
+          return null; // Skip spawn for this beat
+        }
+      }
+
+      const q = nextQuote();
+      const el = document.createElement('div');
+      el.className = 'card';
+
+      const types = ['type-classic', 'type-jar', 'type-slim'];
+      const type = types[Math.floor(Math.random() * types.length)];
+
+      el.innerHTML = `
+    <div class="bottle-container">
+      <div class="bottle ${type}">
+        <div class="neck glass">
+          <div class="cork"></div>
+        </div>
+        <div class="body glass">
+          <div class="paper paper-inner">
+            <p class="c-text">${q.quote.replace(/\n/g, '<br>')}</p>
+            <div class="c-name">จาก ${q.name}</div>
+          </div>
+        </div>
+      </div>
+    </div>`;
+      stage.appendChild(el);
+
+      // speed: narrowed range to reduce overtaking collisions
+      const speed = 140 + Math.random() * 50;
+
+      // Starting X position
+      let startX;
+      if (preplace) {
+        startX = -CARD_W + Math.random() * (stageW * 0.85);
+      } else {
+        startX = -CARD_W - 40;
+      }
+
+      const card = { el, x: startX, laneIdx, speed };
+      activeCards.push(card);
+      lane.lastX = startX;
+      return card;
+    }
+
+    /* ─── Animation loop ─── */
+    let lastT = null;
+    function tick(ts) {
+      if (!lastT) lastT = ts;
+      const dt = Math.min((ts - lastT) / 1000, 0.05); // seconds, capped at 50ms
+      lastT = ts;
+
+      const stageW = stage.offsetWidth;
+      const shoreThreshold = stageW - 130;
+
+      for (let i = activeCards.length - 1; i >= 0; i--) {
+        const c = activeCards[i];
+        const lane = lanes[c.laneIdx];
+
+        // Horizontal flow + wave surge
+        const wavePeriod = 12000;
+        const waveX = ((ts % wavePeriod) / wavePeriod) * (stageW + 1000) - 800;
+
+        let surge = 0;
+        if (waveX < c.x && waveX > c.x - 400) {
+          surge = 80 * (1 - (c.x - waveX) / 400);
+        }
+
+        const flowX = c.speed + surge + Math.sin(ts * 0.001 + c.laneIdx) * 15;
+        c.x += flowX * dt;
+
+        // Track last position for collision avoidance
+        if (c.x > lane.lastX) lane.lastX = c.x;
+
+        // Check if reached shore
+        if (c.x >= shoreThreshold - Math.random() * 40) {
+          const k = lane.freq / 100;
+          const waveY = lane.amplitude * Math.sin(k * c.x + lane.phase);
+          const y = lane.centerY - CARD_H / 2 + waveY + (Math.random() - 0.5) * 20;
+
+          const finalTilt = -8 + Math.random() * 20;
+          c.el.style.transform = `translate(${c.x}px, ${y}px) rotate(${finalTilt}deg)`;
+
+          // Cleanup active loop immediately
+          activeCards.splice(i, 1);
+          settledCards.push(c);
+
+          if (settledCards.length > MAX_SETTLED) {
+            const oldest = settledCards.shift();
+            oldest.el.classList.add('fading');
+            setTimeout(() => { oldest.el.remove(); }, 1000);
+          }
+          continue;
+        }
+
+        // Sinusoidal Y motion: simplified for linear horizontal flow
+        const k = lane.freq / 100;
+        const waveY = lane.amplitude * Math.sin(k * c.x + lane.phase);
+        const y = lane.centerY - CARD_H / 2 + waveY;
+
+        // Rotation based on slope
+        const slope = lane.amplitude * k * Math.cos(k * c.x + lane.phase);
+        const angle = Math.atan(slope) * (180 / Math.PI);
+        const tilt = angle * 0.6; // Scale down slightly for organic feel
+
+        c.el.style.transform = `translate(${c.x}px, ${y}px) rotate(${tilt}deg)`;
+      }
+
+      requestAnimationFrame(tick);
+    }
+
+    /* ─── Bubbles ─── */
+    function spawnBubbles() {
+      const viewport = document.getElementById('seaViewport');
+      for (let i = 0; i < 28; i++) {
+        const b = document.createElement('div');
+        b.className = 'bubble';
+        const sz = 4 + Math.random() * 16;
+        b.style.cssText = `width:${sz}px;height:${sz}px;left:${Math.random() * 100}%;` +
+          `animation-duration:${5 + Math.random() * 7}s;animation-delay:-${Math.random() * 12}s;`;
+        viewport.appendChild(b);
+      }
+    }
+
+    /* ─── Init ─── */
+    window.addEventListener('load', () => {
+      buildLanes();
+      spawnBubbles();
+
+      // Start with a dense sea: spawn multiple items at once across random lanes/X
+      for (let i = 0; i < 15; i++) {
+        const randomLaneIdx = Math.floor(Math.random() * lanes.length);
+        spawnCardInLane(randomLaneIdx, true); // true = random X pre-placement
+      }
+
+      // Global Spawning Scheduler: Faster and more consistent
+      setInterval(() => {
+        const randomLaneIdx = Math.floor(Math.random() * lanes.length);
+        spawnCardInLane(randomLaneIdx, false);
+      }, 700 + Math.random() * 500); // ~0.7 to 1.2 seconds spawning
+
+      requestAnimationFrame(tick);
+    });
+
+    window.addEventListener('resize', () => {
+      buildLanes();
+    });
+  </script>
 </body>
+
 </html>

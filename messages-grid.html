@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sea of Messages 🌊</title>
+    <link href="https://fonts.googleapis.com/css2?family=Mali:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Mali', 'Sarabun', sans-serif;
+            background: linear-gradient(180deg, #FED1E1 0%, #A3E4DB 40%, #286ACD 100%);
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            color: #fff;
+        }
+
+        /* ─── HEADER ─── */
+        .page-header {
+            position: fixed; top: 0; left: 0; right: 0;
+            z-index: 200;
+            text-align: center;
+            padding: 15px 20px 5px;
+            pointer-events: none;
+            background: linear-gradient(to bottom, rgba(254, 209, 225, 0.4), rgba(254, 209, 225, 0));
+        }
+        .page-header h1 {
+            font-size: 1.5rem; font-weight: 700; color: #fff;
+            text-shadow: 0 2px 12px rgba(0,0,0,0.3);
+        }
+        .page-header h1 span { color: #fff; border-bottom: 2px solid #fff; }
+        .page-header p { font-size: 0.85rem; color: #334e68; margin-top: 2px; font-weight: 700; opacity: 0.8; }
+
+        /* ─── WAVE OVERLAYS ─── */
+        .wave-layer {
+            position: fixed; left: 0; width: 100%; pointer-events: none; z-index: 1;
+            background-repeat: repeat-x;
+            background-size: 1000px 200px;
+        }
+        .wave-layer.wl1 { top: 5%; height: 200px; animation: wdrift1 20s linear infinite; opacity: 0.1; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 1000 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 100 C 150 50 350 150 500 100 C 650 50 850 150 1000 100 V 200 H 0 Z' fill='%23FED1E1'/%3E%3C/svg%3E"); }
+        .wave-layer.wl2 { top: 25%; height: 200px; animation: wdrift2 25s linear infinite; opacity: 0.15; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 1000 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 100 C 120 40 380 160 500 100 C 620 40 880 160 1000 100 V 200 H 0 Z' fill='%23A3E4DB'/%3E%3C/svg%3E"); }
+        .wave-layer.wl3 { top: 50%; height: 200px; animation: wdrift1 30s linear infinite reverse; opacity: 0.1; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 1000 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 100 C 180 60 320 140 500 100 C 680 60 820 140 1000 100 V 200 H 0 Z' fill='%23286ACD'/%3E%3C/svg%3E"); }
+        
+        @keyframes wdrift1 { from { background-position-x: 0; } to { background-position-x: 1000px; } }
+        @keyframes wdrift2 { from { background-position-x: 0; } to { background-position-x: -1000px; } }
+
+        /* ─── GRID STAGE ─── */
+        #stage {
+            position: absolute;
+            top: 70px; left: 0; right: 0; bottom: 0;
+            z-index: 10;
+            padding: 10px 15px 30px;
+            display: grid;
+            /* Adjust columns based on 63 items */
+            grid-template-columns: repeat(10, 1fr);
+            grid-template-rows: repeat(7, 1fr);
+            gap: 12px 8px;
+            overflow: hidden;
+        }
+
+        /* ─── BOTTLE DESIGN ─── */
+        .bottle-item {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            perspective: 1000px;
+            will-change: transform;
+            animation: bobSway 6s ease-in-out infinite alternate;
+        }
+
+        @keyframes bobSway {
+            from { transform: translateY(-4px) rotate(-0.5deg); }
+            to { transform: translateY(4px) rotate(0.5deg); }
+        }
+
+        .bottle {
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), z-index 0s;
+            filter: drop-shadow(0 4px 10px rgba(0,30,80,0.1));
+            transform-origin: center center;
+        }
+        .bottle:hover { 
+            transform: scale(2.6) rotate(0deg) !important; 
+            z-index: 1000 !important; 
+            filter: drop-shadow(0 15px 40px rgba(0,0,0,0.4));
+        }
+
+        /* SHARED ELEMENTS */
+        .glass {
+            background: rgba(255, 255, 255, 0.18);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        .glass::before { /* Reflection */
+            content: ""; position: absolute; top: 10%; left: 10%; width: 80%; height: 3px;
+            background: rgba(255, 255, 255, 0.25); border-radius: 10px;
+        }
+
+        .paper {
+            background: linear-gradient(135deg, #fffcf0 0%, #f7f3e1 100%);
+            padding: 8px 12px;
+            box-shadow: 1px 1px 5px rgba(0,0,0,0.06);
+            transform: rotate(-0.5deg);
+            width: 90%;
+            text-align: center;
+            clip-path: polygon(
+                0% 3%, 10% 0%, 20% 4%, 30% 1%, 40% 3%, 50% 0%, 60% 4%, 70% 2%, 80% 4%, 90% 1%, 100% 3%,
+                98% 10%, 100% 20%, 97% 30%, 100% 40%, 98% 50%, 100% 60%, 97% 70%, 100% 80%, 98% 90%, 100% 97%,
+                90% 100%, 80% 96%, 70% 99%, 60% 97%, 50% 100%, 40% 96%, 30% 99%, 20% 97%, 10% 100%, 0% 97%,
+                2% 90%, 0% 80%, 3% 70%, 0% 60%, 2% 50%, 0% 40%, 3% 30%, 0% 20%, 2% 10%
+            );
+        }
+
+        .c-text { font-size: 0.5rem; font-weight: 700; font-style: italic; color: #2d3748; line-height: 1.3; margin-bottom: 2px; }
+        .c-name { font-size: 0.38rem; color: #718096; font-weight: 800; border-top: 1px dashed rgba(43, 106, 176, 0.1); padding-top: 2px; display: inline-block; }
+
+        /* STYLE: CLASSIC (Type A) */
+        .bottle.type-classic {
+            display: flex; align-items: center; width: 140px;
+        }
+        .type-classic .neck { width: 22px; height: 14px; border-right: none; border-radius: 4px 0 0 4px; }
+        .type-classic .cork { position: absolute; left: -5px; top: 2px; width: 6px; height: 10px; background: #a67c52; border-radius: 2px; }
+        .type-classic .body { flex: 1; height: 60px; border-radius: 12px 30px 30px 12px; display: flex; align-items: center; justify-content: center; }
+
+        /* STYLE: JAR (Type B) */
+        .bottle.type-jar {
+            width: 100px; flex-direction: column; align-items: center; display: flex;
+        }
+        .type-jar .neck { width: 30px; height: 12px; border-bottom: none; border-radius: 5px 5px 0 0; }
+        .type-jar .cork { position: absolute; top: -5px; left: 5px; right: 5px; height: 6px; background: #8d6e63; border-radius: 2px; }
+        .type-jar .body { width: 110px; height: 85px; border-radius: 10px 10px 30px 30px; display: flex; align-items: center; justify-content: center; transform: translateY(-1px); }
+        .type-jar .paper { width: 85%; padding: 10px 12px; }
+
+        /* STYLE: SLIM (Type C) */
+        .bottle.type-slim {
+            display: flex; align-items: center; width: 150px;
+        }
+        .type-slim .neck { width: 30px; height: 12px; border-right: none; border-radius: 4px 0 0 4px; }
+        .type-slim .body { flex: 1; height: 45px; border-radius: 8px 30px 30px 8px; display: flex; align-items: center; justify-content: center; }
+        .type-slim .paper { width: 90%; padding: 6px 12px; }
+
+        /* Responsive - adjust grid for mobile without scroll */
+        @media (max-width: 600px) {
+            #stage { 
+                grid-template-columns: repeat(5, 1fr); 
+                grid-template-rows: repeat(13, 1fr);
+                padding: 10px 5px;
+                gap: 5px 4px;
+            }
+            .bottle.type-classic { width: 75px; } .type-classic .body { height: 35px; } .type-classic .neck { width: 12px; height: 8px; }
+            .bottle.type-jar { width: 60px; } .type-jar .body { width: 65px; height: 50px; } .type-jar .neck { width: 18px; height: 8px; }
+            .bottle.type-slim { width: 80px; } .type-slim .body { height: 28px; } .type-slim .neck { width: 15px; height: 8px; }
+            .paper { padding: 4px 6px; }
+            .c-text { font-size: 0.4rem; }
+            .bottle:hover { transform: scale(3.5) rotate(0deg) !important; z-index: 1000 !important; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="page-header">
+    <h1>All Messages in <span>Bottles</span> 🌊</h1>
+    <p>รวมความสุขทุกขวดโหล จากโอนาถึง NexT1DE</p>
+</div>
+
+<div class="wave-layer wl1"></div>
+<div class="wave-layer wl2"></div>
+<div class="wave-layer wl3"></div>
+
+<div id="stage"></div>
+
+<script>
+const QUOTES = [
+  { name:"โอนาท่านหนึ่ง", quote:"Ohna still here นะคะ อยู่กับเด็กๆไปนานๆน้าาา" },
+  { name:"WMine96", quote:"ขอให้น้องคลื่นโด่งดังไปทั่วโลก" },
+  { name:"TaiiaT_2211", quote:"คิดถึงอีกแล้ว" },
+  { name:"ทีมเฮียดรณ์รักน้องคลื่น", quote:"ครบรอบ 1 ปีแล้ว เด็กๆเก่งกันมาก ขอให้เติบโตอย่างแข็งแกร่ง ปังๆ 🌊 ทีมเฮียดรณ์ 🐉🩵💛" },
+  { name:"RaBBiT_MiLkY", quote:"ขอให้น้องคลื่นมีงานเยอะๆ ประสบความสำเร็จทุกคนเลยคับ" },
+  { name:"Wenwen0609", quote:"Wish NexT1DE always HAPPY" },
+  { name:"IAmMe", quote:"ขอบคุณที่จัดงานเพื่อน้องคลื่นนะคะ" },
+  { name:"lalalinnnkk", quote:"ขอให้NT1ถูกค้นพบเยอะๆ🌊🫶" },
+  { name:"Omttar🦖", quote:"Wish NexT1DE go higher 🌊" },
+  { name:"bbchouc16", quote:"🌊🦖" },
+  { name:"WaN 🧸", quote:"🌊 Happy Anniversary 🥳" },
+  { name:"zhouaom", quote:"ขอให้ NexT1DE และ Ohna ทุกคนมีความสุข" },
+  { name:"support 🩵 HIA DORN", quote:"ขอให้ NexT1DE มีคนรัก&เอ็นดู เฮงๆ ปังๆ ขอให้โอนาสุขภาพแข็งแรง อยู่ซัพพอร์ตด้วยกันไปนานๆ❤️" },
+  { name:"ชานมน้องหมี", quote:"หม่าม๊าหัวใจน้องคลื่น 💖" },
+  { name:"Bunnie", quote:"ความสุขของพี่🫶🏻" },
+  { name:"Jin_Tawan", quote:"อยู่เป็นความสุขให้กันและกันไปนานๆนะเด็กๆ 💙🌊" },
+  { name:"Thima_c", quote:"เติบโตไปด้วยกันน๊าาา" },
+  { name:"ssirinya", quote:"NT1🩷" },
+  { name:"bbchouc16", quote:"Reackless!🌊" },
+  { name:"CPCUNG", quote:"น้องคลื่นเก่งมากกกกก" },
+  { name:"แม่น้องฉง06", quote:"น้องคลื่นเก่งมากกก^^" },
+  { name:"ppreawara", quote:"โปรดกลับมาโชว์เพลงใหม่ที่ประเทศของฉัน" },
+  { name:"Sunshine🩷", quote:"หมวยสวยมาดด ฉงเกอผมฟ้าเท่สุดๆ" },
+  { name:"chiki", quote:"น้องคลื่นปังๆ" },
+  { name:"Jy-O", quote:"Happy Anniversary! Always support and Love NT1 🩵" },
+  { name:"@shinobuhime", quote:"Luv & appreciate things we have been doing for each other! 😘🌊💙💚🩷" },
+  { name:"แม่หนูจี๊ด", quote:"น้องคลื่นสู้ๆ เจอกันที่ไทยน้า ครบรอบ1ปี" },
+  { name:"Abaek1012", quote:"เมื่อไรจะมาไทยคิดถึงแล้ว" },
+  { name:"BB ~ 🧸", quote:"รักน้องฉง น้องคลื่น ขอให้มีstageปังๆอีกเยอะๆ 🥰" },
+  { name:"ChiniizyGN", quote:"น้องคลื่น 1 ขวบแล้ว ขอให้ยิ่งปัง ยิ่งดังทั่วเอเชีย 😉" },
+  { name:"มัมหมีน้องไทโอ🌻", quote:"May your talent reach more and more people 🌊" },
+  { name:"Sunshine🩷", quote:"รักก้อนคลื่นมาดๆ รักก้อนคลื่น 7 ก้อน🩵🤍" },
+  { name:"Wordsmithsix🧸🦋", quote:"ได้ไซน์แล้วครับ เจ้าแม่บ้านโปรเจกต์ศักดิ์สิทธิ์มาก 😭🙏🤍" },
+  { name:"aliceixiong", quote:"ลุคใหม่หมี(แพนด้า)🐼" },
+  { name:"yimku60", quote:"เป็นกำลังใจให้น้องคลื่นนะคะ ปังปังนะคะ 🌊🫶✌" },
+  { name:"Anna", quote:"เพลงใหม่แซ่บมากกก 🐶🧸" },
+  { name:"ShionTamizuki", quote:"Always luv u guys naa✨🌊" },
+  { name:"babu🦖🏀", quote:"น้องคลื่นจะ 1 ขวบแล้ว ไปกันต่อ!" },
+  { name:"ไอจี๊ดตัวแสบ🦄", quote:"โอนามาซัพพอร์ตไอคลื่นกันเยอะๆนะคะ✨️" },
+  { name:"หม่ามี้ฉงรักน้องคลื่น🩷🌊", quote:"ขอให้น้องคลื่นกลับมาหา Ohna ที่ไทยไวๆนะคะ🩷" },
+  { name:"SomeoneSomewhere", quote:"กินอิ่ม นอนหลับ มีความสุข มีพลังในการใช้ชีวิตนะ ภูมิใจในตัวลูกๆเสมอ" },
+  { name:"Namaiki_girl", quote:"ปีหน้าลุยเลยนะครับ ลูกคลื่น ♥️" },
+  { name:"ส้มอุนหม่ามี้", quote:"Love NexT1DE ที่สุด" },
+  { name:"ออแอนอแอน", quote:"ขอให้ NT1 ประสบความสำเร็จ ได้ไปออนสเตจเยอะๆ 🩵" },
+  { name:"H'🧸", quote:"พรุ่งนี้ขอได้ไซน์ ขอให้ได้ไซน์ ไม่งั้นไม่เริ่ด 🍀" },
+  { name:"ผู้ปกครองเหมียวดรณ์😽", quote:"ไอเยิฟฟน้องคลื่น ขอให้เด็กๆมีความสุขในทุกๆวัน🫶🏻🌊" },
+  { name:"chodanon", quote:"พรุ่งนี้ขอให้ได้ไซน์ ถ้าได้ไซน์จะโดอีก 100บาท 🫰🏻" },
+  { name:"Phoenixvsdrago1", quote:"ขอให้เติบโตอย่างแข็งแกร่ง งานไหลมาเทมา มีคนรักเยอะๆ🩵🌊" },
+  { name:"TaiiaT_2211", quote:"ใกล้ได้เจอกันแล้วน๊าาาา นับถอยหลังแล้ว 🩵" },
+  { name:"BokBear🧸🎀🍼", quote:"นบโปะหม่ำ ๆ นุ้งหมีกู๊ดบอย 🧸🍼" },
+  { name:"wordsmithsix🧸🦋", quote:"ขอให้น้องคลื่นถูกค้นพบยิ่งกว่านี้🤍" },
+  { name:"bkph8", quote:"fighting ka!" },
+  { name:"support🩵HiaDORN", quote:"ขอให้น้องคลื่นสุขภาพแข็งแรง มีความสุข ยิ้มได้ทุกๆวัน❤️" },
+  { name:"DornTheRabbit", quote:"ดีใจที่อยู่ด้วยกันจนถึงวันนี้ แล้วมาฉลองปีหน้ากันอีกนะ🥰" },
+  { name:"ต้าวคลื่นจิ๋ว", quote:"ขอให้น้องคลื่นและโอนาเริ่ดๆปังๆไปนานๆค่าาา" },
+  { name:"นางมารร้าย", quote:"รักทุกคนน้า" },
+  { name:"โอนาท่านหนึ่ง", quote:"รักน้องคลื่นน้าา อยู่ด้วยกันไปนานๆเลยย🍏🌊" },
+  { name:"นางมารร้าย", quote:"ขอให้เป็นน้องคลื่นที่สดใส" },
+  { name:"Pondadys", quote:"รักจ้า" },
+  { name:"หมีน้อยน่ารัก❤️🐻🧸", quote:"คิดถึง NexT1DE" },
+  { name:"หมีน้อยน่ารัก❤️🐻🧸", quote:"รักน้องคลื่น" },
+  { name:"รักน้องคลื่น", quote:"น้องคลื่นน่ารัก โอนาก็น่ารัก รักนะจุ๊บๆ" }
+];
+
+const stage = document.getElementById('stage');
+
+function renderMessages() {
+    QUOTES.forEach((q, index) => {
+        const item = document.createElement('div');
+        item.className = 'bottle-item';
+        
+        // Pick random style
+        const types = ['type-classic', 'type-jar', 'type-slim'];
+        const type = types[Math.floor(Math.random() * types.length)];
+        
+        // Random scale & delay for variety
+        const scale = 0.85 + Math.random() * 0.25;
+        const delay = Math.random() * 5;
+        const duration = 4 + Math.random() * 3;
+        
+        item.style.animationDelay = `-${delay}s`;
+        item.style.animationDuration = `${duration}s`;
+        
+        // Add some random offset within the grid cell
+        const offX = (Math.random() - 0.5) * 40;
+        const offY = (Math.random() - 0.5) * 40;
+        item.style.transform = `translate(${offX}px, ${offY}px) scale(${scale})`;
+
+        item.innerHTML = `
+            <div class="bottle ${type}">
+                <div class="neck glass">
+                    <div class="cork"></div>
+                </div>
+                <div class="body glass">
+                    <div class="paper">
+                        <p class="c-text">${q.quote.replace(/\n/g, '<br>')}</p>
+                        <div class="c-name">จาก ${q.name}</div>
+                    </div>
+                </div>
+            </div>`;
+        
+        stage.appendChild(item);
+    });
+}
+
+window.addEventListener('load', () => {
+    renderMessages();
+    
+    // Bubbles logic
+    for (let i = 0; i < 40; i++) {
+        const b = document.createElement('div');
+        b.className = 'bubble';
+        const sz = 4 + Math.random() * 12;
+        b.style.cssText = `width:${sz}px;height:${sz}px;left:${Math.random()*100}%;` +
+          `animation-duration:${6+Math.random()*8}s;animation-delay:-${Math.random()*14}s;`;
+        document.body.appendChild(b);
+    }
+});
+</script>
+</body>
+</html>

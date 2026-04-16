@@ -33,7 +33,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const RECEIVER_NAME_TARGET = "ธัญดา";
-    const WEBHOOK_URL = "https://bbthanyada.app.n8n.cloud/webhook/6e4a539b-5580-40f9-a85f-47a488a2e842";
     const API_ENDPOINT = API_CONFIG.BASE_URL;
     const GET_API_URL = API_ENDPOINT;
     const SAVE_API_URL = API_ENDPOINT;
@@ -727,102 +726,37 @@ document.addEventListener('DOMContentLoaded', () => {
         };
         reader.readAsDataURL(file);
 
-        processSlipWithAI(file);
+        processSlipManual(file);
     };
 
-    const processSlipWithAI = async (file) => {
+    const processSlipManual = (file) => {
         aiLoading.style.display = 'block';
-        document.getElementById('slip-verification-details').style.display = 'none'; // Hide previous details
+        document.getElementById('slip-verification-details').style.display = 'none';
 
-        // Disable upload interactions during analysis
-        const uploadZone = document.getElementById('upload-zone');
-        const btnReUpload = document.getElementById('btn-re-upload');
-        if (uploadZone) uploadZone.style.pointerEvents = 'none';
-        if (btnReUpload) {
-            btnReUpload.disabled = true;
-            btnReUpload.style.opacity = '0.5';
-        }
-
-        try {
-            const formData = new FormData();
-            formData.append('image', file);
-
-            const aiResponse = await fetch(WEBHOOK_URL, { method: 'POST', body: formData });
-            if (!aiResponse.ok) throw new Error('AI analysis failed');
-            const aiData = await aiResponse.json();
-
+        // Mock delay to feel like processing
+        setTimeout(() => {
             aiLoading.style.display = 'none';
             document.getElementById('slip-verification-details').style.display = 'block';
+            document.getElementById('verification-error-text').style.display = 'none';
+            document.getElementById('verification-success-data').style.display = 'block';
+            document.getElementById('slip-verification-buttons').style.display = 'flex';
 
-            if (!aiData || !aiData.is_slip) {
-                document.getElementById('verification-error-text').innerText = 'ไม่สามารถอ่านสลิปได้ กรุณาลองใหม่อีกครั้ง';
-                document.getElementById('verification-error-text').style.display = 'block';
-                document.getElementById('verification-success-data').style.display = 'none';
-                document.getElementById('slip-verification-buttons').style.display = 'none';
-                slipData = { is_slip: false, amount: 0, sender_name: '', date: '' };
-            } else {
-                let rName = aiData.receiver_name || '';
-                if (!rName.includes(RECEIVER_NAME_TARGET)) {
-                    document.getElementById('verification-error-text').innerText = 'อ่านบัญชีปลายทางไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง';
-                    document.getElementById('verification-error-text').style.display = 'block';
-                    document.getElementById('verification-success-data').style.display = 'none';
-                    document.getElementById('slip-verification-buttons').style.display = 'none';
-                    slipData = aiData;
-                } else {
-                    const refNum = aiData.ref_number || aiData.transaction_ref;
-                    let isDuplicate = false;
-                    if (refNum && mergedDonationData && mergedDonationData.donations) {
-                        isDuplicate = mergedDonationData.donations.some(d => d.transaction_ref === refNum || d.ref_number === refNum);
-                    }
+            const feeNotice = document.getElementById('step2-fee-notice');
+            if (feeNotice) feeNotice.style.display = 'none';
 
-                    if (isDuplicate) {
-                        document.getElementById('verification-error-text').innerText = 'สลิปถูกใช้โอนโดเนทไปแล้ว ไม่สามารถใช้งานซ้ำได้';
-                        document.getElementById('verification-error-text').style.display = 'block';
-                        document.getElementById('verification-success-data').style.display = 'none';
-                        document.getElementById('slip-verification-buttons').style.display = 'none';
-                        slipData = { is_slip: false, amount: 0, sender_name: '', date: '' };
-                    } else {
-                        // Check if amount matches
-                        const slipAmt = parseFloat(aiData.amount);
-                        if (Math.abs(slipAmt - totalToPay) > 0.01) {
-                            document.getElementById('verification-error-text').innerText = `ยอดโอนในสลิป (${slipAmt}) ไม่ตรงกับยอดที่ระบุ (${totalToPay}) กรุณาตรวจสอบอีกครั้ง`;
-                            document.getElementById('verification-error-text').style.display = 'block';
-                            document.getElementById('verification-success-data').style.display = 'none';
-                            document.getElementById('slip-verification-buttons').style.display = 'none';
-                            return;
-                        }
+            // Use the amount from Step 2
+            slipData = {
+                is_slip: true,
+                amount: totalToPay,
+                sender_name: 'Manual Upload',
+                date: new Date().toISOString(),
+                ref_number: 'MANUAL-' + Date.now()
+            };
 
-                        document.getElementById('verification-error-text').style.display = 'none';
-                        document.getElementById('verification-success-data').style.display = 'block';
-                        document.getElementById('slip-verification-buttons').style.display = 'flex';
-
-                        // Hide fee notice when showing verified details
-                        const feeNotice = document.getElementById('step2-fee-notice');
-                        if (feeNotice) feeNotice.style.display = 'none';
-
-                        slipData = aiData;
-
-                        document.getElementById('verify-sender-name').innerText = slipData.sender_name || '-';
-                        document.getElementById('verify-amount').innerText = slipData.amount ? slipData.amount + ' ฿' : '-';
-                        document.getElementById('verify-date').innerText = slipData.date ? formatFromDatetimeLocal(formatToDatetimeLocal(slipData.date)) : '-';
-                    }
-                }
-            }
-
-        } catch (error) {
-            console.error(error);
-            aiLoading.style.display = 'none';
-            uploadErrorMsg.innerText = 'เกิดข้อผิดพลาดทางเทคนิค, กรุณาลองใหม่อีกครั้ง';
-            uploadErrorMsg.style.display = 'block';
-            document.getElementById('slip-verification-details').style.display = 'none';
-        } finally {
-            // Re-enable interactions
-            if (uploadZone) uploadZone.style.pointerEvents = 'auto';
-            if (btnReUpload) {
-                btnReUpload.disabled = false;
-                btnReUpload.style.opacity = '1';
-            }
-        }
+            document.getElementById('verify-sender-name').innerText = 'ตรวจสอบโดยเจ้าหน้าที่';
+            document.getElementById('verify-amount').innerText = totalToPay.toLocaleString() + ' ฿';
+            document.getElementById('verify-date').innerText = formatThaiDate(new Date());
+        }, 800);
     };
 
     const getGiftHtml = (gifts, justify = 'center') => {

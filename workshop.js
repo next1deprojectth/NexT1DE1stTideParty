@@ -660,7 +660,7 @@ document.addEventListener('DOMContentLoaded', () => {
             reader.onload = function (e) {
                 previewImg.src = e.target.result;
                 slipImageBase64 = e.target.result.split(',')[1];
-                verifySlipWithAI(file);
+                processSlipManual();
                 // Clear input value so same file can be selected again
                 input.value = "";
             };
@@ -668,64 +668,23 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    async function verifySlipWithAI(file) {
+    function processSlipManual() {
         document.getElementById('api-loading').style.display = 'block';
         document.getElementById('verification-result-box').style.display = 'none';
         document.getElementById('btn-submit-final').style.display = 'none';
 
-        try {
-            const formData = new FormData();
-            formData.append('image', file);
-
-            const response = await fetch(WEBHOOK_URL, {
-                method: 'POST',
-                body: formData
-            });
-
-            if (!response.ok) throw new Error('AI analysis failed');
-            const aiResult = await response.json();
-
-            // 1. Not a slip check
-            if (!aiResult || aiResult.is_slip === false || !aiResult.amount) {
-                showVerifyError("ไม่สามารถอ่านสลิปได้ กรุณาลองใหม่อีกครั้ง");
-                return;
-            }
-
-            // 2. Receiver Name Check
-            const rName = aiResult.receiver_name || '';
-            if (!rName.includes(RECEIVER_NAME_TARGET)) {
-                showVerifyError("บัญชีปลายทางไม่ถูกต้อง ");
-                return;
-            }
-
-            // 3. Duplicate Ref Check
-            const refNum = aiResult.ref_number || aiResult.transaction_ref;
-            if (refNum && apiData && apiData.workshops) {
-                const isDuplicate = apiData.workshops.some(w => w.transaction_ref === refNum);
-                if (isDuplicate) {
-                    showVerifyError("สลิปนี้ถูกใช้งานไปแล้ว ไม่สามารถใช้งานซ้ำได้");
-                    return;
-                }
-            }
-
-            // 4. Amount Check
-            let parseAmountRaw = String(aiResult.amount).replace(/,/g, '');
-            let amountExtracted = parseFloat(parseAmountRaw) || 0;
-
-            if (Math.abs(amountExtracted - expectedTotal) > 0.1) {
-                showVerifyError(`ยอดเงินไม่ถูกต้อง (สลิป: ${amountExtracted.toLocaleString()} ฿, ยอดที่ต้องจ่าย: ${expectedTotal.toLocaleString()} ฿)`);
-                return;
-            }
-
-            slipData = aiResult;
-            showVerifySuccess();
-
-        } catch (error) {
-            console.error('AI Verify Error:', error);
-            showVerifyError("เกิดข้อผิดพลาดทางเทคนิคในการตรวจสอบสลิป", true);
-        } finally {
+        setTimeout(() => {
             document.getElementById('api-loading').style.display = 'none';
-        }
+            // Set dummy data for manual proceed
+            slipData = {
+                is_slip: true,
+                amount: expectedTotal,
+                sender_name: "Manual Upload (ตรวจสอบโดยเจ้าหน้าที่)",
+                date: new Date().toLocaleString('th-TH'),
+                ref_number: "MANUAL-" + Date.now()
+            };
+            showVerifySuccess();
+        }, 800);
     }
 
     function showVerifyError(msg, isTechnical = false) {
@@ -757,9 +716,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (verifySuccessDiv) verifySuccessDiv.style.display = 'block';
         if (verifyErrorDiv) verifyErrorDiv.style.display = 'none';
 
-        document.getElementById('verify-sender-name').innerText = slipData.sender_name || '-';
-        document.getElementById('verify-amount').innerText = `฿ ${(slipData.amount || 0).toLocaleString()}`;
-        document.getElementById('verify-date').innerText = slipData.date || '-';
+        document.getElementById('verify-sender-name').innerText = 'ตรวจสอบโดยเจ้าหน้าที่';
+        document.getElementById('verify-amount').innerText = `฿ ${(expectedTotal || 0).toLocaleString()}`;
+        document.getElementById('verify-date').innerText = formatThaiDate(new Date());
 
         document.getElementById('btn-submit-final').style.display = 'block';
     }
