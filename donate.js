@@ -562,7 +562,7 @@ document.addEventListener('DOMContentLoaded', () => {
             step2.style.display = 'block';
             bars[0].classList.add('step-1-active');
             bars[1].classList.add('step-2-active');
-            stepLabelText.innerText = 'ระบุยอดโดเนท (2/4)';
+            stepLabelText.innerText = 'ระบุยอดที่เคยโดเนท (2/4)';
             window.scrollTo({ top: 0, behavior: 'smooth' });
             initStep2();
         } else if (step === 3) {
@@ -570,7 +570,7 @@ document.addEventListener('DOMContentLoaded', () => {
             bars[0].classList.add('step-1-active');
             bars[1].classList.add('step-2-active');
             bars[2].classList.add('step-3-active');
-            stepLabelText.innerText = 'ชำระเงินและแนบสลิป (3/4)';
+            stepLabelText.innerText = 'แนบสลิปที่เคยชำระ (3/4)';
             window.scrollTo({ top: 0, behavior: 'smooth' });
             initStep3();
         } else if (step === 4) {
@@ -946,20 +946,20 @@ document.addEventListener('DOMContentLoaded', () => {
             if (successTitleEl) successTitleEl.innerText = message;
             if (listEl) listEl.innerHTML = getGiftHtml(giftInfo.gifts, 'flex-start');
 
-            const qrBox = document.getElementById('success-qr-code-box');
-            const qrImg = document.getElementById('success-qr-img');
-            const divider = document.getElementById('success-divider');
-            if (qrBox && qrImg) {
-                const profileUrl = "https://next1deprojectth.github.io/NexT1DE1stTideParty/profile.html?socialName=" + encodeURIComponent(socialInput.value || mergedDonationData.socialName) + "&socialType=" + encodeURIComponent(selectedSocial);
-                qrImg.src = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" + encodeURIComponent(profileUrl);
-                qrBox.style.display = 'flex';
-                if (divider) divider.style.display = 'block';
-            }
+            // const qrBox = document.getElementById('success-qr-code-box');
+            // const qrImg = document.getElementById('success-qr-img');
+            // const divider = document.getElementById('success-divider');
+            // if (qrBox && qrImg) {
+            //     const profileUrl = "https://next1deprojectth.github.io/NexT1DE1stTideParty/profile.html?socialName=" + encodeURIComponent(socialInput.value || mergedDonationData.socialName) + "&socialType=" + encodeURIComponent(selectedSocial);
+            //     qrImg.src = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" + encodeURIComponent(profileUrl);
+            //     qrBox.style.display = 'flex';
+            //     if (divider) divider.style.display = 'block';
+            // }
         } else {
-            const qrBox = document.getElementById('success-qr-code-box');
-            const divider = document.getElementById('success-divider');
-            if (qrBox) qrBox.style.display = 'none';
-            if (divider) divider.style.display = 'none';
+            // const qrBox = document.getElementById('success-qr-code-box');
+            // const divider = document.getElementById('success-divider');
+            // if (qrBox) qrBox.style.display = 'none';
+            // if (divider) divider.style.display = 'none';
         }
         screen.style.display = 'flex';
         document.querySelector('.donate-main').style.display = 'none';

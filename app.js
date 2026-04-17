@@ -154,19 +154,28 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Countdown Timer ---
     const targetDateElement = document.getElementById('days');
     if (targetDateElement) {
-        const targetDate = new Date('2026-04-16T23:59:59').getTime();
+        const targetDate = new Date('2026-04-16T23:59:59+07:00').getTime();
 
         function updateCountdown() {
             const now = new Date().getTime();
             const distance = targetDate - now;
 
             if (distance < 0) {
-                document.getElementById('days').innerText = '00';
-                document.getElementById('hours').innerText = '00';
-                document.getElementById('mins').innerText = '00';
-                document.getElementById('secs').innerText = '00';
+                const timerBox = document.querySelector('.timer-box-new');
+                if (timerBox) {
+                    timerBox.innerHTML = '<div style="font-size: 1.5rem; font-weight: 800; color: #ff6477; padding: 10px 0;">ปิดโดเนทแล้ว</div>';
+                }
+                
+                // Stop the interval if it exists
+                if (typeof countdownInterval !== 'undefined') {
+                    clearInterval(countdownInterval);
+                }
                 return;
             }
+
+            // If not expired, ensure the end-time text is visible
+            const timerEndText = document.getElementById('timer-end-text');
+            if (timerEndText) timerEndText.style.display = 'block';
 
             const days = Math.floor(distance / (1000 * 60 * 60 * 24));
             const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
@@ -179,8 +188,9 @@ document.addEventListener('DOMContentLoaded', () => {
             if (document.getElementById('secs')) document.getElementById('secs').innerText = String(secs).padStart(2, '0');
         }
 
+        let countdownInterval;
         updateCountdown();
-        setInterval(updateCountdown, 1000);
+        countdownInterval = setInterval(updateCountdown, 1000);
     }
 
     // --- Data Fetching from Google Sheets ---
