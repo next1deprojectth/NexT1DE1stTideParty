@@ -17,6 +17,12 @@ document.addEventListener('DOMContentLoaded', () => {
     searchInp.addEventListener('input', handleFilter);
     shipFilt.addEventListener('change', handleFilter);
     setFilt.addEventListener('change', handleFilter);
+
+    // Export Button
+    const exportBtn = document.getElementById('btn-export-excel');
+    if (exportBtn) {
+        exportBtn.addEventListener('click', exportToExcel);
+    }
 });
 
 async function fetchData() {
@@ -44,6 +50,10 @@ async function fetchData() {
             summaryData = data.summary;
             renderDashboard(allUsers, summaryData);
             applyFilters(); 
+
+            // Enable export button
+            const exportBtn = document.getElementById('btn-export-excel');
+            if (exportBtn) exportBtn.disabled = false;
         } else {
             showToast('ข้อผิดพลาด: ' + (data.message || 'ไม่ทราบสาเหตุ'));
         }
@@ -285,6 +295,99 @@ function copyAddress(userId) {
     const s = user.shipping;
     const text = `${s.recipient_name || ''}\n${s.shipping_phone || ''}\n${s.shipping_address || ''} ${s.shipping_postal || ''}`;
     navigator.clipboard.writeText(text).then(() => showToast('คัดลอกที่อยู่สำเร็จ'));
+}
+
+function exportToExcel() {
+    if (!filteredUsers || filteredUsers.length === 0) {
+        showToast('ไม่มีข้อมูลที่จะส่งออก');
+        return;
+    }
+
+    try {
+        const onsiteUsers = filteredUsers
+            .filter(u => u.shipping && u.shipping.delivery_type === 'onsite')
+            .sort((a, b) => (a.social_name || '').localeCompare(b.social_name || ''));
+            
+        const deliveryUsers = filteredUsers
+            .filter(u => u.shipping && u.shipping.delivery_type === 'delivery')
+            .sort((a, b) => (a.social_name || '').localeCompare(b.social_name || ''));
+
+        const mapUser = (u, index, isDelivery) => {
+            const banks = u.banks || [];
+            const gifts = u.giftaway ? (u.giftaway.items || []) : [];
+            const shipping = u.shipping || {};
+
+            const baseData = {
+                'No.': index + 1,
+                'ชื่อ Account': u.social_name || '',
+                'Social': u.social_type || '',
+                'ชื่อบัญชีโอนเงิน': banks.length > 0 ? (banks[0].name || '') : '',
+                'ยอดโดเนท': u.donate ? u.donate.net_total : 0,
+                'ยอดซื้อWorkshop': u.workshop ? u.workshop.total_amount : 0,
+                'A6 Sticker': gifts.includes('A6 Sticker') ? '✓' : '-',
+                'UV Sticker': gifts.includes('UV Sticker') ? '✓' : '-',
+                'Clear Plastic Purse': gifts.includes('Clear Plastic Purse') ? '✓' : '-',
+                'Acrylic Frame': gifts.includes('Acrylic Frame') ? '✓' : '-',
+                'Light Sign Strap': gifts.includes('Light Sign Strap') ? '✓' : '-',
+                'Workshop': u.workshop ? (u.workshop.total_rights || 0) : 0
+            };
+
+            if (isDelivery) {
+                return {
+                    ...baseData,
+                    'ข้อมูลจัดส่ง': `ชื่อผู้รับ : ${shipping.recipient_name || '-'}\nที่อยู่ : ${shipping.shipping_address || '-'} ${shipping.shipping_postal || ''}\nเบอร์โทร : ${shipping.shipping_phone || '-'}`
+                };
+            }
+            return baseData;
+        };
+
+        const onsiteData = onsiteUsers.map((u, i) => mapUser(u, i, false));
+        const deliveryData = deliveryUsers.map((u, i) => mapUser(u, i, true));
+
+        const workbook = XLSX.utils.book_new();
+
+        if (onsiteData.length > 0) {
+            const wsOnsite = XLSX.utils.json_to_sheet(onsiteData);
+            wsOnsite['!cols'] = [
+                { wch: 6 }, { wch: 20 }, { wch: 10 }, { wch: 25 }, { wch: 12 }, { wch: 15 },
+                { wch: 10 }, { wch: 10 }, { wch: 15 }, { wch: 15 }, { wch: 15 }, { wch: 10 }
+            ];
+            XLSX.utils.book_append_sheet(workbook, wsOnsite, "รับหน้างาน");
+        }
+
+        if (deliveryData.length > 0) {
+            const wsDelivery = XLSX.utils.json_to_sheet(deliveryData);
+            
+            // Enable wrap text for shipping info
+            const range = XLSX.utils.decode_range(wsDelivery['!ref']);
+            for (let R = range.s.r; R <= range.e.r; ++R) {
+                const cellRef = XLSX.utils.encode_cell({ r: R, c: 12 }); // Column 12 is 'ข้อมูลจัดส่ง'
+                if (wsDelivery[cellRef]) {
+                    if (!wsDelivery[cellRef].s) wsDelivery[cellRef].s = {};
+                    wsDelivery[cellRef].s.alignment = { wrapText: true, vertical: 'top' };
+                }
+            }
+
+            wsDelivery['!cols'] = [
+                { wch: 6 }, { wch: 20 }, { wch: 10 }, { wch: 25 }, { wch: 12 }, { wch: 15 },
+                { wch: 10 }, { wch: 10 }, { wch: 15 }, { wch: 15 }, { wch: 15 }, { wch: 10 },
+                { wch: 60 } // ข้อมูลจัดส่ง width
+            ];
+            XLSX.utils.book_append_sheet(workbook, wsDelivery, "จัดส่ง");
+        }
+
+        if (onsiteData.length === 0 && deliveryData.length === 0) {
+            showToast('ไม่พบข้อมูลที่แยกตามประเภทการรับของ');
+            return;
+        }
+
+        const dateStr = new Date().toLocaleDateString('th-TH').replace(/\//g, '-');
+        XLSX.writeFile(workbook, `NexT1DE_Admin_Summary_${dateStr}.xlsx`);
+        showToast('ส่งออก Excel สำเร็จ');
+    } catch (err) {
+        console.error('Export Error:', err);
+        showToast('เกิดข้อผิดพลาดในการส่งออก');
+    }
 }
 
 function showLoading(active) {

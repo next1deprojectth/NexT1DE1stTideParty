@@ -406,6 +406,43 @@ tr:hover td { transform: scale(1.002); box-shadow: 0 4px 20px rgba(0,0,0,0.03); 
     border-color: var(--primary);
 }
 
+.btn-export-mini {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: #166534;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 8px 14px;
+    font-size: 0.7rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 4px 12px rgba(22, 101, 52, 0.15);
+}
+
+.btn-export-mini:hover {
+    background: #15803d;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 15px rgba(22, 101, 52, 0.25);
+}
+
+.btn-export-mini:active {
+    transform: translateY(0);
+}
+
+.btn-export-mini:disabled {
+    background: #94a3b8;
+    cursor: not-allowed;
+    box-shadow: none;
+    opacity: 0.6;
+}
+
+.btn-export-mini svg {
+    flex-shrink: 0;
+}
+
 /* Visual Stats Dashboard */
 .visual-stats-dashboard {
     padding: 12px 20px;
