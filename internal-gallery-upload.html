@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Internal Upload Gallery - NexT1DE 1st Tide Party</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&family=Sriracha&display=swap"
+        rel="stylesheet">
+    <link rel="icon" type="image/png" href="images/logo-project.png">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="gallery-upload.css">
+    <!-- Cropper.js -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
+</head>
+
+<body>
+    <!-- Background Image -->
+    <div class="page-background"></div>
+
+    <!-- Font Preload Hack -->
+    <div style="font-family: 'CS Prajad'; font-weight: bold; position: absolute; left: -9999px; visibility: hidden;">
+        โหลดฟอนต์
+    </div>
+
+    <!-- Navbar -->
+    <nav class="navbar glass">
+        <div class="nav-container">
+            <div class="logo">
+                <a href="index.html" class="home-link" title="กลับหน้าหลัก">
+                    <img src="images/nt1-logo 2.png" alt="Logo">
+                    <img src="images/logo-project.png" alt="Logo">
+                </a>
+            </div>
+            <div style="color: #2B6CB0; font-weight: bold; font-size: 0.9rem; background: #EBF8FF; padding: 4px 12px; border-radius: 20px; border: 1px solid #BEE3F8;">
+                เฉพาะวงใน
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-container">
+        <section class="upload-section">
+            <!-- Intro Section (Initial State) -->
+            <div id="intro-section" class="upload-card glass">
+                <div style="text-align: center; margin-bottom: 30px;">
+                    <h1 class="gradient-text" style="font-size: 1.8rem; margin-bottom: 10px;">NexT1DE ในสายตาคุณ</h1>
+                    <p style="color: #E53E3E; font-weight: 700; margin-bottom: 10px; font-size: 1.1rem;">
+                        (โหมดเฉพาะวงใน)</p>
+                    <p class="section-desc">ร่วมสร้างความทรงจำผ่านภาพถ่ายที่คุณประทับใจ ใน 1 ปีที่ผ่านมา</p>
+                </div>
+
+                <div class="intro-terms-box">
+                    <h3
+                        style="color: #2D3748; margin-bottom: 15px; font-size: 1rem; border-bottom: 2px solid #2b6cb0; display: inline-block; padding-bottom: 4px;">
+                        ข้อกำหนดในการส่งภาพ</h3>
+                    <ul class="intro-terms-list">
+                        <li>ผลงานภาพถ่ายเป็นภาพที่ถ่ายด้วยตนเอง หรือได้รับอนุญาตจากเจ้าของภาพแล้วเท่านั้น</li>
+                        <li>งดใช้ภาพตัดต่อ หรือภาพที่อาจก่อให้เกิดความเข้าใจคลาดเคลื่อน</li>
+                        <li>งดส่งภาพนอกตารางงานหรือพื้นที่ที่มีข้อห้ามในการถ่ายภาพ</li>
+                        <li>ทางทีมขอสงวนสิทธิ์ในการพิจารณาคัดเลือกภาพตามความเหมาะสม</li>
+                    </ul>
+                </div>
+
+                <div style="margin-top: 40px; text-align: center;">
+                    <button id="btn-acknowledge" class="btn-submit-full"
+                        style="max-width: 300px; margin: 0 auto;">รับทราบเงื่อนไขและเริ่มส่งภาพ</button>
+                </div>
+            </div>
+
+            <!-- Layout Selection Step (New) -->
+            <div id="layout-selection-section" class="upload-card glass" style="display: none;">
+                <div style="text-align: center; margin-bottom: 30px;">
+                    <h1 class="gradient-text" style="font-size: 1.8rem; margin-bottom: 10px;">เลือกรูปแบบภาพของคุณ</h1>
+                    <p class="section-desc" style="font-size: 1rem;">คุณต้องการส่งภาพแบบรูปเดียว หรือ 2 รูปวางซ้อนกัน?
+                    </p>
+                </div>
+
+                <div class="layout-selector-group"
+                    style="background: transparent; border: none; padding: 0; margin-bottom: 0;">
+                    <div class="layout-options" style="max-width: 500px; margin: 0 auto;">
+                        <div class="layout-option active" id="layout-single-step">
+                            <div class="layout-icon single-icon"></div>
+                            <span>รูปเดี่ยว (3:4)</span>
+                        </div>
+                        <div class="layout-option" id="layout-stacked-step">
+                            <div class="layout-icon stacked-icon"></div>
+                            <span>2 รูป (แนวนอน)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 40px; text-align: center;">
+                    <button id="btn-go-to-form" class="btn-submit-full"
+                        style="max-width: 300px; margin: 0 auto;">ใช้รูปแบบนี้และดำเนินการต่อ</button>
+                    <p style="margin-top: 15px; font-size: 0.8rem; color: #718096;">*
+                        คุณสามารถย้อนกลับมาเปลี่ยนรูปแบบได้ในภายหลัง</p>
+                </div>
+            </div>
+
+            <div id="upload-form-container" class="upload-card glass" style="display: none;">
+                <div class="upload-grid">
+                    <!-- Form Section -->
+                    <div class="form-section">
+                        <div style="flex-direction: row;">
+                            <h1 class="gallery-gradient-text">NexT1DE ในสายตาคุณ</h1>
+                        </div>
+
+                        <p class="section-desc">
+                            เลือกรูป NexT1DE ที่คุณถ่ายหรือประทับใจที่สุด ใน 1 ปีที่ผ่านมา (8 รูป/คน)
+                        </p>
+
+                        <button type="button" id="btn-back-to-layout" class="btn-back-step">
+                            <span style="font-size: 1.2rem;">←</span> เปลี่ยนรูปแบบภาพ (Layout)
+                        </button>
+
+                        <div class="input-group">
+                            <label for="owner-name">ชื่อเจ้าของภาพ (ไม่เกิน 30 ตัวอักษรและไม่จำเป็นต้องระบุ)</label>
+                            <input type="text" id="owner-name" placeholder="ระบุชื่อของคุณ (ไม่จำเป็น)" maxlength="30">
+                            <span class="char-count" id="name-count">0/30</span>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="image-desc">คำบรรยายภาพ (ไม่เกิน 50 ตัวอักษร/2 บรรทัด)</label>
+                            <textarea id="image-desc" placeholder="บอกเล่าเรื่องราวในภาพ" maxlength="50"
+                                rows="2"></textarea>
+                            <span class="char-count" id="desc-count">0/50</span>
+                        </div>
+
+                        <!-- Submit Button relocated to form bottom -->
+                        <button id="btn-submit" class="btn-submit-full" disabled>ส่งภาพ</button>
+
+                    </div>
+
+                    <!-- Preview Section -->
+                    <div class="preview-section">
+                        <div class="polaroid-wrapper">
+                            <!-- Interactive Preview Wrapper -->
+                            <div class="polaroid-interactive-preview" id="polaroid-container">
+                                <img id="generated-polaroid-view" src="" alt="Polaroid Preview">
+
+                                <!-- Single Mode Overlay -->
+                                <div class="upload-overlay single-overlay" id="overlay-single">
+                                    <!-- <span>คลิกเพื่อเลือกรูปภาพ</span> -->
+                                </div>
+
+                                <!-- Stacked Mode Overlays -->
+                                <div class="upload-overlay-stacked" id="overlay-stacked" style="display: none;">
+                                    <div class="stack-slot top-slot" id="slot-top">
+                                        <!-- <span>รูปบน</span> -->
+                                    </div>
+                                    <div class="stack-slot bottom-slot" id="slot-bottom">
+                                        <!-- <span>รูปล่าง</span> -->
+                                    </div>
+                                </div>
+
+                                <input type="file" id="file-input" accept="image/*" style="display: none;">
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Review Step (New) -->
+            <div id="review-form-container" class="upload-card glass" style="display: none; text-align: center;">
+                <h1 class="gradient-text" style="font-size: 1.8rem; margin-bottom: 20px;">ตรวจสอบภาพก่อนส่ง</h1>
+                <p class="section-desc" style="font-size: 1rem; margin-bottom: 25px;">
+                    ตรวจสอบความถูกต้องของภาพและคำบรรยายอีกครั้งก่อนยืนยันส่งข้อมูล</p>
+
+                <div class="polaroid-wrapper" style="width: 100%; max-width: 320px; margin: 0 auto 30px auto;">
+                    <img id="review-final-img" src="" alt="Review Polaroid"
+                        style="width: 100%; border-radius: 12px; box-shadow: 0 15px 45px rgba(0,0,0,0.2);">
+                </div>
+
+                <div class="modal-terms-container" style="max-width: 500px; margin: 0 auto 30px auto;">
+                    <p class="modal-terms-title">ข้อกำหนดในการส่งภาพ</p>
+                    <ul class="modal-terms-list">
+                        <li>ผลงานภาพถ่ายเป็นภาพที่ถ่ายด้วยตนเอง หรือได้รับอนุญาตจากเจ้าของภาพแล้วเท่านั้น</li>
+                        <li>งดใช้ภาพตัดต่อ หรือภาพที่อาจก่อให้เกิดความเข้าใจคลาดเคลื่อน</li>
+                        <li>งดส่งภาพนอกตารางงานหรือพื้นที่ที่มีข้อห้ามในการถ่ายภาพ</li>
+                        <li>ทางทีมขอสงวนสิทธิ์ในการพิจารณาคัดเลือกภาพตามความเหมาะสม</li>
+                    </ul>
+                </div>
+
+                <div class="success-actions"
+                    style="flex-direction: column; gap: 12px; align-items: center; display: flex;">
+                    <button id="btn-confirm-submit" class="btn-submit-full"
+                        style="max-width: 350px; margin-top: 0;">ตรวจสอบแล้วและยืนยันส่งรูป</button>
+                    <button id="btn-cancel-review" class="btn-secondary"
+                        style="width: 100%; max-width: 350px; padding: 14px; border-radius: 12px;">กลับไปแก้ไข</button>
+                </div>
+            </div>
+
+            <!-- Success Summary Section (Initially Hidden) -->
+            <div id="success-container" class="upload-card glass" style="display: none; text-align: center;">
+                <h2 class="gradient-text">ส่งข้อมูลสำเร็จแล้ว!</h2>
+                <p class="section-desc" style="margin-bottom: 10px;">ขอบคุณที่ส่งภาพเข้ามาร่วมกันสร้างความทรงจำในงานนี้
+                </p>
+                <!-- Remaining quota after success -->
+                <div id="success-quota-badge" class="quota-badge quota-badge-success">
+                    <span id="success-quota-text">คุณเหลือสิทธิ์ส่งรูปอีก <strong
+                            id="success-quota-remaining">7</strong> ครั้ง</span>
+                </div>
+
+                <div class="success-img-wrapper" style="margin-bottom: 30px;">
+                    <img id="final-polaroid-img" src="" alt="Final Polaroid"
+                        style="max-width: 100%; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.15);">
+                </div>
+
+                <div class="success-actions">
+                    <a href="index.html" class="btn-blue"
+                        style="text-decoration: none; padding: 12px 30px; border-radius: 12px;">กลับหน้าหลัก</a>
+                    <button id="btn-upload-again" onclick="location.reload()" class="btn-secondary"
+                        style="margin-left: 10px; padding: 12px 30px; border-radius: 12px;">ส่งภาพใหม่</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Cropping Modal -->
+    <div id="crop-modal" class="modal">
+        <div class="modal-content glass">
+            <h3>ปรับแต่งรูปภาพ (สัดส่วน 3:4)</h3>
+            <div class="img-container">
+                <img id="cropper-img" src="" alt="To crop">
+            </div>
+            <div class="modal-actions">
+                <button id="btn-cancel-crop" class="btn-secondary">ยกเลิก</button>
+                <button id="btn-confirm-crop" class="btn-blue">ตกลง</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Zoom Preview Modal -->
+    <div id="zoom-modal" class="modal">
+        <div class="zoom-modal-content" id="zoom-modal-content">
+            <button class="zoom-close-btn" id="btn-zoom-close">&times;</button>
+            <img id="zoom-modal-img" src="" alt="Zoomed Preview">
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="modal" style="display: none;">
+        <div class="loading-spinner"></div>
+        <p style="color: white; margin-top: 15px;">กำลังบันทึกภาพ...</p>
+    </div>
+
+    <script src="config.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="gallery-upload.js"></script>
+</body>
+
+</html>
