@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Endpoints ---
     const RECEIVER_NAME_TARGET = "ธัญดา";
-    const WEBHOOK_URL = "https://bbthanyada.app.n8n.cloud/webhook/6e4a539b-5580-40f9-a85f-47a488a2e842";
+    const WEBHOOK_URL = API_CONFIG.SLIP_VERIFY_WEBHOOK_URL;
     const API_ENDPOINT = API_CONFIG.BASE_URL;
     const GET_API_URL = `${API_ENDPOINT}?action=getWorkshop`;
     const SAVE_API_URL = API_ENDPOINT;
@@ -659,8 +659,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const reader = new FileReader();
             reader.onload = function (e) {
                 previewImg.src = e.target.result;
-                slipImageBase64 = e.target.result.split(',')[1];
-                processSlipManual();
+                // Keep full data URL for blob conversion
+                slipImageBase64 = e.target.result;
+                verifySlipWithAI();
                 // Clear input value so same file can be selected again
                 input.value = "";
             };
@@ -668,23 +669,61 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    function processSlipManual() {
+    async function verifySlipWithAI() {
         document.getElementById('api-loading').style.display = 'block';
         document.getElementById('verification-result-box').style.display = 'none';
         document.getElementById('btn-submit-final').style.display = 'none';
 
-        setTimeout(() => {
-            document.getElementById('api-loading').style.display = 'none';
-            // Set dummy data for manual proceed
-            slipData = {
-                is_slip: true,
-                amount: expectedTotal,
-                sender_name: "Manual Upload (ตรวจสอบโดยเจ้าหน้าที่)",
-                date: new Date().toLocaleString('th-TH'),
-                ref_number: "MANUAL-" + Date.now()
+        try {
+            // Helper to convert base64/dataURL to Blob
+            const dataURLtoBlob = (dataurl) => {
+                const arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1];
+                const bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+                let i = n;
+                while (i--) { u8arr[i] = bstr.charCodeAt(i); }
+                return new Blob([u8arr], { type: mime });
             };
-            showVerifySuccess();
-        }, 800);
+
+            const formData = new FormData();
+            const blob = dataURLtoBlob(slipImageBase64);
+            // Use key 'data' as seen in successful Postman request
+            formData.append('data', blob, 'slip.jpg');
+
+            const response = await fetch(WEBHOOK_URL, {
+                method: 'POST',
+                body: formData
+            });
+
+            if (!response.ok) throw new Error('Network response was not ok');
+            const data = await response.json();
+            
+            // Handle array response if needed (n8n sometimes returns an array)
+            const result = Array.isArray(data) ? data[0] : data;
+
+            if (result.is_slip) {
+                // Validation logic
+                const hasReceiver = result.receiver_name && result.receiver_name.includes(RECEIVER_NAME_TARGET);
+                const hasCorrectAmount = result.amount && parseFloat(result.amount) === expectedTotal;
+
+                if (hasReceiver && hasCorrectAmount) {
+                    slipData = result;
+                    showVerifySuccess(result);
+                } else {
+                    let errorMsg = "ข้อมูลสลิปไม่ถูกต้อง";
+                    if (!hasReceiver) errorMsg = "สลิปนี้ไม่ได้โอนให้บัญชีที่กำหนด (ธัญดา)";
+                    else if (!hasCorrectAmount) errorMsg = `ยอดเงินในสลิป (${result.amount} บาท) ไม่ตรงกับยอดที่ต้องชำระ (${expectedTotal} บาท)`;
+                    
+                    showVerifyError(errorMsg, true);
+                }
+            } else {
+                showVerifyError("ไฟล์ที่อัปโหลดไม่ใช่สลิปการโอนเงินที่ถูกต้อง", true);
+            }
+        } catch (error) {
+            console.error("AI Verification Error:", error);
+            showVerifyError("ระบบตรวจสอบอัตโนมัติขัดข้องชั่วคราว", true);
+        } finally {
+            document.getElementById('api-loading').style.display = 'none';
+        }
     }
 
     function showVerifyError(msg, isTechnical = false) {
@@ -708,7 +747,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (fileInput) fileInput.value = "";
     }
 
-    function showVerifySuccess() {
+    function showVerifySuccess(data) {
         document.getElementById('verification-result-box').style.display = 'block';
 
         const verifySuccessDiv = document.getElementById('verify-success');
@@ -716,9 +755,13 @@ document.addEventListener('DOMContentLoaded', () => {
         if (verifySuccessDiv) verifySuccessDiv.style.display = 'block';
         if (verifyErrorDiv) verifyErrorDiv.style.display = 'none';
 
-        document.getElementById('verify-sender-name').innerText = 'ตรวจสอบโดยเจ้าหน้าที่';
-        document.getElementById('verify-amount').innerText = `฿ ${(expectedTotal || 0).toLocaleString()}`;
-        document.getElementById('verify-date').innerText = formatThaiDate(new Date());
+        const senderName = (data && data.sender_name) ? data.sender_name : 'ตรวจสอบโดยเจ้าหน้าที่';
+        const amount = (data && data.amount) ? data.amount : expectedTotal;
+        const dateStr = (data && data.date) ? data.date : formatThaiDate(new Date());
+
+        document.getElementById('verify-sender-name').innerText = senderName;
+        document.getElementById('verify-amount').innerText = `฿ ${parseFloat(amount).toLocaleString()}`;
+        document.getElementById('verify-date').innerText = dateStr;
 
         document.getElementById('btn-submit-final').style.display = 'block';
     }
@@ -758,7 +801,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 const uploadBody = {
                     action: "uploadImage",
                     mimeType: slipMimeType,
-                    base64: slipImageBase64
+                    // Strip data URL prefix before uploading to main API
+                    base64: slipImageBase64.includes(',') ? slipImageBase64.split(',')[1] : slipImageBase64
                 };
                 const uploadRes = await fetch(API_ENDPOINT, {
                     method: 'POST',

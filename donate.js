@@ -33,6 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const RECEIVER_NAME_TARGET = "ธัญดา";
+    const WEBHOOK_URL = API_CONFIG.SLIP_VERIFY_WEBHOOK_URL;
     const API_ENDPOINT = API_CONFIG.BASE_URL;
     const GET_API_URL = API_ENDPOINT;
     const SAVE_API_URL = API_ENDPOINT;
@@ -720,44 +721,109 @@ document.addEventListener('DOMContentLoaded', () => {
             slipPreviewImg.src = e.target.result;
             uploadPreviewWrapper.style.display = 'block';
             uploadZoneContent.style.display = 'none';
-            // Store base64 for later upload
-            slipImageBase64 = e.target.result.split(',')[1];
+            // Store full data URL for blob conversion
+            slipImageBase64 = e.target.result;
             slipMimeType = file.type || 'image/jpeg';
+            
+            // Call AI verification AFTER the image is loaded
+            processSlipWithAI(file);
         };
         reader.readAsDataURL(file);
-
-        processSlipManual(file);
     };
 
-    const processSlipManual = (file) => {
+    const processSlipWithAI = async (file) => {
         aiLoading.style.display = 'block';
         document.getElementById('slip-verification-details').style.display = 'none';
 
-        // Mock delay to feel like processing
-        setTimeout(() => {
+        try {
+            // Helper to convert base64/dataURL to Blob
+            const dataURLtoBlob = (dataurl) => {
+                const arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1];
+                const bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+                let i = n;
+                while (i--) { u8arr[i] = bstr.charCodeAt(i); }
+                return new Blob([u8arr], { type: mime });
+            };
+
+            const formData = new FormData();
+            const blob = dataURLtoBlob(slipImageBase64);
+            // Use key 'data' as seen in successful Postman request
+            formData.append('data', blob, 'slip.jpg');
+
+            const response = await fetch(WEBHOOK_URL, {
+                method: 'POST',
+                body: formData
+            });
+
+            if (!response.ok) throw new Error('Network response was not ok');
+            const data = await response.json();
+            const result = Array.isArray(data) ? data[0] : data;
+
+            if (result.is_slip) {
+                const hasReceiver = result.receiver_name && result.receiver_name.includes(RECEIVER_NAME_TARGET);
+                const hasCorrectAmount = result.amount && parseFloat(result.amount) === totalToPay;
+
+                if (hasReceiver && hasCorrectAmount) {
+                    slipData = result;
+                    showVerifySuccess(result);
+                } else {
+                    let errorMsg = "ข้อมูลสลิปไม่ถูกต้อง";
+                    if (!hasReceiver) errorMsg = "สลิปนี้ไม่ได้โอนให้บัญชีที่กำหนด (ธัญดา)";
+                    else if (!hasCorrectAmount) errorMsg = `ยอดเงินในสลิป (${result.amount} บาท) ไม่ตรงกับยอดที่ต้องชำระ (${totalToPay} บาท)`;
+                    
+                    showVerifyError(errorMsg, true);
+                }
+            } else {
+                showVerifyError("ไฟล์ที่อัปโหลดไม่ใช่สลิปการโอนเงินที่ถูกต้อง", true);
+            }
+        } catch (error) {
+            console.error("AI Verification Error:", error);
+            showVerifyError("ระบบตรวจสอบอัตโนมัติขัดข้องชั่วคราว", true);
+        } finally {
             aiLoading.style.display = 'none';
-            document.getElementById('slip-verification-details').style.display = 'block';
-            document.getElementById('verification-error-text').style.display = 'none';
-            document.getElementById('verification-success-data').style.display = 'block';
-            document.getElementById('slip-verification-buttons').style.display = 'flex';
+        }
+    };
 
-            const feeNotice = document.getElementById('step2-fee-notice');
-            if (feeNotice) feeNotice.style.display = 'none';
+    const showVerifySuccess = (data) => {
+        document.getElementById('slip-verification-details').style.display = 'block';
+        document.getElementById('verification-error-text').style.display = 'none';
+        document.getElementById('verification-success-data').style.display = 'block';
+        document.getElementById('slip-verification-buttons').style.display = 'flex';
+        document.getElementById('manual-verify-box').style.display = 'none';
 
-            // Use the amount from Step 2
+        const senderName = (data && data.sender_name) ? data.sender_name : 'ตรวจสอบโดยเจ้าหน้าที่';
+        const amount = (data && data.amount) ? data.amount : totalToPay;
+        const dateStr = (data && data.date) ? data.date : formatThaiDate(new Date());
+
+        document.getElementById('verify-sender-name').innerText = senderName;
+        document.getElementById('verify-amount').innerText = `${parseFloat(amount).toLocaleString()} ฿`;
+        document.getElementById('verify-date').innerText = dateStr;
+    };
+
+    const showVerifyError = (msg, isTechnical = false) => {
+        document.getElementById('slip-verification-details').style.display = 'block';
+        document.getElementById('verification-error-text').style.display = 'block';
+        document.getElementById('verification-error-text').innerText = msg;
+        document.getElementById('verification-success-data').style.display = 'none';
+        document.getElementById('slip-verification-buttons').style.display = 'none';
+        
+        const manualBox = document.getElementById('manual-verify-box');
+        if (manualBox) manualBox.style.display = isTechnical ? 'block' : 'none';
+    };
+
+    // Add manual verify event listener
+    document.addEventListener('click', (e) => {
+        if (e.target && e.target.id === 'btn-manual-verify') {
             slipData = {
                 is_slip: true,
                 amount: totalToPay,
-                sender_name: 'Manual Upload',
+                sender_name: "Manual Upload (ตรวจสอบโดยเจ้าหน้าที่)",
                 date: new Date().toISOString(),
-                ref_number: 'MANUAL-' + Date.now()
+                ref_number: "MANUAL-" + Date.now()
             };
-
-            document.getElementById('verify-sender-name').innerText = 'ตรวจสอบโดยเจ้าหน้าที่';
-            document.getElementById('verify-amount').innerText = totalToPay.toLocaleString() + ' ฿';
-            document.getElementById('verify-date').innerText = formatThaiDate(new Date());
-        }, 800);
-    };
+            showVerifySuccess(slipData);
+        }
+    });
 
     const getGiftHtml = (gifts, justify = 'center') => {
         let h = `<div style="display:flex; flex-wrap:wrap; gap:8px; justify-content:${justify}; margin-top:10px; justify-content:center">`;
@@ -845,7 +911,12 @@ document.addEventListener('DOMContentLoaded', () => {
             if (slipImageBase64) {
                 const uploadRes = await fetch(UPLOAD_API_URL, {
                     method: 'POST',
-                    body: JSON.stringify({ action: "uploadImage", mimeType: slipMimeType, base64: slipImageBase64 })
+                    body: JSON.stringify({
+                        action: "uploadImage",
+                        mimeType: slipMimeType,
+                        // Strip data URL prefix before uploading to main API
+                        base64: slipImageBase64.includes(',') ? slipImageBase64.split(',')[1] : slipImageBase64
+                    })
                 });
                 const uploadData = await uploadRes.json();
                 if (uploadData.status === 'ok') uploadedImageUrl = uploadData.view_url;
