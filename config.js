@@ -1,7 +1,7 @@
 // Centralized configuration for the project
 const API_CONFIG = {
     // Production
-    BASE_URL: "https://script.google.com/macros/s/AKfycbxCwL4hB4pa4iEOgj5pDtofSKSSYGckVfKLpG4Y1SeWbbvjvU94qugrEQPyExww8ztFpw/exec",
+    BASE_URL: "https://script.google.com/macros/s/AKfycbygV-AMJZcquELupMiuP9vlpIdx9_ekrSK91yqgB281zhlvtxqkuQtfa2QyN8h3Ggva6A/exec",
     // SIT
     // BASE_URL: "https://script.google.com/macros/s/AKfycbx8En3TTGuvHtKWc0kegthD3bvZi6RiqgiiKDempJdudaBac992iU4JjD3Vp5vAI3qU5A/exec",
     IS_DONATE_OPEN: true,
